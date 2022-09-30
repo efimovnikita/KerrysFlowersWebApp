@@ -3,29 +3,31 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <base href="~/"/>
-    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css"/>
     <link href="css/site.css" rel="stylesheet"/>
-    <link href="KerrysFlowersWebApp.styles.css" rel="stylesheet"/>
     <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;1,400&family=Roboto+Slab:wght@700&display=swap"
+      rel="stylesheet"
+    />
 </head>
-<body>
+<body class="bg-background flex flex-col w-full min-h-screen text-lg font-montserrat">
 @RenderBody()
 
-<div id="blazor-error-ui">
+@*<div id="blazor-error-ui">
     <environment include="Staging,Production">
         An error has occurred. This application may no longer respond until reloaded.
     </environment>
     <environment include="Development">
         An unhandled exception has occurred. See browser dev tools for details.
     </environment>
-    <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
-</div>
+</div>*@
 
 <script src="_framework/blazor.server.js"></script>
 </body>
