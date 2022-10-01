@@ -9,6 +9,7 @@
 
     <ItemGroup>
       <Folder Include="Templates" />
+      <Folder Include="wwwroot\Violets" />
     </ItemGroup>
 
 </Project>
