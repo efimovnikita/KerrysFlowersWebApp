@@ -1,4 +1,4 @@
-namespace Shared;
+namespace SharedLibrary;
 
 [Serializable] 
 public class Image

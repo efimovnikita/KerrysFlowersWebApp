@@ -2,13 +2,19 @@
 
 <PageTitle>Каталог фиалок Екатерины Ефимовой</PageTitle>
 
-<CatalogHeader />
-<CatalogFilter />
-<CatalogContainer>
-   <CatalogCard />
-   <CatalogCard />
-   <CatalogCard />
-   <CatalogCard />
-   <CatalogCard />
-   <CatalogCard />
-</CatalogContainer>
+<MainContainer>
+    <CatalogHeader />
+    <CatalogFilter />
+    <CatalogContainer>
+        @foreach (Violet violet in AppState.Violets)
+        {
+            <CatalogCard Violet="violet"/>
+        }
+    </CatalogContainer>
+</MainContainer>
+
+
+@code
+{
+    [CascadingParameter] public  CascadingAppState AppState { get; set; }
+}

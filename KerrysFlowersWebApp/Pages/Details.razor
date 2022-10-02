@@ -1,0 +1,68 @@
+@page "/details/{VioletName}"
+
+<PageTitle>@(Violet != null ? $"Фиалка {Violet.Name}" : "Details")</PageTitle>
+
+<DetailsContainer>
+    @{
+        (Violet leftViolet, Violet rightViolet) = GetAdjacentViolets();
+    }
+    <section class="flex justify-center items-center gap-6">
+        @if (AppState.Violets.Count < 3)
+        {
+            <DetailCard Violet="Violet"/>
+        }
+        else
+        {
+            <PreviewCard IsLeft="true" Violet="leftViolet"/>
+            <DetailCard Violet="Violet"/>
+            <PreviewCard IsLeft="false" Violet="rightViolet"/>
+        }
+    </section>
+    <DetailsNavigation LeftViolet="leftViolet" RightViolet="rightViolet" />
+</DetailsContainer>
+
+@code
+{
+    [CascadingParameter]
+    public CascadingAppState AppState { get; set; }
+
+    [Parameter]
+    public string VioletName { get; set; }
+
+    private Violet Violet { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        Violet = AppState.Violets.FirstOrDefault(violet => violet.TransliteratedName.Equals(VioletName));
+    }
+
+    private (Violet leftViolet, Violet rightViolet) GetAdjacentViolets()
+    {
+        int currentIndex = AppState.Violets.FindIndex(violet => violet.Id.Equals(this.Violet.Id));
+
+        int leftIndex = 0;
+        int rightIndex = 0;
+
+        if (currentIndex == 0)
+        {
+            leftIndex = AppState.Violets.Count - 1;
+            rightIndex = 1;
+        }
+
+        if (currentIndex == AppState.Violets.Count - 1)
+        {
+            leftIndex = currentIndex - 1;
+            rightIndex = 0;
+        }
+
+        if (currentIndex != 0 && currentIndex != AppState.Violets.Count - 1)
+        {
+            leftIndex = currentIndex - 1;
+            rightIndex = currentIndex + 1;
+        }
+
+        Violet leftViolet = AppState.Violets.ElementAt(leftIndex);
+        Violet rightViolet = AppState.Violets.ElementAt(rightIndex);
+        return (leftViolet, rightViolet);
+    }
+}

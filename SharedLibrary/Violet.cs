@@ -1,4 +1,6 @@
-namespace Shared;
+using NickBuhro.Translit;
+
+namespace SharedLibrary;
 
 [Serializable]
 public class Violet
@@ -21,6 +23,9 @@ public class Violet
 
     public Guid Id { get; set; }
     public string Name { get; set; }
+
+    public string TransliteratedName => Transliteration.CyrillicToLatin(Name).ToLower().Replace(' ', '_');
+
     public string Breeder { get; set; }
     public string Description { get; set; }
     public List<string> Tags { get; set; }

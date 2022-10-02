@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KerrysFlowersWebApp", "KerrysFlowersWebApp\KerrysFlowersWebApp.csproj", "{AD6B3125-B159-46A5-9A53-DB7D1B841002}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{393444ED-612E-4B1F-AFF6-D54BC3785A00}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedLibrary", "SharedLibrary\SharedLibrary.csproj", "{393444ED-612E-4B1F-AFF6-D54BC3785A00}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VioletMaker", "VioletMaker\VioletMaker.csproj", "{EE383890-5E10-44D0-A807-9E3A08A1652F}"
 EndProject

@@ -1,6 +1,6 @@
 ﻿using System.CommandLine;
 using Newtonsoft.Json;
-using Shared;
+using SharedLibrary;
 
 namespace VioletMaker;
 

@@ -1,0 +1,24 @@
+@inject NavigationManager NavigationManager
+
+<article class="hidden w-[300px] 2xl:flex flex-col items-center text-text1 relative cursor-pointer" @onclick="Navigate">
+    <div class="@(IsLeft ? 
+                    "absolute w-full h-full bg-gradient-to-r from-background hover:hidden" : 
+                    "absolute w-full h-full bg-gradient-to-l from-background hover:hidden")">
+    </div>
+    <img
+        class="w-[300px] h-[300px] object-cover rounded-t-xl"
+        src="@Violet.Images.FirstOrDefault(image => image.Active)!.W300"
+        alt=""/>
+    <div
+        class="w-[300px] flex justify-center items-center bg-white p-5 text-lg font-bold rounded-b-xl">
+        <p>@Violet.Name</p>
+    </div>
+</article>
+
+@code
+{
+    [Parameter] public Violet Violet { get; set; }
+    [Parameter] public bool IsLeft { get; set; }
+
+    private void Navigate() => NavigationManager.NavigateTo($"/details/{Violet.TransliteratedName}");
+}

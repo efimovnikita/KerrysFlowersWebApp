@@ -1,9 +1,9 @@
 <section
-  class="grid grid-cols-1 place-content-center place-items-center gap-5 md:grid-cols-2 md:gap-10 lg:grid-cols-3 lg:gap-14">
+  class="flex gap-8 md:gap-12 flex-wrap justify-center">
   @ChildContent
 </section>
 
 @code {
   [Parameter]
-  public RenderFragment? ChildContent { get; set; }
+  public RenderFragment ChildContent { get; set; }
 }

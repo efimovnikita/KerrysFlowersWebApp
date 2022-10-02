@@ -2,29 +2,44 @@
     class="w-[300px] flex flex-col items-center text-text1 relative">
     <img
         class="w-[300px] h-[300px] object-cover rounded-t-xl"
-        src="assets/image1/68973456-ae23-49cc-8074-37fd93a6dcd4_300.webp"
+        src="@Violet.Images.FirstOrDefault(image => image.Active)!.W300"
         alt=""/>
     <div class="flex gap-4 absolute bottom-20">
-        <div
-            class="bg-menu w-3 h-3 rounded-full cursor-pointer border-[3px] border-label hover:bg-label">
-        </div>
-        <div
-            class="bg-menu w-3 h-3 rounded-full cursor-pointer hover:bg-label">
-        </div>
-        <div
-            class="bg-menu w-3 h-3 rounded-full cursor-pointer hover:bg-label">
-        </div>
+        @foreach (Image image in Violet.Images)
+        {
+            string style = "bg-menu w-3 h-3 rounded-full cursor-pointer hover:bg-label";
+            if (image.Active)
+            {
+                style = $"{style} border-[3px] border-label";
+            }
+            
+            <button class="@style" @onclick="() => SetActive(image)"></button>
+        }
     </div>
-    <div
-        class="flex justify-center items-center font-bold p-3 bg-label rounded-md text-white text-sm absolute bottom-20 -left-5">
-        <p>New!</p>
-    </div>
+    @if (Violet.NewLabel)
+    {
+        <div
+            class="flex justify-center items-center font-bold p-3 bg-label rounded-md text-white text-sm absolute bottom-20 -left-5">
+            <p>New!</p>
+        </div>   
+    }
     <div
         class="w-[300px] flex justify-center items-center bg-white p-5 text-lg font-bold rounded-b-xl">
-        <a
-            href="#"
-            class="hover:underline decoration-2 underline-offset-2">
-            АВ Зинаида Серебрякова
+        
+    
+        <a href="@($"/details/{Violet.TransliteratedName}")" class="hover:underline decoration-2 underline-offset-2">
+            @Violet.Name
         </a>
     </div>
 </article>
+
+@code
+{
+    [Parameter] public Violet Violet { get; set; }
+
+    private void SetActive(Image image)
+    {
+        Violet.Images.ForEach(i => i.Active = false);
+        image.Active = true;
+    }
+}

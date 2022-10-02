@@ -1,0 +1,29 @@
+<CascadingValue Value="this">
+   @ChildContent 
+</CascadingValue>
+
+@code {
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    protected override void OnInitialized()
+    {
+        string[] directories = Directory.GetDirectories(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"));
+        string violetsDirPath = directories.FirstOrDefault(s => s.Contains("Violets"));
+        string[] jsonFiles = Directory.GetFiles(violetsDirPath, "*.json", SearchOption.AllDirectories);
+
+        Violets = jsonFiles
+            .Select(File.ReadAllText)
+            .Select(JsonConvert.DeserializeObject<Violet>)
+            .ToList();
+    }
+
+    private List<Violet> _violets;
+    public List<Violet> Violets
+    {
+        get => _violets;
+        set
+        {
+            _violets = value;
+            StateHasChanged();
+        }
+    }
+}
