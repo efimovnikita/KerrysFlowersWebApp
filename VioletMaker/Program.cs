@@ -21,6 +21,8 @@ internal static class Program
         Option<FileInfo> image1Option = new("--image1", "First image of violet") {IsRequired = true};
         Option<FileInfo> image2Option = new("--image2", "Second image of violet") {IsRequired = true};
         Option<FileInfo> image3Option = new("--image3", "Third image of violet") {IsRequired = true};
+        Option<bool> chimeraOption = new("--chimera", "Is this violet chimera?") {IsRequired = true};
+        Option<IEnumerable<VioletColor>> colorsOption = new("--colors", "Violet colors") {AllowMultipleArgumentsPerToken = true, IsRequired = true};
         Option<FileInfo> rootOption = new("--root", "Root folder for new violet") {IsRequired = true};
         rootOption.AddAlias("-r");
 
@@ -33,6 +35,8 @@ internal static class Program
         rootCommand.AddOption(image1Option);
         rootCommand.AddOption(image2Option);
         rootCommand.AddOption(image3Option);
+        rootCommand.AddOption(chimeraOption);
+        rootCommand.AddOption(colorsOption);
         rootCommand.AddOption(rootOption);
 
         rootCommand.SetHandler(context =>
@@ -45,6 +49,8 @@ internal static class Program
             FileInfo? image1 = context.ParseResult.GetValueForOption(image1Option);
             FileInfo? image2 = context.ParseResult.GetValueForOption(image2Option);
             FileInfo? image3 = context.ParseResult.GetValueForOption(image3Option);
+            bool chimera = context.ParseResult.GetValueForOption(chimeraOption);
+            IEnumerable<VioletColor>? colors = context.ParseResult.GetValueForOption(colorsOption);
             FileInfo? rootFolder = context.ParseResult.GetValueForOption(rootOption);
 
             Guid id = Guid.NewGuid();
@@ -81,7 +87,7 @@ internal static class Program
                 images.Add(image);
             }
 
-            Violet violet = new(id, name, breeder, description, tags.ToList(), date, images);
+            Violet violet = new(id, name, breeder, description, tags.ToList(), date, images, chimera, colors.ToList());
             string output = JsonConvert.SerializeObject(violet);
             File.WriteAllText(Path.Combine(violetDir.FullName, $"{id}.json"), output);
             

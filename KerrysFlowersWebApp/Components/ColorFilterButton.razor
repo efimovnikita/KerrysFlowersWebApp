@@ -1,6 +1,5 @@
-<a
-    href="#"
-    class="flex gap-4 p-3 md:px-4 md:py-2 rounded-full stroke-menutext bg-menu hover:bg-text1 hover:stroke-text2 hover:text-text2">
+<button class="flex gap-4 p-3 md:px-4 md:py-2 rounded-full stroke-menutext bg-menu hover:bg-text1 hover:stroke-text2 hover:text-text2"
+        @onclick="SortByPrimaryColor">
     <p class="hidden md:flex">По цвету</p>
     <svg
         width="25"
@@ -21,4 +20,9 @@
             stroke-width="1.5"
             stroke-linejoin="round"/>
     </svg>
-</a>
+</button>
+
+@code
+{
+    [Parameter] public EventCallback SortByPrimaryColor { get; set; }
+}

@@ -1,12 +1,13 @@
 ﻿@page "/"
+@page "/{Filter}/{Criteria}"
 
 <PageTitle>Каталог фиалок Екатерины Ефимовой</PageTitle>
 
 <MainContainer>
     <CatalogHeader />
-    <CatalogFilter />
+    <CatalogFilter SortByName="SortByName" SortByPrimaryColor="SortByPrimaryColor" />
     <CatalogContainer>
-        @foreach (Violet violet in AppState.Violets)
+        @foreach (Violet violet in FilteredViolets)
         {
             <CatalogCard Violet="violet"/>
         }
@@ -16,5 +17,46 @@
 
 @code
 {
+    [Parameter] public string Filter { get; set; }
+    [Parameter] public string Criteria { get; set; }
     [CascadingParameter] public  CascadingAppState AppState { get; set; }
+    private List<Violet> FilteredViolets { get; set; }
+    private void SortByName()
+    {
+        FilteredViolets = FilteredViolets.OrderBy(violet => violet.Name).ToList();
+    }
+    private void SortByPrimaryColor()
+    {
+        FilteredViolets = FilteredViolets.OrderBy(violet => violet.Colors[0]).ToList();
+    }
+    protected override void OnParametersSet()
+    {
+        if (String.IsNullOrEmpty(Filter) == false && String.IsNullOrEmpty(Criteria) == false)
+        {
+            if (Filter == FilterType.ByBreeder.ToString())
+            {
+                FilteredViolets = AppState.Violets
+                    .Where(violet => violet.Breeder.Equals(Criteria))
+                    .ToList();
+            }
+            
+            if (Filter == FilterType.ByTag.ToString())
+            {
+                FilteredViolets = AppState.Violets
+                    .Where(violet => violet.Tags.Contains(Criteria))
+                    .ToList();
+            }
+            
+            if (Filter == FilterType.ByTags.ToString())
+            {
+                string[] tags = Criteria.Split(',');
+                FilteredViolets = AppState.Violets
+                    .Where(violet => violet.Tags.Intersect(tags).Count() == tags.Length)
+                    .ToList();
+            }
+            return;
+        }
+        
+        FilteredViolets = AppState.Violets;
+    }
 }

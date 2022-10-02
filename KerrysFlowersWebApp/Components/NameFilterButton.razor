@@ -13,7 +13,5 @@
 
 @code
 {
-    [CascadingParameter] public  CascadingAppState AppState { get; set; }
-
-    private void SortByName() => AppState.Violets = AppState.Violets.OrderBy(violet => violet.Name).ToList();
+    [Parameter] public EventCallback SortByName { get; set; }
 }

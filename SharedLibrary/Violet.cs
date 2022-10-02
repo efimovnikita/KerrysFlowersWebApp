@@ -10,7 +10,9 @@ public class Violet
         string description,
         List<string> tags,
         DateTime breedingDate,
-        List<Image> images)
+        List<Image> images, 
+        bool isChimera, 
+        List<VioletColor> colors)
     {
         Name = name;
         Breeder = breeder;
@@ -18,6 +20,8 @@ public class Violet
         Tags = tags;
         BreedingDate = breedingDate;
         Images = images;
+        IsChimera = isChimera;
+        Colors = colors;
         Id = id;
     }
 
@@ -33,4 +37,7 @@ public class Violet
     public List<Image> Images { get; set; }
     public DateTime BreedingDate { get; set; }
     public DateTime PublishDate { get; set; } = DateTime.Now;
+    public bool IsChimera { get; set; }
+
+    public List<VioletColor> Colors { get; set; }
 }
