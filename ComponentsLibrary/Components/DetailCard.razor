@@ -1,3 +1,4 @@
+@using System.Globalization
 <article
     class="w-[330px] flex flex-col items-center text-text1 relative sm:w-[500px] md:w-[700px]">
     <picture>
@@ -20,7 +21,7 @@
             {
                 style = $"{style} border-[3px] border-label";
             }
-            
+
             <button class="@style" @onclick="() => SetActive(image)"></button>
         }
     </div>
@@ -47,16 +48,36 @@
             </svg>
             <p>
                 @{
-                    StringBuilder stringBuilder = new();
+                    StringBuilder tagBuilder = new();
                     foreach (string tag in Violet.Tags)
                     {
-                        stringBuilder.Append($"<a href=\"/{FilterType.ByTag}/{tag}\" class=\"hover:underline\">{tag}</a>, ");
+                        tagBuilder.Append($"<a href=\"/{FilterType.ByTag}/{tag}\" class=\"hover:underline\">{tag}</a>, ");
                     }
 
-                    string result = stringBuilder.ToString().TrimEnd().TrimEnd(',');
+                    string tags = tagBuilder.ToString().TrimEnd().TrimEnd(',');
                 }
-                
-                @((MarkupString)result)
+
+                @((MarkupString) tags)
+            </p>
+        </div>
+        <div class="flex gap-3 items-center">
+            <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 12.5833C11.3261 12.5833 12.5979 12.0565 13.5355 11.1188C14.4732 10.1812 15 8.9094 15 7.58331C15 6.25723 14.4732 4.98546 13.5355 4.04778C12.5979 3.1101 11.3261 2.58331 10 2.58331C8.67392 2.58331 7.40215 3.1101 6.46447 4.04778C5.52678 4.98546 5 6.25723 5 7.58331C5 8.9094 5.52678 10.1812 6.46447 11.1188C7.40215 12.0565 8.67392 12.5833 10 12.5833V12.5833Z" stroke="#44403C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M13.3335 18.4166C13.9901 18.4166 14.6403 18.2873 15.2469 18.036C15.8535 17.7848 16.4047 17.4165 16.869 16.9522C17.3333 16.4879 17.7016 15.9367 17.9529 15.33C18.2042 14.7234 18.3335 14.0732 18.3335 13.4166C18.3335 12.76 18.2042 12.1098 17.9529 11.5032C17.7016 10.8966 17.3333 10.3454 16.869 9.88109C16.4047 9.4168 15.8535 9.0485 15.2469 8.79723C14.6403 8.54596 13.9901 8.41663 13.3335 8.41663C12.0074 8.41663 10.7356 8.94341 9.79796 9.88109C8.86028 10.8188 8.3335 12.0905 8.3335 13.4166C8.3335 14.7427 8.86028 16.0145 9.79796 16.9522C10.7356 17.8898 12.0074 18.4166 13.3335 18.4166V18.4166Z" stroke="#44403C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M6.66675 18.4166C7.32336 18.4166 7.97354 18.2873 8.58017 18.036C9.18679 17.7848 9.73799 17.4165 10.2023 16.9522C10.6666 16.4879 11.0349 15.9367 11.2861 15.33C11.5374 14.7234 11.6667 14.0732 11.6667 13.4166C11.6667 12.76 11.5374 12.1098 11.2861 11.5032C11.0349 10.8966 10.6666 10.3454 10.2023 9.88109C9.73799 9.4168 9.18679 9.0485 8.58017 8.79723C7.97354 8.54596 7.32336 8.41663 6.66675 8.41663C5.34067 8.41663 4.0689 8.94341 3.13121 9.88109C2.19353 10.8188 1.66675 12.0905 1.66675 13.4166C1.66675 14.7427 2.19353 16.0145 3.13121 16.9522C4.0689 17.8898 5.34067 18.4166 6.66675 18.4166V18.4166Z" stroke="#44403C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <p>
+                @{
+                    StringBuilder colorsBuilder = new();
+                    foreach (VioletColor color in Violet.Colors)
+                    {
+                        colorsBuilder.Append($"<a href=\"/{FilterType.ByColor}/{(int) color}\" class=\"hover:underline\">{ExtensionMethods.GetEnumDescription(color).ToLower()}</a>, ");
+                    }
+
+                    string colors = colorsBuilder.ToString().TrimEnd().TrimEnd(',');
+                }
+
+                @((MarkupString) colors)
             </p>
         </div>
         <div class="flex gap-3 items-center">
@@ -76,6 +97,12 @@
             </svg>
             <a href="@($"/{FilterType.ByBreeder}/{Violet.Breeder}")" class="hover:underline">@Violet.Breeder</a>
         </div>
+        <div class="flex gap-3 items-center">
+            <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M16.25 3H13.75V1.75H12.5V3H7.5V1.75H6.25V3H3.75C3.0625 3 2.5 3.5625 2.5 4.25V16.75C2.5 17.4375 3.0625 18 3.75 18H16.25C16.9375 18 17.5 17.4375 17.5 16.75V4.25C17.5 3.5625 16.9375 3 16.25 3ZM16.25 16.75H3.75V8H16.25V16.75ZM16.25 6.75H3.75V4.25H6.25V5.5H7.5V4.25H12.5V5.5H13.75V4.25H16.25V6.75Z" fill="#44403C"/>
+            </svg>
+            <p>@Violet.PublishDate.Date.ToString("dd.MM.yyyy")</p>
+        </div>
     </div>
     <div class="w-[330px] flex flex-col gap-4 bg-text2 px-3 py-5 text-sm rounded-b-xl sm:w-[500px] sm:px-4 md:w-[700px] md:px-6 md:text-base">
         @Violet.Description
@@ -84,7 +111,8 @@
 
 @code
 {
-    [Parameter] public Violet Violet { get; set; }
+    [Parameter]
+    public Violet Violet { get; set; }
 
     private void SetActive(Image image)
     {

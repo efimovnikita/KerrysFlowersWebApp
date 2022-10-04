@@ -13,12 +13,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\ComponentsLibrary\ComponentsLibrary.csproj" />
       <ProjectReference Include="..\SharedLibrary\SharedLibrary.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-      <PackageReference Include="NickBuhro.Translit" Version="1.4.5" />
     </ItemGroup>
 
 </Project>

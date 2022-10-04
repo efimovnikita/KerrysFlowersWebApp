@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedLibrary", "SharedLibr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VioletMaker", "VioletMaker\VioletMaker.csproj", "{EE383890-5E10-44D0-A807-9E3A08A1652F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComponentsLibrary", "ComponentsLibrary\ComponentsLibrary.csproj", "{2BE0B86F-415F-4E67-862E-F5AEE2253117}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{EE383890-5E10-44D0-A807-9E3A08A1652F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE383890-5E10-44D0-A807-9E3A08A1652F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE383890-5E10-44D0-A807-9E3A08A1652F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BE0B86F-415F-4E67-862E-F5AEE2253117}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BE0B86F-415F-4E67-862E-F5AEE2253117}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BE0B86F-415F-4E67-862E-F5AEE2253117}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BE0B86F-415F-4E67-862E-F5AEE2253117}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

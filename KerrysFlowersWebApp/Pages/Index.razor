@@ -54,6 +54,13 @@
                     .Where(violet => violet.Tags.Intersect(tags).Count() == tags.Length)
                     .ToList();
             }
+            
+            if (Filter == FilterType.ByColor.ToString())
+            {
+                FilteredViolets = AppState.Violets
+                    .Where(violet => violet.Colors.Contains((VioletColor) Int32.Parse(Criteria)))
+                    .ToList();
+            }
             return;
         }
         
