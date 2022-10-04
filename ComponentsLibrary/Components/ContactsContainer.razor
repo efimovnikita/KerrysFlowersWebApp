@@ -1,0 +1,8 @@
+<main class="flex flex-col px-5 py-5 flex-1 gap-4 md:gap-7 xl:px-32 2xl:px-56">
+    @ChildContent
+</main>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+}
