@@ -7,8 +7,8 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["KerrysFlowersWebApp.csproj", "KerrysFlowersWebApp/"]
 COPY ./ ./
-COPY ["ComponentsLibrary/ComponentsLibrary.csproj", "KerrysFlowersWebApp/"]
-COPY ["SharedLibrary/SharedLibrary.csproj", "KerrysFlowersWebApp/"]
+COPY ["/ComponentsLibrary/ComponentsLibrary.csproj", "KerrysFlowersWebApp/"]
+COPY ["/SharedLibrary/SharedLibrary.csproj", "KerrysFlowersWebApp/"]
 
 RUN dotnet restore "KerrysFlowersWebApp/KerrysFlowersWebApp.csproj"
 RUN dotnet restore "KerrysFlowersWebApp/ComponentsLibrary.csproj"
