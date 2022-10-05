@@ -5,13 +5,13 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["/KerrysFlowersWebApp/KerrysFlowersWebApp.csproj", "build/"]
 COPY ["/ComponentsLibrary/ComponentsLibrary.csproj", "build/"]
 COPY ["/SharedLibrary/SharedLibrary.csproj", "build/"]
+COPY ["/KerrysFlowersWebApp/KerrysFlowersWebApp.csproj", "build/"]
 
-RUN dotnet restore "build/KerrysFlowersWebApp.csproj"
 RUN dotnet restore "build/ComponentsLibrary.csproj"
 RUN dotnet restore "build/SharedLibrary.csproj"
+RUN dotnet restore "build/KerrysFlowersWebApp.csproj"
 
 COPY . .
 WORKDIR "/src/build"
