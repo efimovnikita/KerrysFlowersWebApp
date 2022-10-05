@@ -1,6 +1,8 @@
 ﻿using System.CommandLine;
+using System.Reflection;
 using CliWrap;
 using CliWrap.Buffered;
+using Faker;
 using Newtonsoft.Json;
 using SharedLibrary;
 
@@ -10,22 +12,31 @@ internal static class Program
 {
     public static async Task<int> Main(string[] args)
     {
-        Option<string> nameOption = new("--name", "Violet name") {IsRequired = true};
+        string? assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        Option<string> nameOption = new("--name", () => String.Join(' ', Lorem.Words(2)), "Violet name")
+            {IsRequired = true};
         nameOption.AddAlias("-n");
-        Option<string> breederOption = new("--breeder", "Breeder name") {IsRequired = true};
+        Option<string> breederOption = new("--breeder", Name.FullName, "Breeder name") {IsRequired = true};
         breederOption.AddAlias("-b");
-        Option<string> descriptionOption = new("--description", "Violet description") {IsRequired = true};
+        Option<string> descriptionOption = new("--description", () => Lorem.Paragraph(3), "Violet description")
+            {IsRequired = true};
         descriptionOption.AddAlias("-d");
-        Option<IEnumerable<string>> tagsOption = new("--tags", "Violet tags")
+        Option<IEnumerable<string>> tagsOption = new("--tags", () => Lorem.Words(2), "Violet tags")
             {AllowMultipleArgumentsPerToken = true, IsRequired = true};
         tagsOption.AddAlias("-t");
-        Option<DateTime> breedDateOption = new("--date", "Violet breeding date") {IsRequired = true};
-        Option<FileInfo> image1Option = new("--image1", "First image of violet") {IsRequired = true};
-        Option<FileInfo> image2Option = new("--image2", "Second image of violet") {IsRequired = true};
-        Option<FileInfo> image3Option = new("--image3", "Third image of violet") {IsRequired = true};
-        Option<bool> chimeraOption = new("--chimera", "Is this violet chimera?") {IsRequired = true};
-        Option<IEnumerable<VioletColor>> colorsOption = new("--colors", "Violet colors") {AllowMultipleArgumentsPerToken = true, IsRequired = true};
-        Option<FileInfo> rootOption = new("--root", "Root folder for new violet") {IsRequired = true};
+        Option<DateTime> breedDateOption = new("--date", () => DateTime.Today, "Violet breeding date")
+            {IsRequired = true};
+        Option<FileInfo> image1Option = new("--image1", () => new FileInfo(Path.Combine(assemblyPath, "photo1.jpg")), "First image of violet") {IsRequired = true};
+        Option<FileInfo> image2Option = new("--image2", () => new FileInfo(Path.Combine(assemblyPath, "photo2.jpg")), "Second image of violet") {IsRequired = true};
+        Option<FileInfo> image3Option = new("--image3", () => new FileInfo(Path.Combine(assemblyPath, "photo3.jpg")),"Third image of violet") {IsRequired = true};
+        Option<bool> chimeraOption = new("--chimera", () => false, "Is this violet chimera?") {IsRequired = true};
+        Option<IEnumerable<VioletColor>> colorsOption =
+            new("--colors", () => new List<VioletColor> {VioletColor.Blue, VioletColor.Green}, "Violet colors")
+                {AllowMultipleArgumentsPerToken = true, IsRequired = true};
+        Option<FileInfo> rootOption = new("--root",
+            () => new FileInfo(
+                "/home/maskedball/RiderProjects/KerrysFlowersWebApp/KerrysFlowersWebApp/wwwroot/Violets"),
+            "Root folder for new violet") {IsRequired = true};
         rootOption.AddAlias("-r");
 
         RootCommand rootCommand = new("Violet maker");
