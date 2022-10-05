@@ -6,9 +6,17 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["KerrysFlowersWebApp.csproj", "KerrysFlowersWebApp/"]
+COPY ["../ComponentsLibrary/ComponentsLibrary.csproj", "KerrysFlowersWebApp/"]
+COPY ["../SharedLibrary/SharedLibrary.csproj", "KerrysFlowersWebApp/"]
+
 RUN dotnet restore "KerrysFlowersWebApp/KerrysFlowersWebApp.csproj"
+RUN dotnet restore "KerrysFlowersWebApp/ComponentsLibrary.csproj"
+RUN dotnet restore "KerrysFlowersWebApp/SharedLibrary.csproj"
+
 COPY . .
 WORKDIR "/src/KerrysFlowersWebApp"
+RUN dotnet build "ComponentsLibrary.csproj" -c Release -o /app/build
+RUN dotnet build "SharedLibrary.csproj" -c Release -o /app/build
 RUN dotnet build "KerrysFlowersWebApp.csproj" -c Release -o /app/build
 
 FROM build AS publish
