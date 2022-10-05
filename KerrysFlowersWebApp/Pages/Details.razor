@@ -18,7 +18,10 @@
             <PreviewCard IsLeft="false" Violet="rightViolet"/>
         }
     </section>
-    <DetailsNavigation LeftViolet="leftViolet" RightViolet="rightViolet" />
+    @if (AppState.Violets.Count > 1)
+    {
+        <DetailsNavigation LeftViolet="leftViolet" RightViolet="rightViolet" />
+    }
 </DetailsContainer>
 
 @code
@@ -61,7 +64,7 @@
             rightIndex = currentIndex + 1;
         }
 
-        Violet leftViolet = AppState.Violets.ElementAt(leftIndex);
+        Violet leftViolet = AppState.Violets.ElementAt(leftIndex < 0 ? 0 : leftIndex);
         Violet rightViolet = AppState.Violets.ElementAt(rightIndex);
         return (leftViolet, rightViolet);
     }

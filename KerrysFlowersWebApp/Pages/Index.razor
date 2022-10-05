@@ -27,7 +27,7 @@
     }
     private void SortByPrimaryColor()
     {
-        FilteredViolets = FilteredViolets.OrderBy(violet => violet.Colors[0]).ToList();
+        FilteredViolets = FilteredViolets.OrderByDescending(violet => violet.Colors[0]).ToList();
     }
     protected override void OnParametersSet()
     {

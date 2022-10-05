@@ -1,4 +1,6 @@
 ﻿using System.CommandLine;
+using CliWrap;
+using CliWrap.Buffered;
 using Newtonsoft.Json;
 using SharedLibrary;
 
@@ -39,7 +41,7 @@ internal static class Program
         rootCommand.AddOption(colorsOption);
         rootCommand.AddOption(rootOption);
 
-        rootCommand.SetHandler(context =>
+        rootCommand.SetHandler(async context =>
         {
             string? name = context.ParseResult.GetValueForOption(nameOption);
             string? breeder = context.ParseResult.GetValueForOption(breederOption);
@@ -60,6 +62,28 @@ internal static class Program
             List<Image> images = new(3);
             for (int i = 0; i < rawImages.Length; i++)
             {
+                FileInfo? fileInfo = rawImages[i];
+                string fullName = fileInfo.FullName;
+                string violetDirFullName = violetDir.FullName;
+
+                const string format = "webp";
+                const string quality = "75";
+                await ExecuteSquoosh(format, quality, "300", fullName, violetDirFullName);
+                await ExecuteSquoosh(format, quality, "330", fullName, violetDirFullName);
+                await ExecuteSquoosh(format, quality, "500", fullName, violetDirFullName);
+                await ExecuteSquoosh(format, quality, "700", fullName, violetDirFullName);
+
+                string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fullName);
+
+                Image image = new Image(i == 0,
+                    Path.Combine(rootFolder.Name, id.ToString(), $"{fileNameWithoutExtension}_300.{format}"),
+                    Path.Combine(rootFolder.Name, id.ToString(), $"{fileNameWithoutExtension}_330.{format}"),
+                    Path.Combine(rootFolder.Name, id.ToString(), $"{fileNameWithoutExtension}_500.{format}"),
+                    Path.Combine(rootFolder.Name, id.ToString(), $"{fileNameWithoutExtension}_700.{format}"));
+                
+                images.Add(image);
+
+                /*
                 FileInfo? fileInfo = rawImages[i];
                 string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileInfo.FullName);
                 string extension = Path.GetExtension(fileInfo.FullName);
@@ -85,6 +109,7 @@ internal static class Program
                     Path.Combine(rootFolder.Name, id.ToString(), sevenHundred)); 
                 
                 images.Add(image);
+                */
             }
 
             Violet violet = new(id, name, breeder, description, tags.ToList(), date, images, chimera, colors.ToList());
@@ -95,5 +120,22 @@ internal static class Program
         });
 
         return await rootCommand.InvokeAsync(args);
+    }
+    
+    private static async Task<BufferedCommandResult> ExecuteSquoosh(string format, string quality, string width,
+        string image, string outputDir)
+    {
+        return await Cli.Wrap("npx")
+            .WithArguments(new[]
+            {
+                "@squoosh/cli",
+                $"--{format}",
+                $"{{quality:{quality}}}",
+                "--resize", $"{{width:{width}}}",
+                image,
+                "-d", outputDir,
+                "-s", $"_{width}"
+            })
+            .ExecuteBufferedAsync();
     }
 }
