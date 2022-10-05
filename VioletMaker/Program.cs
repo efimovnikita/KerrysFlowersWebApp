@@ -100,21 +100,28 @@ internal static class Program
             Violet violet = new(id, name, breeder, description, tags.ToList(), date, images, chimera, colors.ToList());
             string output = JsonConvert.SerializeObject(violet);
             File.WriteAllText(Path.Combine(violetDir.FullName, $"{id}.json"), output);
+
+            string[] newFiles = Directory.GetFiles(violetDir.FullName).ToArray();
+
+            await Cli
+                .Wrap("git")
+                .WithWorkingDirectory(solutionPath)
+                .WithArguments($"add {String.Join(' ', newFiles)}")
+                .ExecuteAsync();
             
             await Cli
                 .Wrap("git")
                 .WithWorkingDirectory(solutionPath)
-                .WithArguments(new[] {"add", "--all"}).ExecuteAsync();
+                .WithValidation(CommandResultValidation.None)
+                .WithArguments("commit -m \"add new content\"")
+                .ExecuteAsync();
             
             await Cli
                 .Wrap("git")
                 .WithWorkingDirectory(solutionPath)
-                .WithArguments(new[] {"commit", "-m", $"add new content {DateTime.Now}"}).ExecuteAsync();
-            
-            await Cli
-                .Wrap("git")
-                .WithWorkingDirectory(solutionPath)
-                .WithArguments(new[] {"push"}).ExecuteAsync();
+                .WithValidation(CommandResultValidation.None)
+                .WithArguments("push")
+                .ExecuteAsync();
             
             Console.WriteLine("Success!");
         });
