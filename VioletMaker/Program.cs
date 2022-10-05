@@ -13,7 +13,7 @@ internal static class Program
     public static async Task<int> Main(string[] args)
     {
         string? assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        Option<string> nameOption = new("--name", () => String.Join(' ', Lorem.Words(2)), "Violet name")
+        Option<string> nameOption = new("--name", () => String.Join(' ', Lorem.Words(2)).FirstCharToUpper(), "Violet name")
             {IsRequired = true};
         nameOption.AddAlias("-n");
         Option<string> breederOption = new("--breeder", Name.FullName, "Breeder name") {IsRequired = true};
@@ -149,4 +149,15 @@ internal static class Program
             })
             .ExecuteBufferedAsync();
     }
+}
+
+public static class StringExtensions
+{
+    public static string FirstCharToUpper(this string input) =>
+        input switch
+        {
+            null => throw new ArgumentNullException(nameof(input)),
+            "" => throw new ArgumentException($"{nameof(input)} cannot be empty", nameof(input)),
+            _ => string.Concat(input[0].ToString().ToUpper(), input.AsSpan(1))
+        };
 }
