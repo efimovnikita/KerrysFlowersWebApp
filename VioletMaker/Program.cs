@@ -100,10 +100,7 @@ internal static class Program
             Violet violet = new(id, name, breeder, description, tags.ToList(), date, images, chimera, colors.ToList());
             string output = JsonConvert.SerializeObject(violet);
             File.WriteAllText(Path.Combine(violetDir.FullName, $"{id}.json"), output);
-
-
-
-
+            
             await Cli
                 .Wrap("git")
                 .WithWorkingDirectory(solutionPath)
@@ -114,7 +111,10 @@ internal static class Program
                 .WithWorkingDirectory(solutionPath)
                 .WithArguments(new[] {"commit", "-m", $"add new content {DateTime.Now}"}).ExecuteAsync();
             
-            
+            await Cli
+                .Wrap("git")
+                .WithWorkingDirectory(solutionPath)
+                .WithArguments(new[] {"push"}).ExecuteAsync();
             
             Console.WriteLine("Success!");
         });
