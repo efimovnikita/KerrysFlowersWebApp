@@ -13,6 +13,8 @@ internal static class Program
     public static async Task<int> Main(string[] args)
     {
         string? assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        string solutionPath = Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetParent(assemblyPath).FullName).FullName).FullName).FullName;
+
         Option<string> nameOption = new("--name", () => String.Join(' ', Lorem.Words(2)).FirstCharToUpper(), "Violet name")
             {IsRequired = true};
         nameOption.AddAlias("-n");
@@ -93,39 +95,26 @@ internal static class Program
                     Path.Combine(rootFolder.Name, id.ToString(), $"{fileNameWithoutExtension}_700.{format}"));
                 
                 images.Add(image);
-
-                /*
-                FileInfo? fileInfo = rawImages[i];
-                string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileInfo.FullName);
-                string extension = Path.GetExtension(fileInfo.FullName);
-                string threeHundred = $"{fileNameWithoutExtension}_300{extension}";
-                string threeHundredAndThirty = $"{fileNameWithoutExtension}_330{extension}";
-                string fiveHundred = $"{fileNameWithoutExtension}_500{extension}";
-                string sevenHundred = $"{fileNameWithoutExtension}_700{extension}";
-
-                string threeHundredPath = Path.Combine(violetDir.FullName, threeHundred);
-                string threeHundredAndThirtyPath = Path.Combine(violetDir.FullName, threeHundredAndThirty);
-                string fiveHundredPath = Path.Combine(violetDir.FullName, fiveHundred);
-                string sevenHundredPath = Path.Combine(violetDir.FullName, sevenHundred);
-
-                File.Copy(fileInfo.FullName, threeHundredPath);
-                File.Copy(fileInfo.FullName, threeHundredAndThirtyPath);
-                File.Copy(fileInfo.FullName, fiveHundredPath);
-                File.Copy(fileInfo.FullName, sevenHundredPath);
-
-                Image image = new(i == 0,
-                    Path.Combine(rootFolder.Name, id.ToString(), threeHundred),
-                    Path.Combine(rootFolder.Name, id.ToString(), threeHundredAndThirty),
-                    Path.Combine(rootFolder.Name, id.ToString(), fiveHundred),
-                    Path.Combine(rootFolder.Name, id.ToString(), sevenHundred)); 
-                
-                images.Add(image);
-                */
             }
 
             Violet violet = new(id, name, breeder, description, tags.ToList(), date, images, chimera, colors.ToList());
             string output = JsonConvert.SerializeObject(violet);
             File.WriteAllText(Path.Combine(violetDir.FullName, $"{id}.json"), output);
+
+
+
+
+            await Cli
+                .Wrap("git")
+                .WithWorkingDirectory(solutionPath)
+                .WithArguments(new[] {"add", "--all"}).ExecuteAsync();
+            
+            await Cli
+                .Wrap("git")
+                .WithWorkingDirectory(solutionPath)
+                .WithArguments(new[] {"commit", "-m", $"add new content {DateTime.Now}"}).ExecuteAsync();
+            
+            
             
             Console.WriteLine("Success!");
         });
