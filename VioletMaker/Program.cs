@@ -106,6 +106,7 @@ internal static class Program
             await Cli
                 .Wrap("git")
                 .WithWorkingDirectory(solutionPath)
+                .WithValidation(CommandResultValidation.None)
                 .WithArguments($"add {String.Join(' ', newFiles)}")
                 .ExecuteAsync();
             
