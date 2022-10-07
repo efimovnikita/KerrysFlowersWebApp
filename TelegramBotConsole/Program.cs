@@ -259,14 +259,14 @@ internal class Runner
                             "-n", $"{CurrentViolet.Name}",
                             "-b", $"{CurrentViolet.Breeder}",
                             "-d", $"{CurrentViolet.Description}",
-                            "-t", $"{String.Join(' ', CurrentViolet.Tags.Select(tag => $"\'{tag}\'"))}",
                             "--date", $"{CurrentViolet.BreedingDate}",
                             "--image1", $"{CurrentViolet.Images[0].W300}",
                             "--image2", $"{CurrentViolet.Images[1].W300}",
                             "--image3", $"{CurrentViolet.Images[2].W300}",
                             "--chimera", $"{CurrentViolet.IsChimera}",
-                            "--colors", $"{String.Join(' ', CurrentViolet.Colors.Select(color => $"\'{color}\'"))}"
                         })
+                        .WithArguments($"-t {String.Join(' ', CurrentViolet.Tags.Select(tag => $"\'{tag}\'"))}")
+                        .WithArguments($"--colors {String.Join(' ', CurrentViolet.Colors.Select(color => $"\'{color}\'"))}")
                         .ExecuteBufferedAsync();
 
                     if (result.StandardOutput.Contains("Success"))
