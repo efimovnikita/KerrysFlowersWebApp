@@ -91,7 +91,7 @@ internal class Runner
             {
                 if (message.Type == MessageType.Text)
                 {
-                    string text = message.Text;
+                    string text = message.Text.ToLower();
                     Console.WriteLine($"Message from user: \"{text}\"");
 
                     if (text == "/stop")
