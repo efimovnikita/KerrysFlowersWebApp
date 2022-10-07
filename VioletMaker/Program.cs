@@ -103,27 +103,36 @@ internal static class Program
 
             string[] newFiles = Directory.GetFiles(violetDir.FullName).ToArray();
 
-            await Cli
+            BufferedCommandResult gitAddResult = await Cli
                 .Wrap("git")
                 .WithWorkingDirectory(solutionPath)
                 .WithValidation(CommandResultValidation.None)
                 .WithArguments($"add {String.Join(' ', newFiles)}")
-                .ExecuteAsync();
-            
-            await Cli
+                .ExecuteBufferedAsync();
+
+            BufferedCommandResult gitCommitResult = await Cli
                 .Wrap("git")
                 .WithWorkingDirectory(solutionPath)
                 .WithValidation(CommandResultValidation.None)
                 .WithArguments("commit -m \"add new content\"")
-                .ExecuteAsync();
-            
-            await Cli
+                .ExecuteBufferedAsync();
+
+            BufferedCommandResult gitPushResult = await Cli
                 .Wrap("git")
                 .WithWorkingDirectory(solutionPath)
                 .WithValidation(CommandResultValidation.None)
                 .WithArguments("push")
-                .ExecuteAsync();
+                .ExecuteBufferedAsync();
+
+            Console.WriteLine(gitAddResult.StandardError);
+            Console.WriteLine(gitAddResult.StandardOutput);
             
+            Console.WriteLine(gitCommitResult.StandardError);
+            Console.WriteLine(gitCommitResult.StandardOutput);
+
+            Console.WriteLine(gitPushResult.StandardError);
+            Console.WriteLine(gitPushResult.StandardOutput);
+
             Console.WriteLine("Success!");
         });
 
