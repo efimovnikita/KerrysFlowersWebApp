@@ -272,6 +272,7 @@ internal class Runner
                     if (result.StandardOutput.Contains("Success"))
                     {
                         await SendTextMsg(client, token, chatId, "Фиалка успешно опубликована");
+                        Console.WriteLine(result.StandardOutput);
                     }
                     else
                     {
