@@ -265,7 +265,7 @@ internal class Runner
                             "--image2", $"{CurrentViolet.Images[1].W300}",
                             "--image3", $"{CurrentViolet.Images[2].W300}",
                             "--chimera", $"{CurrentViolet.IsChimera}",
-                            "--colors", $"{String.Join(' ', CurrentViolet.Colors.Select(color => color.ToString()))}"
+                            "--colors", $"{String.Join(' ', CurrentViolet.Colors.Select(color => $"\"{color}\""))}"
                         })
                         .ExecuteBufferedAsync();
 
