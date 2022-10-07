@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VioletMaker", "VioletMaker\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComponentsLibrary", "ComponentsLibrary\ComponentsLibrary.csproj", "{2BE0B86F-415F-4E67-862E-F5AEE2253117}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramBotConsole", "TelegramBotConsole\TelegramBotConsole.csproj", "{4BE4D717-D9D8-4CE4-B16B-6063F557DEFE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{2BE0B86F-415F-4E67-862E-F5AEE2253117}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2BE0B86F-415F-4E67-862E-F5AEE2253117}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2BE0B86F-415F-4E67-862E-F5AEE2253117}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BE4D717-D9D8-4CE4-B16B-6063F557DEFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BE4D717-D9D8-4CE4-B16B-6063F557DEFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BE4D717-D9D8-4CE4-B16B-6063F557DEFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BE4D717-D9D8-4CE4-B16B-6063F557DEFE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
