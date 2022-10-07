@@ -254,19 +254,8 @@ internal class Runner
                     Console.WriteLine("Publish violet");
 
                     BufferedCommandResult result = await Cli.Wrap(_maker.FullName)
-                        .WithArguments(new[]
-                        {
-                            "-n", $"{CurrentViolet.Name}",
-                            "-b", $"{CurrentViolet.Breeder}",
-                            "-d", $"{CurrentViolet.Description}",
-                            "--date", $"{CurrentViolet.BreedingDate}",
-                            "--image1", $"{CurrentViolet.Images[0].W300}",
-                            "--image2", $"{CurrentViolet.Images[1].W300}",
-                            "--image3", $"{CurrentViolet.Images[2].W300}",
-                            "--chimera", $"{CurrentViolet.IsChimera}",
-                            $"-t {String.Join(' ', CurrentViolet.Tags.Select(tag => $"{tag}"))}",
-                            $"--colors {CurrentViolet.Colors}"
-                        })
+                        .WithArguments(
+                            $"-n \'{CurrentViolet.Name}\' -b \'{CurrentViolet.Breeder}\' -d \'{CurrentViolet.Description}\' --date \'{CurrentViolet.BreedingDate}\' --image1 \'{CurrentViolet.Images[0].W300}\' --image2 \'{CurrentViolet.Images[1].W300}\' --image3 \'{CurrentViolet.Images[2].W300}\' --chimera \'{CurrentViolet.IsChimera}\' -t {CurrentViolet.Tags.Select(tag => $"\'{tag}\'")} --colors {CurrentViolet.Colors.Select(color => $"\'{color}\'")}")
                         .ExecuteBufferedAsync();
 
                     if (result.StandardOutput.Contains("Success"))
