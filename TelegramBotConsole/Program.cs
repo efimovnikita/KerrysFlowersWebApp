@@ -205,24 +205,24 @@ internal class Runner
                     }
                 }
 
-                if (message.Type == MessageType.Document)
+                if (message.Type == MessageType.Photo)
                 {
-                    Document messageDocument = message.Document;
-                    if (messageDocument == null)
+                    PhotoSize photoSize = message.Photo?.Last();
+                    if (photoSize == null)
                     {
                         return;
                     }
-
-                    if (messageDocument.FileName.EndsWith("jpg") == false)
-                    {
-                        await SendTextMsg(client, token, chatId, "Отправьте изображение в формате .jpg");
-                        PrintCurrentViolet();
-                        return;
-                    }
+                    
+                    // if (messageDocument.FileName.EndsWith("jpg") == false)
+                    // {
+                    //     await SendTextMsg(client, token, chatId, "Отправьте изображение в формате .jpg");
+                    //     PrintCurrentViolet();
+                    //     return;
+                    // }
 
                     if (CurrentMode == Mode.Adding && Stages.Peek() == Stage.Images)
                     {
-                        string fileId = messageDocument.FileId;
+                        string fileId = photoSize.FileId;
 
                         string violetDirInTemp = Path.Combine(Path.GetTempPath(), CurrentViolet.Id.ToString());
                         if (Directory.Exists(violetDirInTemp) == false)
@@ -230,7 +230,7 @@ internal class Runner
                             Directory.CreateDirectory(violetDirInTemp);
                         }
 
-                        string fullPath = Path.Combine(violetDirInTemp, messageDocument.FileName);
+                        string fullPath = Path.Combine(violetDirInTemp, $"{Guid.NewGuid()}.jpg");
                         await using FileStream fileStream = System.IO.File.OpenWrite(fullPath);
                         await client.GetInfoAndDownloadFileAsync(fileId, fileStream, token);
                         
@@ -300,7 +300,7 @@ internal class Runner
                     }
                 }
 
-                if (message.Type == MessageType.Document)
+                if (message.Type == MessageType.Photo)
                 {
                     await SendTextMsg(client, token, chatId,
                         "Чтобы начать публикацию новой фиалки наберите \"/start\"");
