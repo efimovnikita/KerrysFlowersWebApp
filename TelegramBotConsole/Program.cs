@@ -91,7 +91,7 @@ internal class Runner
             {
                 if (message.Type == MessageType.Text)
                 {
-                    string text = message.Text.ToLower();
+                    string text = message.Text;
                     Console.WriteLine($"Message from user: \"{text}\"");
 
                     if (text == "/stop")
@@ -142,7 +142,7 @@ internal class Runner
                         }
                         case Stage.Chimera:
                         {
-                            CurrentViolet.IsChimera = Boolean.Parse(text);
+                            CurrentViolet.IsChimera = Boolean.Parse(text.ToLower());
                             Stages.Dequeue();
                             PrintCurrentViolet();
                             
@@ -152,7 +152,7 @@ internal class Runner
                         }
                         case Stage.Tags:
                         {
-                            string[] tags = text.Split(',');
+                            string[] tags = text.ToLower().Split(',');
                             List<string> trimmedTags = tags.Select(tag => tag.Trim()).ToList();
                             CurrentViolet.Tags = trimmedTags;
                             Stages.Dequeue();
@@ -167,7 +167,7 @@ internal class Runner
                         }
                         case Stage.Colors:
                         {
-                            string[] colors = text.Split(',');
+                            string[] colors = text.ToLower().Split(',');
                             List<string> trimmedColors = colors.Select(tag => tag.Trim()).ToList();
                             VioletColor[] allColors = Enum.GetValues(typeof(VioletColor)).Cast<VioletColor>().ToArray();
                             List<VioletColor> selectedColors = allColors.Where(color =>
