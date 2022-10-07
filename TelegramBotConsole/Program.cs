@@ -266,7 +266,7 @@ internal class Runner
                             "--chimera", $"{CurrentViolet.IsChimera}",
                         })
                         .WithArguments($"-t {String.Join(' ', CurrentViolet.Tags.Select(tag => $"\'{tag}\'"))}")
-                        .WithArguments($"--colors {String.Join(' ', CurrentViolet.Colors.Select(color => $"\'{color}\'"))}")
+                        .WithArguments($"--colors {String.Join(' ', CurrentViolet.Colors.Select(color => $"{color}"))}")
                         .ExecuteBufferedAsync();
 
                     if (result.StandardOutput.Contains("Success"))
