@@ -142,7 +142,7 @@ internal class Runner
                         }
                         case Stage.Chimera:
                         {
-                            if (text.ToLower() != "да" || text.ToLower() != "нет")
+                            if (new [] { "да", "нет" }.Contains(text.ToLower()) == false)
                             {
                                 return;
                             }
@@ -182,7 +182,7 @@ internal class Runner
                         case Stage.Colors:
                         {
                             string[] colors = text.ToLower().Split(',');
-                            List<string> trimmedColors = colors.Select(tag => tag.Trim()).ToList();
+                            List<string> trimmedColors = colors.Select(tag => tag.Trim().Replace('ё', 'е')).ToList();
                             VioletColor[] allColors = Enum.GetValues(typeof(VioletColor)).Cast<VioletColor>().ToArray();
                             List<VioletColor> selectedColors = allColors.Where(color =>
                                 trimmedColors.Contains(ExtensionMethods.GetEnumDescription(color).ToLower())).ToList();
@@ -197,7 +197,7 @@ internal class Runner
                         case Stage.Date:
                         {
                             CurrentViolet.BreedingDate = DateTime
-                                .ParseExact(text, "yyyy", CultureInfo.InvariantCulture);
+                                .ParseExact(text, "dd.MM.yyyy", CultureInfo.InvariantCulture);
                             Stages.Dequeue();
                             PrintCurrentViolet();
                             
