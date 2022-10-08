@@ -74,7 +74,7 @@ internal class Runner
             return;
         }
 
-        if (_stages.Count == 0 && _currentStage == null && _currentViolet != null)
+        if (_currentStage == null)
         {
             return;
         }
