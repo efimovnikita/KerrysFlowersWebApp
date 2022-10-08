@@ -28,7 +28,7 @@ internal class Program
         rootCommand.AddOption(apiOption);
         rootCommand.AddOption(makerOption);
             
-        rootCommand.SetHandler(new Runner().RunBot, apiOption, makerOption);
+        rootCommand.SetHandler((api, maker) => new Runner2(api, maker), apiOption, makerOption);
 
         return await rootCommand.InvokeAsync(args);
     }
