@@ -79,20 +79,18 @@ internal static class Program
                 string fullName = fileInfo.FullName;
                 string violetDirFullName = violetDir.FullName;
 
-                const string format = "webp";
-                const string quality = "75";
-                await ExecuteSquoosh(format, quality, "300", fullName, violetDirFullName);
-                await ExecuteSquoosh(format, quality, "330", fullName, violetDirFullName);
-                await ExecuteSquoosh(format, quality, "500", fullName, violetDirFullName);
-                await ExecuteSquoosh(format, quality, "700", fullName, violetDirFullName);
-
+                await ExecuteGraphicsMagick(fullName, violetDirFullName, "300", "75");
+                await ExecuteGraphicsMagick(fullName, violetDirFullName, "330", "75");
+                await ExecuteGraphicsMagick(fullName, violetDirFullName, "500", "75");
+                await ExecuteGraphicsMagick(fullName, violetDirFullName, "700", "75");
+                
                 string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fullName);
 
-                Image image = new Image(i == 0,
-                    Path.Combine(rootFolder.Name, id.ToString(), $"{fileNameWithoutExtension}_300.{format}"),
-                    Path.Combine(rootFolder.Name, id.ToString(), $"{fileNameWithoutExtension}_330.{format}"),
-                    Path.Combine(rootFolder.Name, id.ToString(), $"{fileNameWithoutExtension}_500.{format}"),
-                    Path.Combine(rootFolder.Name, id.ToString(), $"{fileNameWithoutExtension}_700.{format}"));
+                Image image = new(i == 0,
+                    Path.Combine(rootFolder.Name, id.ToString(), $"{fileNameWithoutExtension}_300.webp"),
+                    Path.Combine(rootFolder.Name, id.ToString(), $"{fileNameWithoutExtension}_330.webp"),
+                    Path.Combine(rootFolder.Name, id.ToString(), $"{fileNameWithoutExtension}_500.webp"),
+                    Path.Combine(rootFolder.Name, id.ToString(), $"{fileNameWithoutExtension}_700.webp"));
                 
                 images.Add(image);
             }
@@ -138,21 +136,14 @@ internal static class Program
 
         return await rootCommand.InvokeAsync(args);
     }
-    
-    private static async Task<BufferedCommandResult> ExecuteSquoosh(string format, string quality, string width,
-        string image, string outputDir)
+
+    private static async Task ExecuteGraphicsMagick(string fullName, string violetDirFullName, string width,
+        string quality)
     {
-        return await Cli.Wrap("npx")
-            .WithArguments(new[]
-            {
-                "@squoosh/cli",
-                $"--{format}",
-                $"{{quality:{quality}}}",
-                "--resize", $"{{width:{width}}}",
-                image,
-                "-d", outputDir,
-                "-s", $"_{width}"
-            })
+        string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fullName);
+        string arguments = $"-convert \"{fullName}\" -resize {width}x -quality {quality} \"{Path.Combine(violetDirFullName, $"{fileNameWithoutExtension}_{width}.webp")}\"";
+        await Cli.Wrap("gm")
+            .WithArguments(arguments)
             .ExecuteBufferedAsync();
     }
 }
