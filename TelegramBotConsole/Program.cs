@@ -190,14 +190,27 @@ internal class Runner
                             Stages.Dequeue();
                             PrintCurrentViolet();
 
-                            await SendTextMsg(client, token, chatId, "Введите дату селекции (например: 15.12.2022)");
+                            await SendTextMsg(client, token, chatId, "Введите год селекции фиалки (например: 2022)");
 
                             break;
                         }
                         case Stage.Date:
                         {
-                            CurrentViolet.BreedingDate = DateTime
-                                .ParseExact(text, "dd.MM.yyyy", CultureInfo.InvariantCulture);
+                            if (text.Length != 4)
+                            {
+                                return;
+                            }
+
+                            bool parseNumberResult = Int32.TryParse(text, out int parsedNumber);
+                            if (parseNumberResult == false)
+                            {
+                                return;
+                            }
+
+                            CurrentViolet.BreedingDate = new DateTime(parsedNumber, 1, 1);
+                            
+                            // CurrentViolet.BreedingDate = DateTime
+                            //     .ParseExact(text, "dd.MM.yyyy", CultureInfo.InvariantCulture);
                             Stages.Dequeue();
                             PrintCurrentViolet();
                             
