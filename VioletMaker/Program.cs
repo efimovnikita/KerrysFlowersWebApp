@@ -79,18 +79,19 @@ internal static class Program
                 string fullName = fileInfo.FullName;
                 string violetDirFullName = violetDir.FullName;
 
-                await ExecuteGraphicsMagick(fullName, violetDirFullName, "300");
-                await ExecuteGraphicsMagick(fullName, violetDirFullName, "330");
-                await ExecuteGraphicsMagick(fullName, violetDirFullName, "500");
-                await ExecuteGraphicsMagick(fullName, violetDirFullName, "700");
+                const string format = "jpg";
+                await ExecuteGraphicsMagick(fullName, violetDirFullName, "300", format);
+                await ExecuteGraphicsMagick(fullName, violetDirFullName, "330", format);
+                await ExecuteGraphicsMagick(fullName, violetDirFullName, "500", format);
+                await ExecuteGraphicsMagick(fullName, violetDirFullName, "700", format);
                 
                 string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fullName);
 
                 Image image = new(i == 0,
-                    Path.Combine(rootFolder.Name, id.ToString(), $"{fileNameWithoutExtension}_300.webp"),
-                    Path.Combine(rootFolder.Name, id.ToString(), $"{fileNameWithoutExtension}_330.webp"),
-                    Path.Combine(rootFolder.Name, id.ToString(), $"{fileNameWithoutExtension}_500.webp"),
-                    Path.Combine(rootFolder.Name, id.ToString(), $"{fileNameWithoutExtension}_700.webp"));
+                    Path.Combine(rootFolder.Name, id.ToString(), $"{fileNameWithoutExtension}_300.{format}"),
+                    Path.Combine(rootFolder.Name, id.ToString(), $"{fileNameWithoutExtension}_330.{format}"),
+                    Path.Combine(rootFolder.Name, id.ToString(), $"{fileNameWithoutExtension}_500.{format}"),
+                    Path.Combine(rootFolder.Name, id.ToString(), $"{fileNameWithoutExtension}_700.{format}"));
                 
                 images.Add(image);
             }
@@ -137,10 +138,10 @@ internal static class Program
         return await rootCommand.InvokeAsync(args);
     }
 
-    private static async Task ExecuteGraphicsMagick(string fullName, string violetDirFullName, string width)
+    private static async Task ExecuteGraphicsMagick(string fullName, string violetDirFullName, string width, string format)
     {
         string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fullName);
-        string arguments = $"-convert \"{fullName}\" -resize {width}x \"{Path.Combine(violetDirFullName, $"{fileNameWithoutExtension}_{width}.webp")}\"";
+        string arguments = $"-convert \"{fullName}\" -resize {width}x \"{Path.Combine(violetDirFullName, $"{fileNameWithoutExtension}_{width}.{format}")}\"";
         await Cli.Wrap("gm")
             .WithArguments(arguments)
             .ExecuteBufferedAsync();
