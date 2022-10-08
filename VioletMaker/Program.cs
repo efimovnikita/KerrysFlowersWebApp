@@ -79,7 +79,7 @@ internal static class Program
                 string fullName = fileInfo.FullName;
                 string violetDirFullName = violetDir.FullName;
 
-                const string format = "jpg";
+                const string format = "webp";
                 await ExecuteGraphicsMagick(fullName, violetDirFullName, "300", format);
                 await ExecuteGraphicsMagick(fullName, violetDirFullName, "330", format);
                 await ExecuteGraphicsMagick(fullName, violetDirFullName, "500", format);
@@ -141,7 +141,7 @@ internal static class Program
     private static async Task ExecuteGraphicsMagick(string fullName, string violetDirFullName, string width, string format)
     {
         string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fullName);
-        string arguments = $"-convert \"{fullName}\" -resize {width}x \"{Path.Combine(violetDirFullName, $"{fileNameWithoutExtension}_{width}.{format}")}\"";
+        string arguments = $"gm -convert \"{fullName}\" -resize {width}x -unsharp 0.25x0.08+8.3+0.045 -quality 82 \"{Path.Combine(violetDirFullName, $"{fileNameWithoutExtension}_{width}.{format}")}\"";
         await Cli.Wrap("gm")
             .WithArguments(arguments)
             .ExecuteBufferedAsync();
