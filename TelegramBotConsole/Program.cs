@@ -136,13 +136,27 @@ internal class Runner
                             Stages.Dequeue();
                             PrintCurrentViolet();
                             
-                            await SendTextMsg(client, token, chatId, "Является ли фиалка химерой (\'true\' или \'false\')?");
+                            await SendTextMsg(client, token, chatId, "Является ли фиалка химерой (\'да\' или \'нет\')?");
 
                             break;
                         }
                         case Stage.Chimera:
                         {
-                            CurrentViolet.IsChimera = Boolean.Parse(text.ToLower());
+                            if (text.ToLower() != "да" || text.ToLower() != "нет")
+                            {
+                                return;
+                            }
+
+                            if (text.ToLower() == "да")
+                            {
+                                CurrentViolet.IsChimera = true;
+                            }
+
+                            if (text.ToLower() == "нет")
+                            {
+                                CurrentViolet.IsChimera = false;
+                            }
+                            
                             Stages.Dequeue();
                             PrintCurrentViolet();
                             
@@ -183,7 +197,7 @@ internal class Runner
                         case Stage.Date:
                         {
                             CurrentViolet.BreedingDate = DateTime
-                                .ParseExact(text, "dd.MM.yyyy", CultureInfo.InvariantCulture);
+                                .ParseExact(text, "yyyy", CultureInfo.InvariantCulture);
                             Stages.Dequeue();
                             PrintCurrentViolet();
                             
@@ -213,13 +227,6 @@ internal class Runner
                         return;
                     }
                     
-                    // if (messageDocument.FileName.EndsWith("jpg") == false)
-                    // {
-                    //     await SendTextMsg(client, token, chatId, "Отправьте изображение в формате .jpg");
-                    //     PrintCurrentViolet();
-                    //     return;
-                    // }
-
                     if (CurrentMode == Mode.Adding && Stages.Peek() == Stage.Images)
                     {
                         string fileId = photoSize.FileId;
