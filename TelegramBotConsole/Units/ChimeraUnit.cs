@@ -2,6 +2,7 @@ using SharedLibrary;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace TelegramBotConsole.Units;
 
@@ -16,7 +17,14 @@ internal class ChimeraUnit : IUnit
 
     public async Task Question(ChatId chatId)
     {
-        await _client.SendTextMessageAsync(chatId, "Является ли фиалка химерой (\'да\' или \'нет\')?");
+        ReplyKeyboardMarkup replyKeyboardMarkup = new(new []
+        {
+            new KeyboardButton[] { "Да", "Нет" },
+        })
+        {
+            ResizeKeyboard = true
+        };
+        await _client.SendTextMessageAsync(chatId, "Является ли фиалка химерой?", replyMarkup: replyKeyboardMarkup);
     }
 
     public (bool, string) Validate(Message message)
@@ -34,16 +42,22 @@ internal class ChimeraUnit : IUnit
         return (true, "");
     }
 
-    public Task<(bool, string)> RunAction(Violet violet, Message message)
+    public async Task<(bool, string)> RunAction(Violet violet, Message message)
     {
         string text = message.Text!.ToLower().Trim();
         if (text.ToLower() == "да")
         {
             violet.IsChimera = true;
-            return Task.FromResult((true, ""));
+            await RemoveKeyBoard();
+
+            return (true, "");
         }
 
         violet.IsChimera = false;
-        return Task.FromResult((true, ""));
+        await RemoveKeyBoard();
+
+        return (true, "");
+
+        async Task RemoveKeyBoard() => await _client.SendTextMessageAsync(message.Chat.Id, $"Выбран ответ \"{text}\"", replyMarkup: new ReplyKeyboardRemove());
     }
 }
