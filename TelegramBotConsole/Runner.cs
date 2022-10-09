@@ -3,6 +3,7 @@ using CliWrap.Buffered;
 using SharedLibrary;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.ReplyMarkups;
 using TelegramBotConsole.Units;
 
 namespace TelegramBotConsole;
@@ -131,7 +132,17 @@ internal class Runner
 
             if (result.StandardOutput.Contains("Success"))
             {
-                await _client.SendTextMessageAsync(chatId, "Фиалка успешно опубликована");
+                InlineKeyboardMarkup inlineKeyboard = new(new []
+                    {
+                        InlineKeyboardButton.WithUrl(
+                            text: "Страница фиалки",
+                            url: $@"http://www.kerrisflowers.ru/details/{_currentViolet.TransliteratedName}"
+                        )
+                    }
+                );
+                await _client.SendTextMessageAsync(chatId,
+                    "Фиалка успешно опубликована.\nФиалка будет доступна на сайте через 5 минут.",
+                    replyMarkup: inlineKeyboard);
 
                 Console.WriteLine(result.StandardOutput);
             }
