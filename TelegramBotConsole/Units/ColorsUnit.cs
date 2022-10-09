@@ -25,7 +25,8 @@ internal class ColorsUnit : IUnit
 
         await _client
             .SendTextMessageAsync(chatId,
-                $"Введите список цветов фиалки (через запятую). Список возможных цветов: {resultDescriptions}.");
+                $"Введите список цветов фиалки (через запятую). Список возможных цветов:\n\n<i>{resultDescriptions}</i>.",
+                parseMode: ParseMode.Html);
     }
     
     public (bool, string) Validate(Message message)

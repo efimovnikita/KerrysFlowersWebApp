@@ -16,7 +16,8 @@ internal class DateUnit : IUnit
 
     public async Task Question(ChatId chatId)
     {
-        await _client.SendTextMessageAsync(chatId, "Введите год селекции фиалки (например: 2022)");
+        await _client.SendTextMessageAsync(chatId, "Введите год селекции фиалки\n\n<i>(например: 2022)</i>", 
+            ParseMode.Html);
     }
 
     public (bool, string) Validate(Message message)
