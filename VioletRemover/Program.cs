@@ -1,5 +1,8 @@
 ﻿using System.CommandLine;
+using System.Reflection;
 using System.Text.Json;
+using CliWrap;
+using CliWrap.Buffered;
 using SharedLibrary;
 
 namespace VioletRemover;
@@ -21,13 +24,15 @@ internal class Program
         rootCommand.AddOption(guidOption);
         rootCommand.AddOption(rootOption);
 
-        rootCommand.SetHandler((guid, root) => { Run(root, guid); }, guidOption, rootOption);
+        rootCommand.SetHandler(async (guid, root) => { await Run(root, guid); }, guidOption, rootOption);
         
         return await rootCommand.InvokeAsync(args);
     }
 
-    private static void Run(FileInfo root, string guid)
+    private static async Task Run(FileInfo root, string guid)
     {
+        string solutionPath = GetSolutionPath();
+
         if (Directory.Exists(root.FullName) == false)
         {
             Console.WriteLine("Root dir not found");
@@ -52,7 +57,7 @@ internal class Program
             Violet violet = null;
             try
             {
-                violet = JsonSerializer.Deserialize<Violet>(File.ReadAllText(jsonFile));
+                violet = JsonSerializer.Deserialize<Violet>(await File.ReadAllTextAsync(jsonFile));
             }
             catch
             {
@@ -72,9 +77,40 @@ internal class Program
 
             Directory.Delete(directory);
 
+            BufferedCommandResult gitAddResult = await Cli
+                .Wrap("git")
+                .WithWorkingDirectory(solutionPath)
+                .WithValidation(CommandResultValidation.None)
+                .WithArguments($"add {String.Join(' ', files)}")
+                .ExecuteBufferedAsync();
+            
+            BufferedCommandResult gitCommitResult = await Cli
+                .Wrap("git")
+                .WithWorkingDirectory(solutionPath)
+                .WithValidation(CommandResultValidation.None)
+                .WithArguments($"commit -m \"remove violet {violet.Id}\"")
+                .ExecuteBufferedAsync();
+            
+            Console.WriteLine(gitAddResult.StandardError);
+            Console.WriteLine(gitAddResult.StandardOutput);
+            
+            Console.WriteLine(gitCommitResult.StandardError);
+            Console.WriteLine(gitCommitResult.StandardOutput);
+
             Console.WriteLine("Success!");
 
             break;
         }
+    }
+
+    private static string GetSolutionPath()
+    {
+        string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly()
+            .Location);
+        string solutionPath =
+            Directory.GetParent(
+                Directory.GetParent(Directory.GetParent(Directory.GetParent(assemblyPath!)!.FullName)!.FullName)!
+                    .FullName)!.FullName;
+        return solutionPath;
     }
 }
