@@ -75,8 +75,6 @@ internal class Program
                 File.Delete(file);
             }
 
-            Directory.Delete(directory);
-
             BufferedCommandResult gitAddResult = await Cli
                 .Wrap("git")
                 .WithWorkingDirectory(solutionPath)
@@ -91,12 +89,23 @@ internal class Program
                 .WithArguments($"commit -m \"remove violet {violet.Id}\"")
                 .ExecuteBufferedAsync();
             
+            BufferedCommandResult gitPushResult = await Cli
+                .Wrap("git")
+                .WithWorkingDirectory(solutionPath)
+                .WithValidation(CommandResultValidation.None)
+                .WithArguments("push")
+                .ExecuteBufferedAsync();
+            
             Console.WriteLine(gitAddResult.StandardError);
             Console.WriteLine(gitAddResult.StandardOutput);
             
             Console.WriteLine(gitCommitResult.StandardError);
             Console.WriteLine(gitCommitResult.StandardOutput);
+            
+            Console.WriteLine(gitPushResult.StandardError);
+            Console.WriteLine(gitPushResult.StandardOutput);
 
+            Directory.Delete(directory);
             Console.WriteLine("Success!");
 
             break;
