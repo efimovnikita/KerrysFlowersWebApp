@@ -87,11 +87,13 @@ internal class Remover
         if (message.Text != null && _currentState != State.Idle && message.Text.ToLower() == "/stop")
         {
             await RunStopProcedure(client, chatId);
+            return;
         }
 
         if (message.Text != null && _currentState != State.Working && message.Text.ToLower() == "/start")
         {
             await RunStartProcedure(client, chatId);
+            return;
         }
 
         if (message.Text != null && _currentState == State.Working && _violets.Count > 0)
@@ -178,7 +180,7 @@ internal class Remover
         //         caption: $"<b>{violet.Index + 1})</b> {violet.Value.Name}");
         // }
 
-        await client.SendTextMessageAsync(chatId, "Введите id фиалки, которую нужно удалить");
+        await client.SendTextMessageAsync(chatId, "Введите id фиалки, которую нужно удалить.\nДля копирования id фиалок, временно, нужно использовать домен: https://kerrysflowers.herokuapp.com/");
     }
 }
 
