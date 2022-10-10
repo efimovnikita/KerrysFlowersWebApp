@@ -12,8 +12,8 @@ internal static class Program
 {
     public static async Task<int> Main(string[] args)
     {
-        string? assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        string solutionPath = Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetParent(assemblyPath).FullName).FullName).FullName).FullName;
+        string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        string solutionPath = Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetParent(assemblyPath!)!.FullName)!.FullName)!.FullName)!.FullName;
 
         Option<string> nameOption = new("--name", () => String.Join(' ', Lorem.Words(2)).FirstCharToUpper(), "Violet name")
             {IsRequired = true};
@@ -56,26 +56,26 @@ internal static class Program
 
         rootCommand.SetHandler(async context =>
         {
-            string? name = context.ParseResult.GetValueForOption(nameOption);
-            string? breeder = context.ParseResult.GetValueForOption(breederOption);
-            string? description = context.ParseResult.GetValueForOption(descriptionOption);
-            IEnumerable<string>? tags = context.ParseResult.GetValueForOption(tagsOption);
+            string name = context.ParseResult.GetValueForOption(nameOption);
+            string breeder = context.ParseResult.GetValueForOption(breederOption);
+            string description = context.ParseResult.GetValueForOption(descriptionOption);
+            IEnumerable<string> tags = context.ParseResult.GetValueForOption(tagsOption);
             DateTime date = context.ParseResult.GetValueForOption(breedDateOption);
-            FileInfo? image1 = context.ParseResult.GetValueForOption(image1Option);
-            FileInfo? image2 = context.ParseResult.GetValueForOption(image2Option);
-            FileInfo? image3 = context.ParseResult.GetValueForOption(image3Option);
+            FileInfo image1 = context.ParseResult.GetValueForOption(image1Option);
+            FileInfo image2 = context.ParseResult.GetValueForOption(image2Option);
+            FileInfo image3 = context.ParseResult.GetValueForOption(image3Option);
             bool chimera = context.ParseResult.GetValueForOption(chimeraOption);
-            IEnumerable<VioletColor>? colors = context.ParseResult.GetValueForOption(colorsOption);
-            FileInfo? rootFolder = context.ParseResult.GetValueForOption(rootOption);
+            IEnumerable<VioletColor> colors = context.ParseResult.GetValueForOption(colorsOption);
+            FileInfo rootFolder = context.ParseResult.GetValueForOption(rootOption);
 
             Guid id = Guid.NewGuid();
-            DirectoryInfo violetDir = Directory.CreateDirectory(Path.Combine(rootFolder.FullName, id.ToString()));
+            DirectoryInfo violetDir = Directory.CreateDirectory(Path.Combine(rootFolder!.FullName, id.ToString()));
 
-            FileInfo?[] rawImages = { image1, image2, image3 };
+            FileInfo[] rawImages = { image1, image2, image3 };
             List<Image> images = new(3);
             for (int i = 0; i < rawImages.Length; i++)
             {
-                FileInfo? fileInfo = rawImages[i];
+                FileInfo fileInfo = rawImages[i];
                 string fullName = fileInfo.FullName;
                 string violetDirFullName = violetDir.FullName;
 
