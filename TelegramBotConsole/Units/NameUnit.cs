@@ -1,17 +1,21 @@
+using System.Text.Json;
 using SharedLibrary;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using File = System.IO.File;
 
 namespace TelegramBotConsole.Units;
 
 internal class NameUnit : IUnit
 {
     private readonly ITelegramBotClient _client;
+    private readonly FileInfo _root;
 
-    public NameUnit(ITelegramBotClient client)
+    public NameUnit(ITelegramBotClient client, FileInfo root)
     {
         _client = client;
+        _root = root;
     }
 
     public async Task Question(ChatId chatId)
@@ -25,8 +29,20 @@ internal class NameUnit : IUnit
         {
             return (false, "Ожидалось текстовое сообщение. Повторите ввод имени.");
         }
-        
-        return message.Text!.Length > 1 ? (true, "") : (false, "Имя должно содержать более 1 символа. Повторите ввод имени.");
+
+        if (message.Text!.Length <= 1)
+        {
+            return (false, "Имя должно содержать более 1 символа. Повторите ввод имени.");
+        }
+
+        string[] files = Directory.GetFiles(_root.FullName, "*.json", SearchOption.AllDirectories);
+        List<Violet> violets = files.Select(File.ReadAllText).Select(s => JsonSerializer.Deserialize<Violet>(s)).ToList();
+        if (violets.Any(violet => violet.Name.Equals(message.Text.Trim(), StringComparison.OrdinalIgnoreCase)))
+        {
+            return (false, "Фиалка с таким именем уже существует. Придумайте другое имя.");
+        }
+
+        return (true, "");
     }
 
     public Task<(bool, string)> RunAction(Violet violet, Message message)

@@ -11,15 +11,17 @@ namespace TelegramBotConsole;
 internal class Runner
 {
     private readonly FileInfo _maker;
+    private readonly FileInfo _root;
     private Violet _currentViolet;
     private Queue<IUnit> _stages = new();
     private readonly TelegramBotClient _client;
     private IUnit _currentStage;
 
-    public Runner(string apiKey, FileInfo maker)
+    public Runner(string apiKey, FileInfo maker, FileInfo root)
     {
         _maker = maker;
-        
+        _root = root;
+
         _client = new(apiKey);
         _client.StartReceiving(UpdateHandler, PollingErrorHandler);
 
@@ -48,7 +50,7 @@ internal class Runner
                 DateTime.Now, new List<Image>(), false, new List<VioletColor>());
             _stages = new Queue<IUnit>(new IUnit[]
             {
-                new NameUnit(_client),
+                new NameUnit(_client, _root),
                 new DescriptionUnit(_client),
                 new BreederUnit(_client),
                 new TagsUnit(_client),
@@ -127,7 +129,7 @@ internal class Runner
 
             BufferedCommandResult result = await Cli.Wrap(_maker.FullName)
                 .WithArguments(
-                    $"-n \"{_currentViolet.Name}\" -b \"{_currentViolet.Breeder}\" -d \"{_currentViolet.Description}\" --date \"{_currentViolet.BreedingDate}\" --image1 \"{_currentViolet.Images[0].W300}\" --image2 \"{_currentViolet.Images[1].W300}\" --image3 \"{_currentViolet.Images[2].W300}\" --chimera \"{_currentViolet.IsChimera}\" -t {String.Join(' ', _currentViolet.Tags.Select(tag => $"\"{tag}\""))} --colors {String.Join(' ', _currentViolet.Colors.Select(color => $"\"{color}\""))}")
+                    $"-n \"{_currentViolet.Name}\" -b \"{_currentViolet.Breeder}\" -d \"{_currentViolet.Description}\" --date \"{_currentViolet.BreedingDate}\" --image1 \"{_currentViolet.Images[0].W300}\" --image2 \"{_currentViolet.Images[1].W300}\" --image3 \"{_currentViolet.Images[2].W300}\" --chimera \"{_currentViolet.IsChimera}\" -t {String.Join(' ', _currentViolet.Tags.Select(tag => $"\"{tag}\""))} --colors {String.Join(' ', _currentViolet.Colors.Select(color => $"\"{color}\""))} --root \"{_root}\"")
                 .ExecuteBufferedAsync();
 
             if (result.StandardOutput.Contains("Success"))

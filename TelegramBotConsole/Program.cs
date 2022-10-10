@@ -14,13 +14,20 @@ internal class Program
 
         Option<FileInfo> makerOption = new("--maker", "Path to violet maker utility") {IsRequired = true};
         makerOption.AddAlias("-m");
+        
+        Option<FileInfo> rootOption = new("--root",
+            () => new FileInfo(
+                "/home/maskedball/RiderProjects/KerrysFlowersWebApp/KerrysFlowersWebApp/wwwroot/Violets"),
+            "Violets root folder") {IsRequired = true};
+        rootOption.AddAlias("-r");
 
         RootCommand rootCommand = new("Telegram interface for KerrysFlowersWebApp");
         rootCommand.AddOption(apiOption);
         rootCommand.AddOption(makerOption);
-            
+        rootCommand.AddOption(rootOption);
+
         // ReSharper disable once ObjectCreationAsStatement
-        rootCommand.SetHandler((api, maker) => new Runner(api, maker), apiOption, makerOption);
+        rootCommand.SetHandler((api, maker, root) => new Runner(api, maker, root), apiOption, makerOption, rootOption);
 
         return await rootCommand.InvokeAsync(args);
     }
