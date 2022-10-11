@@ -109,8 +109,8 @@
             <p>@Violet.BreedingDate.Date.ToString("yyyy")</p>
         </div>
     </div>
-    <div class="w-[330px] flex flex-col gap-4 bg-text2 px-3 py-5 text-sm rounded-b-xl sm:w-[500px] sm:px-4 md:w-[700px] md:px-6 md:text-base">
-        @Violet.Description
+    <div class="w-[330px] bg-text2 px-3 py-5 text-sm rounded-b-xl sm:w-[500px] sm:px-4 md:w-[700px] md:px-6 md:text-base">
+        @((MarkupString)Violet.Description)
     </div>
 </article>
 
