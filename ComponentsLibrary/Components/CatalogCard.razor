@@ -3,7 +3,7 @@
     <img
         class="w-[300px] h-[300px] object-cover rounded-t-xl"
         src="@Violet.Images.FirstOrDefault(image => image.Active)!.W300"
-        alt=""/>
+        alt="Фотография фиалки @Violet.Name"/>
     <div class="flex gap-4 absolute bottom-20">
         @foreach (Image image in Violet.Images)
         {
@@ -23,12 +23,19 @@
             <p>New!</p>
         </div>   
     }
-    <div
-        class="w-[300px] flex justify-center items-center bg-white p-5 text-lg font-bold rounded-b-xl">
-        
-    
-        <a href="@($"/details/{Violet.TransliteratedName}")" class="hover:underline decoration-2 underline-offset-2">
-            @Violet.Name
+    <div class="w-[300px] flex justify-center items-center bg-white p-5 text-lg font-bold rounded-b-xl">
+        <a href="@($"/details/{Violet.TransliteratedName}")" title="@Violet.Name" class="hover:underline decoration-2 underline-offset-2">
+            @{
+                string name = Violet.Name;
+                if (name.Length > 23)
+                {
+                    string substring = name.Substring(0, 20);
+                    substring = $"{substring}...";
+                    name = substring;
+                }
+            }
+
+            @name
         </a>
     </div>
 </article>
