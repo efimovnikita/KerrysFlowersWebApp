@@ -33,7 +33,7 @@ public class Violet
     public string Breeder { get; set; }
     public string Description { get; set; }
     public List<string> Tags { get; set; }
-    public bool NewLabel => DateTime.Now > PublishDate + TimeSpan.FromDays(10);
+    public bool NewLabel => DateTime.Now < PublishDate + TimeSpan.FromDays(10);
     public List<Image> Images { get; set; }
     public DateTime BreedingDate { get; set; }
     public DateTime PublishDate { get; set; } = DateTime.Now;
