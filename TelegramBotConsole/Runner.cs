@@ -138,7 +138,7 @@ internal class Runner
                     {
                         InlineKeyboardButton.WithUrl(
                             text: "Страница фиалки",
-                            url: $@"http://www.kerrisflowers.ru/details/{_currentViolet.TransliteratedName}"
+                            url: $@"https://www.kerrisflowers.ru/details/{_currentViolet.TransliteratedName}"
                         )
                     }
                 );

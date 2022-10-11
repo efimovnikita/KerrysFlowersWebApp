@@ -6,6 +6,7 @@ using CliWrap.Buffered;
 using SharedLibrary;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.ReplyMarkups;
 using File = System.IO.File;
 
 namespace TelegramBotRemoverConsole;
@@ -168,19 +169,17 @@ internal class Remover
             return;
         }
 
-        // foreach (var violet in _violets.Select((value, i) => new {Value = value, Index = i}))
-        // {
-        //     string imgPath = Path.Combine(Directory.GetParent(_root.FullName)!.FullName,
-        //         violet.Value.Images.FirstOrDefault(image => image.Active)!.W300);
-        //     FileStream stream = File.OpenRead(imgPath);
-        //     await client.SendPhotoAsync(
-        //         chatId: chatId,
-        //         photo: new InputOnlineFile(stream, Path.GetFileName(imgPath)),
-        //         parseMode: ParseMode.Html,
-        //         caption: $"<b>{violet.Index + 1})</b> {violet.Value.Name}");
-        // }
-
-        await client.SendTextMessageAsync(chatId, "Введите id фиалки, которую нужно удалить.\nДля копирования id фиалок, временно, нужно использовать домен: https://kerrysflowers.herokuapp.com/");
+        InlineKeyboardMarkup inlineKeyboard = new(new []
+            {
+                InlineKeyboardButton.WithUrl(
+                    text: "Каталог фиалок",
+                    url: $@"https://www.kerrisflowers.ru"
+                )
+            }
+        );
+        await client.SendTextMessageAsync(chatId, 
+            "Введите id фиалки, которую нужно удалить.",
+            replyMarkup: inlineKeyboard);
     }
 }
 
