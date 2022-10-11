@@ -37,9 +37,10 @@ internal class NameUnit : IUnit
 
         string[] files = Directory.GetFiles(_root.FullName, "*.json", SearchOption.AllDirectories);
         List<Violet> violets = files.Select(File.ReadAllText).Select(s => JsonSerializer.Deserialize<Violet>(s)).ToList();
-        if (violets.Any(violet => violet.Name.Equals(message.Text.Trim(), StringComparison.OrdinalIgnoreCase)))
+        Violet violet = violets.FirstOrDefault(violet => violet.Name.Equals(message.Text.Trim(), StringComparison.OrdinalIgnoreCase));
+        if (violet != null)
         {
-            return (false, "Фиалка с таким именем уже существует. Придумайте другое имя.");
+            return (false, $"Фиалка с таким именем уже существует (http://www.kerrisflowers.ru/details/{violet.TransliteratedName}).\nПридумайте другое имя.");
         }
 
         return (true, "");
