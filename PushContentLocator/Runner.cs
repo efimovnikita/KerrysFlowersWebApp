@@ -26,6 +26,7 @@ internal class Runner
         while (true)
         {
             Console.WriteLine("Check");
+            TimeSpan delay = TimeSpan.FromMinutes(1);
             
             HttpClient client = new();
             HttpRequestMessage request = new()
@@ -39,19 +40,35 @@ internal class Runner
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token);
             
             using HttpResponseMessage response = await client.SendAsync(request);
-            response.EnsureSuccessStatusCode();
+            if (response.IsSuccessStatusCode == false)
+            {
+                await Task.Delay(delay);
+                continue;
+            }
             string body = await response.Content.ReadAsStringAsync();
-            List<PushEvent> pushEvents = JsonSerializer.Deserialize<List<PushEvent>>(body);
+
+            List<PushEvent> pushEvents = null;
+            try
+            {
+                pushEvents = JsonSerializer.Deserialize<List<PushEvent>>(body);
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+            }
+            
             if (pushEvents == null)
             {
-                await Task.Delay(TimeSpan.FromSeconds(30));
+                await Task.Delay(delay);
                 continue;
             }
             
-            PushEvent pushEvent = pushEvents.Where(root => root.repo.id.Equals(545448538)).FirstOrDefault(root => root.type.Equals("PushEvent"));
+            PushEvent pushEvent = pushEvents
+                .Where(root => root.repo.id.Equals(545448538))
+                .FirstOrDefault(root => root.type.Equals("PushEvent"));
             if (pushEvent == null)
             {
-                await Task.Delay(TimeSpan.FromSeconds(30));
+                await Task.Delay(delay);
                 continue;
             }
 
@@ -75,7 +92,7 @@ internal class Runner
                 _lastPush = pushEvent.created_at;
             }
             
-            await Task.Delay(TimeSpan.FromSeconds(30));
+            await Task.Delay(delay);
         }
         // ReSharper disable once FunctionNeverReturns
     }
