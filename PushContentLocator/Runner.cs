@@ -12,6 +12,8 @@ internal class Runner
     private readonly string _token;
     private readonly FileInfo _solutionPath;
     private DateTime _lastPush;
+    private HttpClient _client;
+    private HttpRequestMessage _request;
 
     public Runner(FileInfo sourceVioletsRoot, FileInfo publishVioletsRoot, string token, FileInfo solutionPath)
     {
@@ -19,6 +21,22 @@ internal class Runner
         _publishVioletsRoot = publishVioletsRoot;
         _token = token;
         _solutionPath = solutionPath;
+        
+        InitHttpClient();
+    }
+
+    private void InitHttpClient()
+    {
+        _client = new HttpClient();
+        _request = new HttpRequestMessage
+        {
+            Method = HttpMethod.Get,
+            RequestUri = new Uri("https://api.github.com/users/efimovnikita/events"),
+        };
+
+        _request.Headers.Add("User-Agent", "request");
+        _request.Headers.Add("Accept", "application/vnd.github.v3+json");
+        _request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token);
     }
 
     public async Task Run()
@@ -28,18 +46,7 @@ internal class Runner
             Console.WriteLine("Check");
             TimeSpan delay = TimeSpan.FromMinutes(1);
             
-            HttpClient client = new();
-            HttpRequestMessage request = new()
-            {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri("https://api.github.com/users/efimovnikita/events"),
-            };
-            
-            request.Headers.Add("User-Agent", "request");
-            request.Headers.Add("Accept", "application/vnd.github.v3+json");
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token);
-            
-            using HttpResponseMessage response = await client.SendAsync(request);
+            using HttpResponseMessage response = await _client.SendAsync(_request);
             if (response.IsSuccessStatusCode == false)
             {
                 await Task.Delay(delay);
