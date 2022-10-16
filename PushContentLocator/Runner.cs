@@ -13,7 +13,6 @@ internal class Runner
     private readonly FileInfo _solutionPath;
     private DateTime _lastPush;
     private HttpClient _client;
-    private HttpRequestMessage _request;
 
     public Runner(FileInfo sourceVioletsRoot, FileInfo publishVioletsRoot, string token, FileInfo solutionPath)
     {
@@ -28,15 +27,9 @@ internal class Runner
     private void InitHttpClient()
     {
         _client = new HttpClient();
-        _request = new HttpRequestMessage
-        {
-            Method = HttpMethod.Get,
-            RequestUri = new Uri("https://api.github.com/users/efimovnikita/events"),
-        };
-
-        _request.Headers.Add("User-Agent", "request");
-        _request.Headers.Add("Accept", "application/vnd.github.v3+json");
-        _request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+        _client.DefaultRequestHeaders.Add("User-Agent", "request");
+        _client.DefaultRequestHeaders.Add("Accept", "application/vnd.github.v3+json");
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
     }
 
     public async Task Run()
@@ -45,8 +38,14 @@ internal class Runner
         {
             Console.WriteLine("Check");
             TimeSpan delay = TimeSpan.FromMinutes(1);
-            
-            using HttpResponseMessage response = await _client.SendAsync(_request);
+
+            HttpRequestMessage request = new()
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri("https://api.github.com/users/efimovnikita/events"),
+            };
+
+            using HttpResponseMessage response = await _client.SendAsync(request);
             if (response.IsSuccessStatusCode == false)
             {
                 await Task.Delay(delay);
