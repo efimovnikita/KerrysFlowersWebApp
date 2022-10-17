@@ -3,6 +3,7 @@ using CliWrap.Buffered;
 using SharedLibrary;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using TelegramBotConsole.Units;
 
@@ -16,13 +17,14 @@ internal class Runner
     private Queue<IUnit> _stages = new();
     private readonly TelegramBotClient _client;
     private IUnit _currentStage;
+    private long? _chatId;
 
     public Runner(string apiKey, FileInfo maker, FileInfo root)
     {
         _maker = maker;
         _root = root;
 
-        _client = new(apiKey);
+        _client = new TelegramBotClient(apiKey);
         _client.StartReceiving(UpdateHandler, PollingErrorHandler);
 
         Console.ReadLine();
@@ -37,42 +39,37 @@ internal class Runner
     private async Task UpdateHandler(ITelegramBotClient client, Update update, CancellationToken token)
     {
         Message message = update.Message;
-        if (message == null)
-        {
-            return;
-        }
 
-        long chatId = message.Chat.Id;
-
-        if (message.Text != null && message.Text.ToLower() == "/start")
+        if (update.Type == UpdateType.Message && message!.Text != null && message.Text.ToLower() == "/start")
         {
+            _chatId = update.Message!.Chat.Id;
             _currentViolet = new Violet(Guid.NewGuid(), "", "", "", new List<string>(),
                 DateTime.Now, new List<Image>(), false, new List<VioletColor>());
             _stages = new Queue<IUnit>(new IUnit[]
             {
-                new NameUnit(_client, _root),
-                new DescriptionUnit(_client),
-                new BreederUnit(_client),
-                new TagsUnit(_client),
-                new ColorsUnit(_client),
-                new ChimeraUnit(_client),
-                new DateUnit(_client),
-                new FirstImageUnit(_client),
-                new SecondImageUnit(_client),
-                new ThirdImageUnit(_client)
+                new NameUnit(client, _root),
+                new DescriptionUnit(client),
+                new BreederUnit(client),
+                new TagsUnit(client),
+                new ColorsUnit(client),
+                new ChimeraUnit(client),
+                new DateUnit(client),
+                new FirstImageUnit(client),
+                new SecondImageUnit(client),
+                new ThirdImageUnit(client)
             });
             _currentStage = _stages.Dequeue();
             
-            await _client.SendTextMessageAsync(chatId, "Процесс создания фиалки запущен");
+            await _client.SendTextMessageAsync(_chatId, "Процесс создания фиалки запущен", cancellationToken: token);
 
-            await _currentStage.Question(chatId);
+            await _currentStage.Question(_chatId);
             return;
         }
         
-        if (message.Text != null && message.Text.ToLower() == "/stop")
+        if (update.Type == UpdateType.Message && message!.Text != null && message.Text.ToLower() == "/stop")
         {
             Reset();
-            await _client.SendTextMessageAsync(chatId, "Процесс создания фиалки остановлен");
+            await _client.SendTextMessageAsync(_chatId!, "Процесс создания фиалки остановлен", cancellationToken: token);
             
             return;
         }
@@ -82,38 +79,39 @@ internal class Runner
             return;
         }
 
-        (bool, string) validationResult = _currentStage!.Validate(message);
+        (bool, string) validationResult = _currentStage!.Validate(update);
         if (validationResult.Item1 == false)
         {
-            await _client.SendTextMessageAsync(chatId, validationResult.Item2);
+            await _client.SendTextMessageAsync(_chatId!, validationResult.Item2, cancellationToken: token);
             return;
         }
 
-        (bool, string) actionResult = await _currentStage.RunAction(_currentViolet, message);
+        (bool, string) actionResult = await _currentStage.RunAction(_currentViolet, update);
         _currentStage.PrintViolet(_currentViolet);
         if (actionResult.Item1 == false)
         {
-            await _client.SendTextMessageAsync(chatId, actionResult.Item2);
+            await _client.SendTextMessageAsync(_chatId!, actionResult.Item2, cancellationToken: token);
             return;
         }
 
         _currentStage = _stages.Count > 0 ? _stages.Dequeue() : null;
         if (_currentStage != null)
         {
-            await _currentStage.Question(chatId);
+            await _currentStage.Question(_chatId);
         }
         
-        await PublishNewViolet(chatId);
+        await PublishNewViolet();
     }
 
     private void Reset()
     {
+        _chatId = null;
         _currentViolet = null;
         _currentStage = null;
         _stages = new Queue<IUnit>();
     }
 
-    private async Task PublishNewViolet(ChatId chatId)
+    private async Task PublishNewViolet()
     {
         if (new[]
             {
@@ -142,8 +140,8 @@ internal class Runner
                         )
                     }
                 );
-                await _client.SendTextMessageAsync(chatId,
-                    "Фиалка успешно опубликована.\nФиалка будет доступна на сайте через 5 минут.",
+                await _client.SendTextMessageAsync(_chatId!,
+                    "Фиалка успешно опубликована.\nФиалка будет доступна на сайте через минуту.",
                     replyMarkup: inlineKeyboard);
 
                 Console.WriteLine(result.StandardOutput);

@@ -14,24 +14,24 @@ internal class BreederUnit : IUnit
         _client = client;
     }
 
-    public async Task Question(ChatId chatId)
+    public async Task Question(ChatId id)
     {
-        await _client.SendTextMessageAsync(chatId, "Введите имя селекционера фиалки");
+        await _client.SendTextMessageAsync(id, "Введите имя селекционера фиалки");
     }
     
-    public (bool, string) Validate(Message message)
+    public (bool, string) Validate(Update update)
     {
-        if (message.Type != MessageType.Text)
+        if (update.Message!.Type != MessageType.Text)
         {
             return (false, "Ожидалось текстовое сообщение. Повторите ввод имени селекционера.");
         }
         
-        return message.Text!.Length > 1 ? (true, "") : (false, "Именя селекционера должно содержать более 1 символа. Повторите ввод имени.");
+        return update.Message.Text!.Length > 1 ? (true, "") : (false, "Именя селекционера должно содержать более 1 символа. Повторите ввод имени.");
     }
 
-    public Task<(bool, string)> RunAction(Violet violet, Message message)
+    public Task<(bool, string)> RunAction(Violet violet, Update update)
     {
-        violet.Breeder = message.Text;
+        violet.Breeder = update.Message!.Text;
         return Task.FromResult((true, ""));
     }
 }

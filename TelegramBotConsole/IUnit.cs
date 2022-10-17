@@ -6,9 +6,9 @@ namespace TelegramBotConsole;
 
 internal interface IUnit
 {
-    Task Question(ChatId chatId);
-    (bool,string) Validate(Message message);
-    Task<(bool, string)> RunAction(Violet violet, Message message);
+    Task Question(ChatId id);
+    (bool, string) Validate(Update update);
+    Task<(bool, string)> RunAction(Violet violet, Update update);
     void PrintViolet(Violet violet)
     {
         Console.WriteLine(JsonSerializer.Serialize(violet));

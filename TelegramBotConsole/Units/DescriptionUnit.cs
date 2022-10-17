@@ -14,26 +14,26 @@ internal class DescriptionUnit : IUnit
         _client = client;
     }
 
-    public async Task Question(ChatId chatId)
+    public async Task Question(ChatId id)
     {
-        await _client.SendTextMessageAsync(chatId, "Введите описание новой фиалки");
+        await _client.SendTextMessageAsync(id, "Введите описание новой фиалки");
     }
     
-    public (bool, string) Validate(Message message)
+    public (bool, string) Validate(Update update)
     {
-        if (message.Type != MessageType.Text)
+        if (update.Message!.Type != MessageType.Text)
         {
             return (false, "Ожидалось текстовое сообщение. Повторите ввод описания.");
         }
         
-        return message.Text!.Length > 1 ? (true, "") : (false, "Описание должно содержать более 1 символа. Повторите ввод описания.");
+        return update.Message.Text!.Length > 1 ? (true, "") : (false, "Описание должно содержать более 1 символа. Повторите ввод описания.");
     }
 
-    public Task<(bool, string)> RunAction(Violet violet, Message message)
+    public Task<(bool, string)> RunAction(Violet violet, Update update)
     {
-        string htmlText = message.Text!;
+        string htmlText = update.Message!.Text!;
 
-        htmlText = ImplementBoldFormatting(message, htmlText);
+        htmlText = ImplementBoldFormatting(update.Message, htmlText);
         htmlText = ImplementLineBreaksFormatting(htmlText);
 
         violet.Description = htmlText;

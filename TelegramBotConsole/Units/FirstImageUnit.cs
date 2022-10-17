@@ -14,19 +14,19 @@ internal class FirstImageUnit : IUnit
         _client = client;
     }
 
-    public async Task Question(ChatId chatId)
+    public async Task Question(ChatId id)
     {
-        await _client.SendTextMessageAsync(chatId, "Отправьте три фотографии новой фиалки");
+        await _client.SendTextMessageAsync(id, "Отправьте три фотографии новой фиалки");
     }
     
-    public (bool, string) Validate(Message message)
+    public (bool, string) Validate(Update update)
     {
-        return message.Type != MessageType.Photo ? (false, "Ожидался файл фотографии. Повторите отправку файла.") : (true, "");
+        return update.Message!.Type != MessageType.Photo ? (false, "Ожидался файл фотографии. Повторите отправку файла.") : (true, "");
     }
 
-    public async Task<(bool, string)> RunAction(Violet violet, Message message)
+    public async Task<(bool, string)> RunAction(Violet violet, Update update)
     {
-        PhotoSize photoSize = message.Photo!.Last();
+        PhotoSize photoSize = update.Message!.Photo!.Last();
         string fileId = photoSize.FileId;
         string violetDirInTemp = Path.Combine(Path.GetTempPath(), violet.Id.ToString());
         if (Directory.Exists(violetDirInTemp) == false)

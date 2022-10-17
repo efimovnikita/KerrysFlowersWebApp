@@ -18,26 +18,26 @@ internal class NameUnit : IUnit
         _root = root;
     }
 
-    public async Task Question(ChatId chatId)
+    public async Task Question(ChatId id)
     {
-        await _client.SendTextMessageAsync(chatId, "Введите имя новой фиалки");
+        await _client.SendTextMessageAsync(id, "Введите имя новой фиалки");
     }
 
-    public (bool, string) Validate(Message message)
+    public (bool, string) Validate(Update update)
     {
-        if (message.Type != MessageType.Text)
+        if (update.Message!.Type != MessageType.Text)
         {
             return (false, "Ожидалось текстовое сообщение. Повторите ввод имени.");
         }
 
-        if (message.Text!.Length <= 1)
+        if (update.Message.Text!.Length <= 1)
         {
             return (false, "Имя должно содержать более 1 символа. Повторите ввод имени.");
         }
 
         string[] files = Directory.GetFiles(_root.FullName, "*.json", SearchOption.AllDirectories);
         List<Violet> violets = files.Select(File.ReadAllText).Select(s => JsonSerializer.Deserialize<Violet>(s)).ToList();
-        Violet violet = violets.FirstOrDefault(violet => violet.Name.Equals(message.Text.Trim(), StringComparison.OrdinalIgnoreCase));
+        Violet violet = violets.FirstOrDefault(violet => violet.Name.Equals(update.Message.Text.Trim(), StringComparison.OrdinalIgnoreCase));
         if (violet != null)
         {
             return (false, $"Фиалка с таким именем уже существует (http://www.kerrisflowers.ru/details/{violet.TransliteratedName}).\nПридумайте другое имя.");
@@ -46,9 +46,9 @@ internal class NameUnit : IUnit
         return (true, "");
     }
 
-    public Task<(bool, string)> RunAction(Violet violet, Message message)
+    public Task<(bool, string)> RunAction(Violet violet, Update update)
     {
-        violet.Name = message.Text;
+        violet.Name = update.Message!.Text;
         return Task.FromResult((true, ""));
     }
 }

@@ -15,49 +15,39 @@ internal class ChimeraUnit : IUnit
         _client = client;
     }
 
-    public async Task Question(ChatId chatId)
+    public async Task Question(ChatId id)
     {
-        ReplyKeyboardMarkup replyKeyboardMarkup = new(new []
+        InlineKeyboardMarkup inlineKeyboard = new(new []
         {
-            new KeyboardButton[] { "Да", "Нет" },
-        })
-        {
-            ResizeKeyboard = true
-        };
-        await _client.SendTextMessageAsync(chatId, "Является ли фиалка химерой?", replyMarkup: replyKeyboardMarkup);
+            new []
+            {
+                InlineKeyboardButton.WithCallbackData(text: "Да", callbackData: "да"),
+                InlineKeyboardButton.WithCallbackData(text: "Нет", callbackData: "нет"),
+            }
+        });
+        
+        await _client.SendTextMessageAsync(id, "Является ли фиалка химерой?", replyMarkup: inlineKeyboard);
     }
 
-    public (bool, string) Validate(Message message)
+    public (bool, string) Validate(Update update)
     {
-        if (message.Type != MessageType.Text)
+        if (update.Type != UpdateType.CallbackQuery)
         {
-            return (false, "Ожидалось текстовое сообщение. Повторите ввод признака химеры.");
+            return (false, "Нажмите на одну из двух кнопок (да или нет).");
         }
-
-        if (new[]{ "да", "нет" }.Contains(message.Text!.ToLower().Trim()) == false)
-        {
-            return (false, "Ожидался ответ который содержит либо \"да\" либо \"нет\". Повторите признака химеры.");
-        }
-
+        
         return (true, "");
     }
 
-    public async Task<(bool, string)> RunAction(Violet violet, Message message)
+    public Task<(bool, string)> RunAction(Violet violet, Update update)
     {
-        string text = message.Text!.ToLower().Trim();
-        if (text.ToLower() == "да")
+        if (update.CallbackQuery!.Data == "да")
         {
             violet.IsChimera = true;
-            await RemoveKeyBoard();
-
-            return (true, "");
+            return Task.FromResult((true, ""));
         }
-
+        
         violet.IsChimera = false;
-        await RemoveKeyBoard();
-
-        return (true, "");
-
-        async Task RemoveKeyBoard() => await _client.SendTextMessageAsync(message.Chat.Id, $"Выбран ответ \"{text}\"", replyMarkup: new ReplyKeyboardRemove());
+        return Task.FromResult((true, ""));
     }
 }

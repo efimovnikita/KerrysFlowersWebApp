@@ -14,7 +14,7 @@ internal class ColorsUnit : IUnit
         _client = client;
     }
 
-    public async Task Question(ChatId chatId)
+    public async Task Question(ChatId id)
     {
         VioletColor[] colors = Enum.GetValues(typeof(VioletColor))
             .Cast<VioletColor>()
@@ -24,19 +24,19 @@ internal class ColorsUnit : IUnit
         string resultDescriptions = String.Join(", ", descriptions);
 
         await _client
-            .SendTextMessageAsync(chatId,
+            .SendTextMessageAsync(id,
                 $"Введите список цветов фиалки (через запятую). Список возможных цветов:\n\n<i>{resultDescriptions}</i>.",
                 parseMode: ParseMode.Html);
     }
     
-    public (bool, string) Validate(Message message)
+    public (bool, string) Validate(Update update)
     {
-        if (message.Type != MessageType.Text)
+        if (update.Message!.Type != MessageType.Text)
         {
             return (false, "Ожидалось текстовое сообщение. Повторите ввод списока цветов.");
         }
 
-        string text = message.Text!.ToLower();
+        string text = update.Message.Text!.ToLower();
         
         if (text.Split(',').All(String.IsNullOrEmpty))
         {
@@ -46,9 +46,9 @@ internal class ColorsUnit : IUnit
         return (true, "");
     }
 
-    public Task<(bool, string)> RunAction(Violet violet, Message message)
+    public Task<(bool, string)> RunAction(Violet violet, Update update)
     {
-        string text = message.Text!.ToLower().Trim();
+        string text = update.Message!.Text!.ToLower().Trim();
         List<string> colors = text.Split(',')
             .Where(color => String.IsNullOrEmpty(color) == false)
             .Select(color => color.Trim().Replace('ё', 'е'))

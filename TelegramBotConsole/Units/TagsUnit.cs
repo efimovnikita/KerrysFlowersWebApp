@@ -14,19 +14,19 @@ internal class TagsUnit : IUnit
         _client = client;
     }
 
-    public async Task Question(ChatId chatId)
+    public async Task Question(ChatId id)
     {
-        await _client.SendTextMessageAsync(chatId, "Введите список тэгов (через запятую)");
+        await _client.SendTextMessageAsync(id, "Введите список тэгов (через запятую)");
     }
     
-    public (bool, string) Validate(Message message)
+    public (bool, string) Validate(Update update)
     {
-        if (message.Type != MessageType.Text)
+        if (update.Message!.Type != MessageType.Text)
         {
             return (false, "Ожидалось текстовое сообщение. Повторите ввод списока тэгов.");
         }
 
-        string text = message.Text!.ToLower();
+        string text = update.Message.Text!.ToLower();
         
         if (text.Split(',').All(String.IsNullOrEmpty))
         {
@@ -36,9 +36,9 @@ internal class TagsUnit : IUnit
         return (true, "");
     }
 
-    public Task<(bool, string)> RunAction(Violet violet, Message message)
+    public Task<(bool, string)> RunAction(Violet violet, Update update)
     {
-        string text = message.Text!.ToLower().Trim();
+        string text = update.Message!.Text!.ToLower().Trim();
         List<string> tags = text.Split(',')
             .Where(tag => String.IsNullOrEmpty(tag) == false)
             .Select(tag => tag.Trim())
