@@ -1,14 +1,18 @@
 <header class="bg-menu">
     <div class="max-w-7xl flex flex-col p-4 space-y-8 items-center md:m-auto md:flex-row md:items-center md:space-y-0 md:justify-between">
-        <Logo />
+        <Logo/>
         <nav class="font-montserrat text-menutext text-xl">
             <ul class="flex flex-col items-center space-y-[10px] md:flex-row md:space-x-10 md:space-y-0">
-                <NavLink href="" Match="NavLinkMatch.All" class="p-3 rounded-md hover:bg-text1">
-                    Каталог
-                </NavLink>
-                <NavLink href="contacts" class="p-3 hover:bg-text1 hover:rounded-md">
-                    Контакты
-                </NavLink>
+                <li class="p-3 rounded-md hover:bg-text1">
+                    <NavLink href="" Match="NavLinkMatch.All">
+                        Каталог
+                    </NavLink>
+                </li>
+                <li class="p-3 hover:bg-text1 hover:rounded-md">
+                    <NavLink href="contacts">
+                        Контакты
+                    </NavLink>
+                </li>
             </ul>
         </nav>
     </div>

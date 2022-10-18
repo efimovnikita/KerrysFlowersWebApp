@@ -1,6 +1,12 @@
 @page "/details/{VioletName}"
 
-<PageTitle>@(Violet != null ? $"Фиалка {Violet.Name}" : "Details")</PageTitle>
+@{
+    string name = Violet != null ? $"Фиалка {Violet.Name}" : "Details";
+}
+<PageTitle>@name</PageTitle>
+<HeadContent>
+    <meta name="description" content="@($"{name} - подробное описание сорта растения.")">
+</HeadContent>
 
 <DetailsContainer>
     @{
