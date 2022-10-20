@@ -44,8 +44,8 @@ public class Violet
 
 public class Filter
 {
-    public Filter(List<Tag> tags, List<ColorTag> colorTags, List<BreederTag> breederTags, List<YearTag> yearTags,
-        List<ChimeraTag> chimeraTags)
+    public Filter(List<Tag> tags, List<Tag> colorTags, List<Tag> breederTags, List<Tag> yearTags,
+        List<Tag> chimeraTags)
     {
         Tags = tags;
         ColorTags = colorTags;
@@ -55,38 +55,10 @@ public class Filter
     }
 
     public List<Tag> Tags { get; set; }
-    public List<ColorTag> ColorTags { get; set; }
-    public List<BreederTag> BreederTags { get; set; }
-    public List<YearTag> YearTags { get; set; }
-    public List<ChimeraTag> ChimeraTags { get; set; }
-}
-
-public class ColorTag : Tag
-{
-    public ColorTag(string name, bool active) : base(name)
-    {
-    }
-}
-
-public class BreederTag : Tag
-{
-    public BreederTag(string name, bool active) : base(name)
-    {
-    }
-}
-
-public class YearTag : Tag
-{
-    public YearTag(string name, bool active) : base(name)
-    {
-    }
-}
-
-public class ChimeraTag : Tag
-{
-    public ChimeraTag(string name, bool active) : base(name)
-    {
-    }
+    public List<Tag> ColorTags { get; set; }
+    public List<Tag> BreederTags { get; set; }
+    public List<Tag> YearTags { get; set; }
+    public List<Tag> ChimeraTags { get; set; }
 }
 
 public class Tag
@@ -96,6 +68,6 @@ public class Tag
         Name = name;
     }
 
-    public bool Active { get; set; } = true;
+    public bool Active { get; set; }
     public string Name { get; set; }
 }
