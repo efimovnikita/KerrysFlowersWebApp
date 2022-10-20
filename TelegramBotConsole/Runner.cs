@@ -68,6 +68,7 @@ internal class Runner
         
         if (update.Type == UpdateType.Message && message!.Text != null && message.Text.ToLower() == "/stop")
         {
+            _chatId = update.Message!.Chat.Id;
             await _client.SendTextMessageAsync(_chatId!, "Процесс создания фиалки остановлен", cancellationToken: token);
             Reset();
             
