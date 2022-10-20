@@ -41,3 +41,61 @@ public class Violet
 
     public List<VioletColor> Colors { get; set; }
 }
+
+public class Filter
+{
+    public Filter(List<Tag> tags, List<ColorTag> colorTags, List<BreederTag> breederTags, List<YearTag> yearTags,
+        List<ChimeraTag> chimeraTags)
+    {
+        Tags = tags;
+        ColorTags = colorTags;
+        BreederTags = breederTags;
+        YearTags = yearTags;
+        ChimeraTags = chimeraTags;
+    }
+
+    public List<Tag> Tags { get; set; }
+    public List<ColorTag> ColorTags { get; set; }
+    public List<BreederTag> BreederTags { get; set; }
+    public List<YearTag> YearTags { get; set; }
+    public List<ChimeraTag> ChimeraTags { get; set; }
+}
+
+public class ColorTag : Tag
+{
+    public ColorTag(string name, bool active) : base(name)
+    {
+    }
+}
+
+public class BreederTag : Tag
+{
+    public BreederTag(string name, bool active) : base(name)
+    {
+    }
+}
+
+public class YearTag : Tag
+{
+    public YearTag(string name, bool active) : base(name)
+    {
+    }
+}
+
+public class ChimeraTag : Tag
+{
+    public ChimeraTag(string name, bool active) : base(name)
+    {
+    }
+}
+
+public class Tag
+{
+    public Tag(string name)
+    {
+        Name = name;
+    }
+
+    public bool Active { get; set; } = true;
+    public string Name { get; set; }
+}

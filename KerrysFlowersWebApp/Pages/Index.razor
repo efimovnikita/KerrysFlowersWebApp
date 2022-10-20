@@ -506,17 +506,86 @@
     [Parameter] public string Filter { get; set; }
     [Parameter] public string Criteria { get; set; }
     [CascadingParameter] public  CascadingAppState AppState { get; set; }
-    private List<Violet> FilteredViolets { get; set; }
+
+    private List<Violet> _filteredViolets;
+    private List<Violet> FilteredViolets
+    {
+        get
+        {
+            if (FilterObject == null)
+            {
+                return _filteredViolets;
+            }
+            
+            return _filteredViolets
+                .Where(violet =>
+                {
+                    List<string> activeFilterTags = FilterObject.Tags
+                        .Where(tag => tag.Active)
+                        .Select(tag => tag.Name)
+                        .ToList();
+
+                    return violet.Tags.All(tag => activeFilterTags.Contains(tag));
+                })
+                .Where(violet =>
+                {
+                    List<string> activeBreederTags = FilterObject.BreederTags
+                        .Where(tag => tag.Active)
+                        .Select(tag => tag.Name)
+                        .ToList();
+
+                    return activeBreederTags.Contains(violet.Breeder);
+                })
+                .Where(violet =>
+                {
+                    List<string> activeChimeraTags = FilterObject.ChimeraTags
+                        .Where(tag => tag.Active)
+                        .Select(tag => tag.Name)
+                        .ToList();
+
+                    return activeChimeraTags.Contains(violet.IsChimera ? "да" : "нет");
+                })
+                .Where(violet =>
+                {
+                    List<string> activeColorTags = FilterObject.ColorTags
+                        .Where(tag => tag.Active)
+                        .Select(tag => tag.Name)
+                        .ToList();
+
+                    return violet.Colors.All(color => activeColorTags.Contains(ExtensionMethods.GetEnumDescription(color)));
+                })
+                .Where(violet =>
+                {
+                    List<string> activeColorTags = FilterObject.YearTags
+                        .Where(tag => tag.Active)
+                        .Select(tag => tag.Name)
+                        .ToList();
+
+                    return activeColorTags.Contains(violet.BreedingDate.Year.ToString());
+                })
+                .ToList();
+        }
+        set => _filteredViolets = value;
+    }
+
+    private Filter FilterObject { get; set; }
+    
+/*
     private void SortByName()
     {
         FilteredViolets = FilteredViolets.OrderBy(violet => violet.Name).ToList();
     }
+*/
+/*
     private void SortByPrimaryColor()
     {
         FilteredViolets = FilteredViolets.OrderByDescending(violet => violet.Colors[0]).ToList();
     }
+*/
+    
     protected override void OnParametersSet()
     {
+        /*
         if (String.IsNullOrEmpty(Filter) == false && String.IsNullOrEmpty(Criteria) == false)
         {
             if (Filter == FilterType.ByBreeder.ToString())
@@ -547,9 +616,49 @@
                     .Where(violet => violet.Colors.Contains((VioletColor) Int32.Parse(Criteria)))
                     .ToList();
             }
+
+            InitFilter();
+
             return;
         }
+        */
         
         FilteredViolets = AppState.Violets;
+        InitFilter();
+    }
+
+    private void InitFilter()
+    {
+        List<Tag> tagsList = FilteredViolets
+            .SelectMany(violet => violet.Tags)
+            .Distinct()
+            .Select(s => new Tag(s))
+            .ToList();
+
+        List<ColorTag> colorsTags = FilteredViolets
+            .SelectMany(violet => violet.Colors)
+            .Distinct()
+            .Select(color => new ColorTag(ExtensionMethods.GetEnumDescription(color), false))
+            .ToList();
+
+        List<BreederTag> breedersTags = FilteredViolets
+            .Select(violet => violet.Breeder)
+            .Distinct()
+            .Select(s => new BreederTag(s, false))
+            .ToList();
+
+        List<YearTag> yearsTags = FilteredViolets
+            .Select(violet => violet.BreedingDate)
+            .Distinct()
+            .Select(dateTime => new YearTag(dateTime.Year.ToString(), false))
+            .ToList();
+
+        List<ChimeraTag> chimeraTags = FilteredViolets
+            .Select(violet => violet.IsChimera)
+            .Distinct()
+            .Select(b => new ChimeraTag(b ? "да" : "нет", false))
+            .ToList();
+
+        FilterObject = new Filter(tagsList, colorsTags, breedersTags, yearsTags, chimeraTags);
     }
 }
