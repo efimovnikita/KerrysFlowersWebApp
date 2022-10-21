@@ -81,6 +81,19 @@
     </div>
 
     <CatalogContainer>
+        @{
+            string style = "bg-text2 text-text1 rounded-md p-5";
+        }
+        @if (AppState.Violets.Count == 0)
+        {
+            <p class="@style">Каталог пуст...</p>
+        }
+
+        @if (AppState.Violets.Count > 0 && AppState.FilteredViolets.Count == 0)
+        {
+            <p class="@style">Не обнаружено ни одной фиалки удовлетворяющей текущим настройкам фильтра...</p>
+        }
+
         @foreach (Violet violet in AppState.FilteredViolets)
         {
             <CatalogCard Violet="violet"/>

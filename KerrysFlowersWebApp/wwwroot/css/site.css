@@ -1007,6 +1007,10 @@ video {
   font-weight: 700;
 }
 
+.font-semibold {
+  font-weight: 600;
+}
+
 .lowercase {
   text-transform: lowercase;
 }
