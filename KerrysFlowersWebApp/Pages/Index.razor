@@ -19,7 +19,7 @@
             };
         }
         <div @onclick="() => AppState.FiltersPanel.Invisible = !AppState.FiltersPanel.Invisible" class="@(String.Join(' ', headerContainerStyle))">
-            <button title="Фильтры" class="text-xl hover:underline hover:decoration-menutext/30 hover:underline-offset-4">Фильтры и сортировка</button>
+            <button title="Фильтры" class="text-xl hover:underline hover:decoration-menutext/30 hover:underline-offset-4">Фильтры</button>
             @{
                 string headerSvgStyle = AppState.FiltersPanel.Invisible ? "rotate-180" : "";
             }
