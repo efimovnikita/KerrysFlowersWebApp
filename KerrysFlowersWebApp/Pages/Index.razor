@@ -31,7 +31,9 @@
                 </svg>
             </button>
             <button @onclick="AppState.ResetAllFilters" title="Сбросить все фильтры">
-                <svg width="25" height="25" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg class="@(AppState.HasAnyActiveFilter() ? "stroke-label" : "stroke-menutext")"
+                     width="25" height="25" fill="none" stroke-linecap="round" stroke-linejoin="round" 
+                     stroke-width="1" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="m3 3 18 18"></path>
                     <path d="M14 14v5l-4-3v-4L5 6.5a1 1 0 0 1 .18-1.316"></path>
                     <path d="M9 5h9.5a1 1 0 0 1 .5 1.5l-4.049 4.454"></path>

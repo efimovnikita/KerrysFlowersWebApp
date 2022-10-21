@@ -897,6 +897,10 @@ video {
   stroke: #FDD9C2;
 }
 
+.stroke-label {
+  stroke: #B3090A;
+}
+
 .object-cover {
   -o-object-fit: cover;
      object-fit: cover;

@@ -163,4 +163,13 @@
         Filter.YearTags.ForEach(tag => tag.Active = false);
         StateHasChanged();
     }
+
+    public bool HasAnyActiveFilter() => 
+        Filter.Tags
+            .Concat(Filter.BreederTags)
+            .Concat(Filter.ChimeraTags)
+            .Concat(Filter.ColorTags)
+            .Concat(Filter.YearTags)
+            .ToList()
+            .Any(tag => tag.Active);
 }
