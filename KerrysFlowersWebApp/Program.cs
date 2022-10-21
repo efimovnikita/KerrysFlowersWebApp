@@ -7,6 +7,8 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<ClipboardService>();
 
+builder.WebHost.UseKestrel();
+
 WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
