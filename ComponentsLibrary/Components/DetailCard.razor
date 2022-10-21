@@ -77,7 +77,7 @@
                     StringBuilder colorsBuilder = new();
                     foreach (VioletColor color in Violet.Colors)
                     {
-                        colorsBuilder.Append($"<a href=\"/{FilterType.ByColor}/{(int) color}\" class=\"hover:underline\">{ExtensionMethods.GetEnumDescription(color).ToLower()}</a>, ");
+                        colorsBuilder.Append($"<a href=\"/{FilterType.ByColor}/{ExtensionMethods.GetEnumDescription(color)}\" class=\"hover:underline\">{ExtensionMethods.GetEnumDescription(color).ToLower()}</a>, ");
                     }
 
                     string colors = colorsBuilder.ToString().TrimEnd().TrimEnd(',');

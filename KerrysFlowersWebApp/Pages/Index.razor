@@ -138,6 +138,42 @@
     private bool SortByName { get; set; }
     private bool SortByPrimaryColor { get; set; }
 
+    protected override void OnInitialized()
+    {
+        if (String.IsNullOrEmpty(Filter) || String.IsNullOrEmpty(Criteria))
+        {
+            return;
+        }
+        
+        switch (Filter)
+        {
+            case "ByTag":
+            {
+                Tag tag = AppState.Filter.Tags.FirstOrDefault(tag => tag.Name.Equals(Criteria, StringComparison.OrdinalIgnoreCase));
+                if (tag == null) return;
+                AppState.ResetAllFilters();
+                AppState.ChangeTagActivationState(tag);
+                return;
+            }
+            case "ByColor":
+            {
+                Tag tag = AppState.Filter.ColorTags.FirstOrDefault(tag => tag.Name.Equals(Criteria, StringComparison.OrdinalIgnoreCase));
+                if (tag == null) return;
+                AppState.ResetAllFilters();
+                AppState.ChangeTagActivationState(tag);
+                return;
+            }
+            case "ByBreeder":
+            {
+                Tag tag = AppState.Filter.BreederTags.FirstOrDefault(tag => tag.Name.Equals(Criteria, StringComparison.OrdinalIgnoreCase));
+                if (tag == null) return;
+                AppState.ResetAllFilters();
+                AppState.ChangeTagActivationState(tag);
+                return;
+            }
+        }
+    }
+
     private void SortByNameCallback()
     {
         SortByName = !SortByName;
