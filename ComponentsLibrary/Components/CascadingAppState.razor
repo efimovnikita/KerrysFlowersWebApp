@@ -153,4 +153,14 @@
     {
         FiltersPanel.ChimeraVisible = !FiltersPanel.ChimeraVisible;
     }
+
+    public void ResetAllFilters()
+    {
+        Filter.Tags.ForEach(tag => tag.Active = false);
+        Filter.BreederTags.ForEach(tag => tag.Active = false);
+        Filter.ChimeraTags.ForEach(tag => tag.Active = false);
+        Filter.ColorTags.ForEach(tag => tag.Active = false);
+        Filter.YearTags.ForEach(tag => tag.Active = false);
+        StateHasChanged();
+    }
 }

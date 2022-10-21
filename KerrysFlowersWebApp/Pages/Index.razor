@@ -18,14 +18,25 @@
                 AppState.FiltersPanel.Invisible ? "rounded-[22px]" : "rounded-t-[22px]"
             };
         }
-        <div @onclick="() => AppState.FiltersPanel.Invisible = !AppState.FiltersPanel.Invisible" class="@(String.Join(' ', headerContainerStyle))">
-            <button title="Фильтры" class="text-xl hover:underline hover:decoration-menutext/30 hover:underline-offset-4">Фильтры</button>
+        <div class="@(String.Join(' ', headerContainerStyle))">
+            <button @onclick="() => AppState.FiltersPanel.Invisible = !AppState.FiltersPanel.Invisible" title="Открыть/закрыть панель фильтров" class="text-xl hover:underline hover:decoration-menutext/30 hover:underline-offset-4">Фильтры</button>
             @{
                 string headerSvgStyle = AppState.FiltersPanel.Invisible ? "rotate-180" : "";
             }
-            <svg class="@headerSvgStyle" width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M5.00301 16.011L12.5 8.70297L19.997 16.011C20.131 16.1418 20.3108 16.2151 20.498 16.2151C20.6852 16.2151 20.8651 16.1418 20.999 16.011C21.0639 15.9474 21.1154 15.8716 21.1506 15.7879C21.1857 15.7042 21.2039 15.6143 21.2039 15.5235C21.2039 15.4327 21.1857 15.3428 21.1506 15.2591C21.1154 15.1754 21.0639 15.0995 20.999 15.036L13.0235 7.25997C12.8834 7.12345 12.6956 7.04704 12.5 7.04704C12.3044 7.04704 12.1166 7.12345 11.9765 7.25997L4.00101 15.0345C3.93569 15.0981 3.88378 15.1741 3.84833 15.2581C3.81289 15.3421 3.79462 15.4323 3.79462 15.5235C3.79462 15.6146 3.81289 15.7049 3.84833 15.7889C3.88378 15.8728 3.93569 15.9489 4.00101 16.0125C4.13495 16.1433 4.31477 16.2166 4.50201 16.2166C4.68925 16.2166 4.86906 16.1433 5.00301 16.0125V16.011Z" fill="#FDD9C2"/>
-            </svg>
+            <div class="flex justify-center items-center gap-3">
+                <button @onclick="() => AppState.FiltersPanel.Invisible = !AppState.FiltersPanel.Invisible" title="Открыть/закрыть панель фильтров">
+                    <svg class="@headerSvgStyle" width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5.00301 16.011L12.5 8.70297L19.997 16.011C20.131 16.1418 20.3108 16.2151 20.498 16.2151C20.6852 16.2151 20.8651 16.1418 20.999 16.011C21.0639 15.9474 21.1154 15.8716 21.1506 15.7879C21.1857 15.7042 21.2039 15.6143 21.2039 15.5235C21.2039 15.4327 21.1857 15.3428 21.1506 15.2591C21.1154 15.1754 21.0639 15.0995 20.999 15.036L13.0235 7.25997C12.8834 7.12345 12.6956 7.04704 12.5 7.04704C12.3044 7.04704 12.1166 7.12345 11.9765 7.25997L4.00101 15.0345C3.93569 15.0981 3.88378 15.1741 3.84833 15.2581C3.81289 15.3421 3.79462 15.4323 3.79462 15.5235C3.79462 15.6146 3.81289 15.7049 3.84833 15.7889C3.88378 15.8728 3.93569 15.9489 4.00101 16.0125C4.13495 16.1433 4.31477 16.2166 4.50201 16.2166C4.68925 16.2166 4.86906 16.1433 5.00301 16.0125V16.011Z" fill="#FDD9C2"/>
+                    </svg>
+                </button>
+                <button @onclick="AppState.ResetAllFilters" title="Сбросить все фильтры">
+                    <svg width="25" height="25" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="m3 3 18 18"></path>
+                        <path d="M14 14v5l-4-3v-4L5 6.5a1 1 0 0 1 .18-1.316"></path>
+                        <path d="M9 5h9.5a1 1 0 0 1 .5 1.5l-4.049 4.454"></path>
+                    </svg>
+                </button>
+            </div>
         </div>
         @* Контейнер кнопок сортировки *@
         @{
@@ -75,9 +86,9 @@
         </div>
         <FilterTagsContainer Title="Теги" IsTail="false" Tags="@AppState.Filter.Tags" ChangeTagState="AppState.ChangeTagActivationState" IsHidden="AppState.FiltersPanel.Invisible" ChangeVisibility="AppState.ChangeTagsVisibility" Visible="AppState.FiltersPanel.TagsVisible" />
         <FilterTagsContainer Title="Цвета" IsTail="false" Tags="@AppState.Filter.ColorTags" ChangeTagState="AppState.ChangeTagActivationState" IsHidden="AppState.FiltersPanel.Invisible" ChangeVisibility="AppState.ChangeColorsVisibility" Visible="AppState.FiltersPanel.ColorsVisible"/>
-        <FilterTagsContainer Title="Селекционер" IsTail="false" Tags="@AppState.Filter.BreederTags" ChangeTagState="AppState.ChangeTagActivationState" IsHidden="AppState.FiltersPanel.Invisible" ChangeVisibility="AppState.ChangeBreedersVisibility" Visible="AppState.FiltersPanel.BreederVisible"/>
-        <FilterTagsContainer Title="Год селекции" IsTail="false" Tags="@AppState.Filter.YearTags" ChangeTagState="AppState.ChangeTagActivationState" IsHidden="AppState.FiltersPanel.Invisible" ChangeVisibility="AppState.ChangeYearsVisibility" Visible="AppState.FiltersPanel.YearsVisible"/>
-        <FilterTagsContainer Title="Химера" IsTail="true" Tags="@AppState.Filter.ChimeraTags" ChangeTagState="AppState.ChangeTagActivationState" IsHidden="AppState.FiltersPanel.Invisible" ChangeVisibility="AppState.ChangeChimeraVisibility" Visible="AppState.FiltersPanel.ChimeraVisible"/>
+        <FilterTagsContainer Title="Селекционеры" IsTail="false" Tags="@AppState.Filter.BreederTags" ChangeTagState="AppState.ChangeTagActivationState" IsHidden="AppState.FiltersPanel.Invisible" ChangeVisibility="AppState.ChangeBreedersVisibility" Visible="AppState.FiltersPanel.BreederVisible"/>
+        <FilterTagsContainer Title="Года селекции" IsTail="false" Tags="@AppState.Filter.YearTags" ChangeTagState="AppState.ChangeTagActivationState" IsHidden="AppState.FiltersPanel.Invisible" ChangeVisibility="AppState.ChangeYearsVisibility" Visible="AppState.FiltersPanel.YearsVisible"/>
+        <FilterTagsContainer Title="Химеры" IsTail="true" Tags="@AppState.Filter.ChimeraTags" ChangeTagState="AppState.ChangeTagActivationState" IsHidden="AppState.FiltersPanel.Invisible" ChangeVisibility="AppState.ChangeChimeraVisibility" Visible="AppState.FiltersPanel.ChimeraVisible"/>
     </div>
 
     <CatalogContainer>
