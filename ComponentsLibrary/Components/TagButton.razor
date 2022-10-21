@@ -1,30 +1,16 @@
 <li>
     @{
-        List<string> style = new() {"flex", "justify-center", "items-center", "gap-[5px]", "p-1", "rounded-full", "hover:bg-text1",
-            Tag.Active ? "bg-text1/80" : "bg-background"
+        List<string> style = new() {"flex", "justify-center", "items-center", "gap-[5px]", "px-2", "py-1", "rounded-full", 
+            "border-[1px]", "hover:bg-text1", 
+            Tag.Active ? 
+                String.Join(' ', "bg-text1/80", "border-label") : 
+                String.Join(' ', "bg-background", "border-background")
         };
 
         string value = String.Join(' ', style);
     }
     <button @onclick="Callback" class="@value">
-        @*
-        @if (Tag.Active)
-        {
-            <svg width="20" height="20" fill="none" stroke="#FF001C" stroke-linecap="round" stroke-linejoin="round"
-                 stroke-width="1" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M5 12h14"></path>
-            </svg>
-        }
-        else
-        {
-            <svg width="20" height="20" fill="none" stroke="#00A3EE" stroke-linecap="round" stroke-linejoin="round"
-                 stroke-width="1" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 5v14"></path>
-                <path d="M5 12h14"></path>
-            </svg>
-        }
-        *@
-        <span>@Tag.Name</span>
+        <span class="lowercase">@Tag.Name</span>
     </button>
 </li>
 
