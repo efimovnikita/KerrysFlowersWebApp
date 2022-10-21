@@ -13,7 +13,7 @@
         (Violet leftViolet, Violet rightViolet) = GetAdjacentViolets();
     }
     <section class="flex justify-center items-center gap-6">
-        @if (AppState.Violets.Count < 3)
+        @if (AppState.FilteredViolets.Count < 3)
         {
             <DetailCard Violet="Violet"/>
         }
@@ -24,7 +24,7 @@
             <PreviewCard IsLeft="false" Violet="rightViolet"/>
         }
     </section>
-    @if (AppState.Violets.Count > 1)
+    @if (AppState.FilteredViolets.Count > 1)
     {
         <DetailsNavigation LeftViolet="leftViolet" RightViolet="rightViolet" />
     }
@@ -42,36 +42,36 @@
 
     protected override void OnParametersSet()
     {
-        Violet = AppState.Violets.FirstOrDefault(violet => violet.TransliteratedName.Equals(VioletName));
+        Violet = AppState.FilteredViolets.FirstOrDefault(violet => violet.TransliteratedName.Equals(VioletName));
     }
 
     private (Violet leftViolet, Violet rightViolet) GetAdjacentViolets()
     {
-        int currentIndex = AppState.Violets.FindIndex(violet => violet.Id.Equals(this.Violet.Id));
+        int currentIndex = AppState.FilteredViolets.FindIndex(violet => violet.Id.Equals(this.Violet.Id));
 
         int leftIndex = 0;
         int rightIndex = 0;
 
         if (currentIndex == 0)
         {
-            leftIndex = AppState.Violets.Count - 1;
+            leftIndex = AppState.FilteredViolets.Count - 1;
             rightIndex = 1;
         }
 
-        if (currentIndex == AppState.Violets.Count - 1)
+        if (currentIndex == AppState.FilteredViolets.Count - 1)
         {
             leftIndex = currentIndex - 1;
             rightIndex = 0;
         }
 
-        if (currentIndex != 0 && currentIndex != AppState.Violets.Count - 1)
+        if (currentIndex != 0 && currentIndex != AppState.FilteredViolets.Count - 1)
         {
             leftIndex = currentIndex - 1;
             rightIndex = currentIndex + 1;
         }
 
-        Violet leftViolet = AppState.Violets.ElementAt(leftIndex < 0 ? 0 : leftIndex);
-        Violet rightViolet = AppState.Violets.ElementAt(rightIndex);
+        Violet leftViolet = AppState.FilteredViolets.ElementAt(leftIndex < 0 ? 0 : leftIndex);
+        Violet rightViolet = AppState.FilteredViolets.ElementAt(rightIndex);
         return (leftViolet, rightViolet);
     }
 }

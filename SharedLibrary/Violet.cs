@@ -71,3 +71,13 @@ public class Tag
     public bool Active { get; set; }
     public string Name { get; set; }
 }
+
+public class FiltersPanelVisibility
+{
+    public bool Invisible { get; set; } = true;
+    public bool TagsVisible { get; set; }
+    public bool ColorsVisible { get; set; } 
+    public bool BreederVisible { get; set; }
+    public bool YearsVisible { get; set; }
+    public bool ChimeraVisible { get; set; }
+}

@@ -11,11 +11,11 @@
     }
 }
 <div class="@(String.Join(' ', mainContainerStyle))">
-    <button @onclick="() => Active = !Active" title="@(Title)" 
-            class="hover:underline hover:decoration-menutext/30 hover:underline-offset-4">@(Active ? $"{Title}:" : Title)</button>
+    <button @onclick="ChangeVisibility" title="@(Title)" 
+            class="hover:underline hover:decoration-menutext/30 hover:underline-offset-4">@(Visible ? $"{Title}:" : Title)</button>
     @{
         List<string> tagsContainerStyle = new() {"flex", "flex-wrap", "gap-[5px]", "text-[15px]", "leading-none"};
-        if (Active == false)
+        if (Visible == false)
         {
             tagsContainerStyle.Add("hidden");
         }
@@ -31,8 +31,10 @@
 @code {
     [Parameter, EditorRequired] public string Title { get; set; }
     [Parameter, EditorRequired] public bool IsHidden { get; set; }
-    private bool Active { get; set; }
     [Parameter, EditorRequired] public bool IsTail { get; set; }
     [Parameter, EditorRequired] public List<Tag> Tags { get; set; }
     [Parameter, EditorRequired] public EventCallback<Tag> ChangeTagState { get; set; }
+    [Parameter, EditorRequired] public EventCallback ChangeVisibility { get; set; }
+    [Parameter, EditorRequired] public bool Visible { get; set; }
+    [CascadingParameter] public CascadingAppState AppState { get; set; }
 }

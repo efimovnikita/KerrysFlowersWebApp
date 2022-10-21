@@ -15,18 +15,22 @@
             .Select(JsonConvert.DeserializeObject<Violet>)
             .ToList();
         InitFilter();
+
+        FiltersPanel = new FiltersPanelVisibility();
     }
 
     private List<Violet> _violets;
-    public List<Violet> Violets
+    private List<Violet> Violets
     {
         get => _violets;
-        private set
+        set
         {
             _violets = value;
             StateHasChanged();
         }
     }
+
+    public FiltersPanelVisibility FiltersPanel { get; private set; }
 
     public List<Violet> FilteredViolets => Violets
         .Where(violet =>
@@ -117,5 +121,30 @@
     {
         tag.Active = !tag.Active;
         StateHasChanged();
+    }
+
+    public void ChangeTagsVisibility()
+    {
+        FiltersPanel.TagsVisible = !FiltersPanel.TagsVisible;
+    }
+
+    public void ChangeColorsVisibility()
+    {
+        FiltersPanel.ColorsVisible = !FiltersPanel.ColorsVisible;
+    }
+
+    public void ChangeBreedersVisibility()
+    {
+        FiltersPanel.BreederVisible = !FiltersPanel.BreederVisible;
+    }
+
+    public void ChangeYearsVisibility()
+    {
+        FiltersPanel.YearsVisible = !FiltersPanel.YearsVisible;
+    }
+
+    public void ChangeChimeraVisibility()
+    {
+        FiltersPanel.ChimeraVisible = !FiltersPanel.ChimeraVisible;
     }
 }
