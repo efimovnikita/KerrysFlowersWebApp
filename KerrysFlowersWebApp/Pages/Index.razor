@@ -37,7 +37,7 @@
             }
         }
         <div class="@(String.Join(' ', sortButtonsContainerStyle))">
-            <button class="flex gap-[15px] items-center px-[10px] py-[5px] bg-background rounded-full hover:bg-text1">
+            <button @onclick="SortByNameCallback" class="flex gap-[15px] items-center px-[10px] py-[5px] bg-background rounded-full hover:bg-text1">
                 <span class="text-lg">По названию</span>
                 <svg
                     class="fill-menutext"
@@ -49,7 +49,7 @@
                         d="M8.69298 1.962C8.63601 1.82536 8.53988 1.70863 8.41669 1.62652C8.2935 1.54441 8.14877 1.5006 8.00073 1.5006C7.85269 1.5006 7.70795 1.54441 7.58477 1.62652C7.46158 1.70863 7.36545 1.82536 7.30848 1.962L3.55848 10.962C3.48781 11.1445 3.49127 11.3474 3.56812 11.5273C3.64496 11.7073 3.78911 11.8501 3.96978 11.9253C4.15046 12.0005 4.35337 12.002 4.53519 11.9297C4.71701 11.8573 4.86335 11.7168 4.94298 11.538L6.00048 9H9.99948L11.057 11.538C11.1334 11.7218 11.2796 11.8677 11.4636 11.9437C11.6476 12.0196 11.8542 12.0194 12.038 11.943C12.2218 11.8666 12.3677 11.7204 12.4437 11.5364C12.5196 11.3524 12.5194 11.1458 12.443 10.962L8.69298 1.962ZM6.62448 7.5L7.99998 4.2L9.37548 7.5H6.62448ZM4.24998 14.25C4.24998 14.0511 4.329 13.8603 4.46965 13.7197C4.6103 13.579 4.80107 13.5 4.99998 13.5H10.25C10.3873 13.4998 10.522 13.5374 10.6395 13.6085C10.7569 13.6797 10.8525 13.7817 10.916 13.9035C10.9794 14.0253 11.0082 14.1621 10.9992 14.2991C10.9902 14.4361 10.9438 14.5681 10.865 14.6805L6.43998 21H10.25C10.4489 21 10.6397 21.079 10.7803 21.2197C10.921 21.3603 11 21.5511 11 21.75C11 21.9489 10.921 22.1397 10.7803 22.2803C10.6397 22.421 10.4489 22.5 10.25 22.5H4.99998C4.86267 22.5002 4.72795 22.4626 4.61051 22.3915C4.49307 22.3203 4.39741 22.2183 4.33397 22.0965C4.27053 21.9747 4.24174 21.8379 4.25073 21.7009C4.25973 21.5639 4.30616 21.4319 4.38498 21.3195L8.80998 15H4.99998C4.80107 15 4.6103 14.921 4.46965 14.7803C4.329 14.6397 4.24998 14.4489 4.24998 14.25ZM19.25 1.5C19.4489 1.5 19.6397 1.57902 19.7803 1.71967C19.921 1.86032 20 2.05109 20 2.25V19.9395L21.719 18.219C21.8598 18.0782 22.0508 17.9991 22.25 17.9991C22.4491 17.9991 22.6401 18.0782 22.781 18.219C22.9218 18.3598 23.0009 18.5508 23.0009 18.75C23.0009 18.9492 22.9218 19.1402 22.781 19.281L19.781 22.281C19.7113 22.3508 19.6285 22.4063 19.5374 22.4441C19.4463 22.4819 19.3486 22.5013 19.25 22.5013C19.1513 22.5013 19.0536 22.4819 18.9625 22.4441C18.8714 22.4063 18.7886 22.3508 18.719 22.281L15.719 19.281C15.5781 19.1402 15.499 18.9492 15.499 18.75C15.499 18.5508 15.5781 18.3598 15.719 18.219C15.8598 18.0782 16.0508 17.9991 16.25 17.9991C16.4491 17.9991 16.6401 18.0782 16.781 18.219L18.5 19.9395V2.25C18.5 2.05109 18.579 1.86032 18.7196 1.71967C18.8603 1.57902 19.0511 1.5 19.25 1.5Z"/>
                 </svg>
             </button>
-            <button class="flex gap-[15px] items-center px-[10px] py-[5px] bg-background rounded-full hover:bg-text1">
+            <button @onclick="SortByPrimaryColorCallback" class="flex gap-[15px] items-center px-[10px] py-[5px] bg-background rounded-full hover:bg-text1">
                 <span class="text-lg">По цвету</span>
                 <svg
                     class="stroke-menutext"
@@ -82,19 +82,35 @@
 
     <CatalogContainer>
         @{
-            string style = "bg-text2 text-text1 rounded-md p-5";
+            const string style = "bg-text2 text-text1 rounded-md p-5";
         }
         @if (AppState.Violets.Count == 0)
         {
             <p class="@style">Каталог пуст...</p>
         }
 
-        @if (AppState.Violets.Count > 0 && AppState.FilteredViolets.Count == 0)
+
+        @{
+            List<Violet> filteredViolets;
+            if (SortByName)
+            {
+                filteredViolets = AppState.FilteredViolets.OrderBy(violet => violet.Name).ToList();
+            }
+            else if (SortByPrimaryColor)
+            {
+                filteredViolets = AppState.FilteredViolets.OrderBy(violet => violet.Colors.First()).ToList();
+            }
+            else
+            {
+                filteredViolets = AppState.FilteredViolets;
+            }
+        }
+        @if (AppState.Violets.Count > 0 && filteredViolets.Count == 0)
         {
             <p class="@style">Не обнаружено ни одной фиалки удовлетворяющей текущим настройкам фильтра...</p>
         }
 
-        @foreach (Violet violet in AppState.FilteredViolets)
+        @foreach (Violet violet in filteredViolets)
         {
             <CatalogCard Violet="violet"/>
         }
@@ -108,4 +124,18 @@
     [Parameter] public string Filter { get; set; }
     [Parameter] public string Criteria { get; set; }
     [CascadingParameter] public CascadingAppState AppState { get; set; }
+    private bool SortByName { get; set; }
+    private bool SortByPrimaryColor { get; set; }
+
+    private void SortByNameCallback()
+    {
+        SortByName = !SortByName;
+        StateHasChanged();
+    }
+    
+    private void SortByPrimaryColorCallback()
+    {
+        SortByPrimaryColor = !SortByPrimaryColor;
+        StateHasChanged();
+    }
 }

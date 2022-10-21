@@ -23,7 +23,7 @@
     public List<Violet> Violets
     {
         get => _violets;
-        set
+        private set
         {
             _violets = value;
             StateHasChanged();
@@ -32,53 +32,59 @@
 
     public FiltersPanelVisibility FiltersPanel { get; private set; }
 
-    public List<Violet> FilteredViolets => Violets
-        .Where(violet =>
+    public List<Violet> FilteredViolets
+    {
+        get
         {
-            List<string> activeFilterTags = Filter.Tags
-                .Where(tag => tag.Active)
-                .Select(tag => tag.Name)
-                .ToList();
+            return Violets
+                .Where(violet =>
+                {
+                    List<string> activeFilterTags = Filter.Tags
+                        .Where(tag => tag.Active)
+                        .Select(tag => tag.Name)
+                        .ToList();
 
-            return activeFilterTags.Count == 0 || violet.Tags.Any(tag => activeFilterTags.Contains(tag));
-        })
-        .Where(violet =>
-        {
-            List<string> activeBreederTags = Filter.BreederTags
-                .Where(tag => tag.Active)
-                .Select(tag => tag.Name)
+                    return activeFilterTags.Count == 0 || violet.Tags.Any(tag => activeFilterTags.Contains(tag));
+                })
+                .Where(violet =>
+                {
+                    List<string> activeBreederTags = Filter.BreederTags
+                        .Where(tag => tag.Active)
+                        .Select(tag => tag.Name)
+                        .ToList();
+
+                    return activeBreederTags.Count == 0 || activeBreederTags.Contains(violet.Breeder);
+                })
+                .Where(violet =>
+                {
+                    List<string> activeChimeraTags = Filter.ChimeraTags
+                        .Where(tag => tag.Active)
+                        .Select(tag => tag.Name)
+                        .ToList();
+
+                    return activeChimeraTags.Count == 0 || activeChimeraTags.Contains(violet.IsChimera ? "да" : "нет");
+                })
+                .Where(violet =>
+                {
+                    List<string> activeColorTags = Filter.ColorTags
+                        .Where(tag => tag.Active)
+                        .Select(tag => tag.Name)
+                        .ToList();
+
+                    return activeColorTags.Count == 0 || violet.Colors.Any(color => activeColorTags.Contains(ExtensionMethods.GetEnumDescription(color)));
+                })
+                .Where(violet =>
+                {
+                    List<string> activeYearTags = Filter.YearTags
+                        .Where(tag => tag.Active)
+                        .Select(tag => tag.Name)
+                        .ToList();
+
+                    return activeYearTags.Count == 0 || activeYearTags.Contains(violet.BreedingDate.Year.ToString());
+                })
                 .ToList();
-                    
-            return activeBreederTags.Count == 0 || activeBreederTags.Contains(violet.Breeder);
-        })
-        .Where(violet =>
-        {
-            List<string> activeChimeraTags = Filter.ChimeraTags
-                .Where(tag => tag.Active)
-                .Select(tag => tag.Name)
-                .ToList();
-                    
-            return activeChimeraTags.Count == 0 || activeChimeraTags.Contains(violet.IsChimera ? "да" : "нет");
-        })
-        .Where(violet =>
-        {
-            List<string> activeColorTags = Filter.ColorTags
-                .Where(tag => tag.Active)
-                .Select(tag => tag.Name)
-                .ToList();
-                    
-            return activeColorTags.Count == 0 || violet.Colors.Any(color => activeColorTags.Contains(ExtensionMethods.GetEnumDescription(color)));
-        })
-        .Where(violet =>
-        {
-            List<string> activeYearTags = Filter.YearTags
-                .Where(tag => tag.Active)
-                .Select(tag => tag.Name)
-                .ToList();
-                    
-            return activeYearTags.Count == 0 || activeYearTags.Contains(violet.BreedingDate.Year.ToString());
-        })
-        .ToList();
+        }
+    }
 
 
     public Filter Filter { get; private set; }
