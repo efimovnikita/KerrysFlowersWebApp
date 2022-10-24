@@ -7,7 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using CliWrap;
 using CliWrap.Buffered;
-using Microsoft.Extensions.Hosting;
 using SharedLibrary;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -16,9 +15,8 @@ using File = System.IO.File;
 
 namespace TelegramBotRemoverConsole;
 
-internal class Remover : BackgroundService
+internal class Remover
 {
-    private readonly string _apiKey;
     private readonly FileInfo _remover;
     private readonly FileInfo _root;
     private State _currentState = State.Idle;
@@ -26,9 +24,13 @@ internal class Remover : BackgroundService
     
     public Remover(string apiKey, FileInfo remover, FileInfo root)
     {
-        _apiKey = apiKey;
         _remover = remover;
-        _root = root; 
+        _root = root;
+
+        TelegramBotClient client = new(apiKey);
+        client.StartReceiving(UpdateHandler, PollingErrorHandler);
+            
+        Console.ReadLine();
     }
     private static Task PollingErrorHandler(ITelegramBotClient arg1, Exception arg2, CancellationToken arg3)
     {
@@ -141,14 +143,5 @@ internal class Remover : BackgroundService
         await client.SendTextMessageAsync(chatId, 
             "Введите id фиалки, которую нужно удалить.",
             replyMarkup: inlineKeyboard);
-    }
-
-    protected override Task ExecuteAsync(CancellationToken stoppingToken)
-    {
-        TelegramBotClient client = new(_apiKey);
-        client.StartReceiving(UpdateHandler, PollingErrorHandler);
-            
-        Console.ReadLine();
-        return Task.CompletedTask;
     }
 }
