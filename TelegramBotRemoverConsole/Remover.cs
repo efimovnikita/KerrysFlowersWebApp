@@ -143,12 +143,11 @@ internal class Remover : BackgroundService
             replyMarkup: inlineKeyboard);
     }
 
-    protected override Task ExecuteAsync(CancellationToken stoppingToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         TelegramBotClient client = new(_apiKey);
         client.StartReceiving(UpdateHandler, PollingErrorHandler);
             
         Console.ReadLine();
-        return Task.CompletedTask;
     }
 }
