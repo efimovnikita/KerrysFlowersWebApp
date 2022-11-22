@@ -1,45 +1,30 @@
 using System.ComponentModel;
 
 namespace SharedLibrary;
-
+// +белый, +розовый, +голубой, +синий, +красный, +желтый, +персиковый, +зеленый
 public enum VioletColor
 {
     [Description("Желтый")]
     Yellow, 
     
-    [Description("Желто-зеленый")]
-    YellowGreen,
-    
     [Description("Зеленый")]
-    Green, 
-    
-    [Description("Сине-зеленый")]
-    BlueGreen, 
-    
+    Green,
+
     [Description("Синий")]
-    Blue, 
-    
-    [Description("Сине-фиолетовый")]
-    BlueViolet, 
-    
-    [Description("Фиолетовый")]
-    Violet, 
-    
-    [Description("Красно-фиолетовый")]
-    RedViolet, 
-    
+    Blue,
+
     [Description("Красный")]
-    Red, 
-    
-    [Description("Красно-оранжевый")]
-    RedOrange, 
-    
-    [Description("Оранжевый")]
-    Orange, 
-    
-    [Description("Желто-оранжевый")]
-    YellowOrange, 
-    
+    Red,
+
     [Description("Белый")]
-    White
+    White,
+    
+    [Description("Розовый")]
+    Pink,
+    
+    [Description("Голубой")]
+    LightBlue,
+    
+    [Description("Персиковый")]
+    Peach
 }

@@ -383,6 +383,19 @@
       <_ContentIncludedByDefault Remove="wwwroot\Violets\fb2f4ead-6749-4af1-86f3-6a773609ad58\photo3_330.webp" />
       <_ContentIncludedByDefault Remove="wwwroot\Violets\fb2f4ead-6749-4af1-86f3-6a773609ad58\photo3_500.webp" />
       <_ContentIncludedByDefault Remove="wwwroot\Violets\fb2f4ead-6749-4af1-86f3-6a773609ad58\photo3_700.webp" />
+      <_ContentIncludedByDefault Remove="wwwroot\Violets\0983d92b-c000-41ba-8e26-6d5c63ebd841\0983d92b-c000-41ba-8e26-6d5c63ebd841.json" />
+      <_ContentIncludedByDefault Remove="wwwroot\Violets\0983d92b-c000-41ba-8e26-6d5c63ebd841\b7277b76-71ce-4da3-9758-4dfed1e38d58_300.webp" />
+      <_ContentIncludedByDefault Remove="wwwroot\Violets\0983d92b-c000-41ba-8e26-6d5c63ebd841\b7277b76-71ce-4da3-9758-4dfed1e38d58_330.webp" />
+      <_ContentIncludedByDefault Remove="wwwroot\Violets\0983d92b-c000-41ba-8e26-6d5c63ebd841\b7277b76-71ce-4da3-9758-4dfed1e38d58_500.webp" />
+      <_ContentIncludedByDefault Remove="wwwroot\Violets\0983d92b-c000-41ba-8e26-6d5c63ebd841\b7277b76-71ce-4da3-9758-4dfed1e38d58_700.webp" />
+      <_ContentIncludedByDefault Remove="wwwroot\Violets\0983d92b-c000-41ba-8e26-6d5c63ebd841\f81536f4-6a22-490b-a0e2-7dc024f37316_300.webp" />
+      <_ContentIncludedByDefault Remove="wwwroot\Violets\0983d92b-c000-41ba-8e26-6d5c63ebd841\f81536f4-6a22-490b-a0e2-7dc024f37316_330.webp" />
+      <_ContentIncludedByDefault Remove="wwwroot\Violets\0983d92b-c000-41ba-8e26-6d5c63ebd841\f81536f4-6a22-490b-a0e2-7dc024f37316_500.webp" />
+      <_ContentIncludedByDefault Remove="wwwroot\Violets\0983d92b-c000-41ba-8e26-6d5c63ebd841\f81536f4-6a22-490b-a0e2-7dc024f37316_700.webp" />
+      <_ContentIncludedByDefault Remove="wwwroot\Violets\0983d92b-c000-41ba-8e26-6d5c63ebd841\ff8246cc-dd18-4349-97ae-af575fa3f474_300.webp" />
+      <_ContentIncludedByDefault Remove="wwwroot\Violets\0983d92b-c000-41ba-8e26-6d5c63ebd841\ff8246cc-dd18-4349-97ae-af575fa3f474_330.webp" />
+      <_ContentIncludedByDefault Remove="wwwroot\Violets\0983d92b-c000-41ba-8e26-6d5c63ebd841\ff8246cc-dd18-4349-97ae-af575fa3f474_500.webp" />
+      <_ContentIncludedByDefault Remove="wwwroot\Violets\0983d92b-c000-41ba-8e26-6d5c63ebd841\ff8246cc-dd18-4349-97ae-af575fa3f474_700.webp" />
     </ItemGroup>
 
 </Project>
