@@ -33,14 +33,20 @@ internal class ColorsUnit : IUnit
     {
         if (update.Message!.Type != MessageType.Text)
         {
-            return (false, "Ожидалось текстовое сообщение. Повторите ввод списока цветов.");
+            return (false, "Ожидалось текстовое сообщение. Повторите ввод списка цветов.");
         }
 
-        string text = update.Message.Text!.ToLower();
+        string text = update.Message!.Text!.ToLower().Trim();
+        List<VioletColor> selectedColors = GetSelectedColors(text);
         
         if (text.Split(',').All(String.IsNullOrEmpty))
         {
             return (false, "Список цветов пуст. Повторите ввод списка цветов.");
+        }
+
+        if (selectedColors.Count == 0)
+        {
+            return (false, "Введите цвета фиалки из списка возможных цветов.");
         }
 
         return (true, "");
@@ -49,6 +55,14 @@ internal class ColorsUnit : IUnit
     public Task<(bool, string)> RunAction(Violet violet, Update update)
     {
         string text = update.Message!.Text!.ToLower().Trim();
+        List<VioletColor> selectedColors = GetSelectedColors(text);
+        violet.Colors = selectedColors;
+
+        return Task.FromResult((true, ""));
+    }
+
+    private static List<VioletColor> GetSelectedColors(string text)
+    {
         List<string> colors = text.Split(',')
             .Where(color => String.IsNullOrEmpty(color) == false)
             .Select(color => color.Trim().Replace('ё', 'е'))
@@ -56,8 +70,6 @@ internal class ColorsUnit : IUnit
         VioletColor[] allColors = Enum.GetValues(typeof(VioletColor)).Cast<VioletColor>().ToArray();
         List<VioletColor> selectedColors = allColors.Where(color =>
             colors.Contains(ExtensionMethods.GetEnumDescription(color).ToLower())).ToList();
-        violet.Colors = selectedColors;
-
-        return Task.FromResult((true, ""));
+        return selectedColors;
     }
 }
