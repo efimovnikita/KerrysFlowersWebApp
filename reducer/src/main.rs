@@ -86,11 +86,8 @@ fn main() {
             let encoder: Encoder = Encoder::from_image(&thumbnail).unwrap();
             let webp: WebPMemory = encoder.encode(quality);
 
-            let img_path = args.folder.join(format!(
-                "{}_{}.webp",
-                id,
-                resolution.width.to_string()
-            ));
+            let image_name = format!("{}_{}.webp", id, resolution.width.to_string());
+            let img_path = args.folder.join(&image_name);
             let save_result = std::fs::write(&img_path, &*webp);
             match save_result {
                 Ok(_) => {
@@ -99,7 +96,15 @@ fn main() {
                         process::exit(exitcode::DATAERR)
                     }
 
-                    println!("{}", img_path.display());
+                    let parent_dir = img_path.parent().unwrap();
+                    let sub_parent_dir = parent_dir.parent().unwrap();
+
+                    println!(
+                        "{}/{}/{}",
+                        sub_parent_dir.file_name().unwrap().to_str().unwrap(),
+                        parent_dir.file_name().unwrap().to_str().unwrap(),
+                        image_name
+                    );
                 }
                 Err(e) => {
                     println!("Error while save image: {}", e);
