@@ -91,7 +91,7 @@ internal static class Program
 
                 string[] splitResult = result.StandardOutput
                     .Split(Environment.NewLine)
-                    .SelectMany(s => s.Split('/'))
+                    .Select(s => s.Split('/'))
                     .Select(strings => $"{strings[^3]}/{strings[^2]}/{strings[^1]}")
                     .ToArray();
 
