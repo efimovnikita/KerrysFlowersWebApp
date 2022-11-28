@@ -2,8 +2,9 @@ extern crate exitcode;
 use clap::Parser;
 use image::imageops::FilterType;
 use image::GenericImageView;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use std::process;
+use uuid::Uuid;
 use webp::*;
 
 /// Tool for reduce image size
@@ -56,6 +57,8 @@ fn main() {
     }
 
     for image in args.images {
+        let id = Uuid::new_v4().to_string();
+
         let img_result = image::open(&image);
         if img_result.is_err() {
             println!("Error while open image");
@@ -83,10 +86,9 @@ fn main() {
             let encoder: Encoder = Encoder::from_image(&thumbnail).unwrap();
             let webp: WebPMemory = encoder.encode(quality);
 
-            let file_name_without_extension = Path::new(image.file_stem().unwrap());
             let img_path = args.folder.join(format!(
                 "{}_{}.webp",
-                file_name_without_extension.display(),
+                id,
                 resolution.width.to_string()
             ));
             let save_result = std::fs::write(&img_path, &*webp);

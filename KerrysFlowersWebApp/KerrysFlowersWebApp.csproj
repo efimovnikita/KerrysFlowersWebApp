@@ -398,4 +398,16 @@
       <_ContentIncludedByDefault Remove="wwwroot\Violets\0983d92b-c000-41ba-8e26-6d5c63ebd841\ff8246cc-dd18-4349-97ae-af575fa3f474_700.webp" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Remove="wwwroot\Violets\04005df4-8f81-40fc-8ac4-ba0ec951e64c\64357fb4-b889-452d-80e2-80cdf4c0e26a_500.webp" />
+      <Content Remove="wwwroot\Violets\04005df4-8f81-40fc-8ac4-ba0ec951e64c\64357fb4-b889-452d-80e2-80cdf4c0e26a_330.webp" />
+      <Content Remove="wwwroot\Violets\04005df4-8f81-40fc-8ac4-ba0ec951e64c\64357fb4-b889-452d-80e2-80cdf4c0e26a_300.webp" />
+      <Content Remove="wwwroot\Violets\04005df4-8f81-40fc-8ac4-ba0ec951e64c\240d22ae-d2fb-4407-b3b6-2feb162ccf2d_700.webp" />
+      <Content Remove="wwwroot\Violets\04005df4-8f81-40fc-8ac4-ba0ec951e64c\240d22ae-d2fb-4407-b3b6-2feb162ccf2d_500.webp" />
+      <Content Remove="wwwroot\Violets\04005df4-8f81-40fc-8ac4-ba0ec951e64c\240d22ae-d2fb-4407-b3b6-2feb162ccf2d_330.webp" />
+      <Content Remove="wwwroot\Violets\04005df4-8f81-40fc-8ac4-ba0ec951e64c\240d22ae-d2fb-4407-b3b6-2feb162ccf2d_300.webp" />
+      <Content Remove="wwwroot\Violets\04005df4-8f81-40fc-8ac4-ba0ec951e64c\0f26d006-be8b-47b1-b200-c1fc4b116ae3_700.webp" />
+      <Content Remove="wwwroot\Violets\04005df4-8f81-40fc-8ac4-ba0ec951e64c\0f26d006-be8b-47b1-b200-c1fc4b116ae3_300.webp" />
+    </ItemGroup>
+
 </Project>

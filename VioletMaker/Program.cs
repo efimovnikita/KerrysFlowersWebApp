@@ -35,11 +35,14 @@ internal static class Program
         Option<IEnumerable<VioletColor>> colorsOption =
             new("--colors", () => new List<VioletColor> {VioletColor.Blue, VioletColor.Green}, "Violet colors")
                 {AllowMultipleArgumentsPerToken = true, IsRequired = true};
-        Option<FileInfo> rootOption = new("--root",
-            () => new FileInfo(
+        Option<DirectoryInfo> rootOption = new("--root",
+            () => new DirectoryInfo(
                 "/home/maskedball/RiderProjects/KerrysFlowersWebApp/KerrysFlowersWebApp/wwwroot/Violets"),
             "Root folder for new violet") {IsRequired = true};
         rootOption.AddAlias("-r");
+        Option<FileInfo> reducerOption = new("--reducer",
+            () => new FileInfo("/home/maskedball/RiderProjects/KerrysFlowersWebApp/reducer/target/release/reducer"),
+            "Path to reducer tool") {IsRequired = true};
 
         RootCommand rootCommand = new("Violet maker");
         rootCommand.AddOption(nameOption);
@@ -53,7 +56,8 @@ internal static class Program
         rootCommand.AddOption(chimeraOption);
         rootCommand.AddOption(colorsOption);
         rootCommand.AddOption(rootOption);
-
+        rootCommand.AddOption(reducerOption);
+        
         rootCommand.SetHandler(async context =>
         {
             string name = context.ParseResult.GetValueForOption(nameOption);
@@ -66,7 +70,8 @@ internal static class Program
             FileInfo image3 = context.ParseResult.GetValueForOption(image3Option);
             bool chimera = context.ParseResult.GetValueForOption(chimeraOption);
             IEnumerable<VioletColor> colors = context.ParseResult.GetValueForOption(colorsOption);
-            FileInfo rootFolder = context.ParseResult.GetValueForOption(rootOption);
+            DirectoryInfo rootFolder = context.ParseResult.GetValueForOption(rootOption);
+            FileInfo reducer = context.ParseResult.GetValueForOption(reducerOption);
 
             Guid id = Guid.NewGuid();
             DirectoryInfo violetDir = Directory.CreateDirectory(Path.Combine(rootFolder!.FullName, id.ToString()));
@@ -76,22 +81,21 @@ internal static class Program
             for (int i = 0; i < rawImages.Length; i++)
             {
                 FileInfo fileInfo = rawImages[i];
-                string fullName = fileInfo.FullName;
-                string violetDirFullName = violetDir.FullName;
-
-                const string format = "webp";
-                await ExecuteGraphicsMagick(fullName, violetDirFullName, "300", format);
-                await ExecuteGraphicsMagick(fullName, violetDirFullName, "330", format);
-                await ExecuteGraphicsMagick(fullName, violetDirFullName, "500", format);
-                await ExecuteGraphicsMagick(fullName, violetDirFullName, "700", format);
+                string imagePath = fileInfo.FullName;
+                string folderPath = violetDir.FullName;
                 
-                string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fullName);
+                string arguments = $"-i \"{imagePath}\" -f \"{folderPath}\"";
+                BufferedCommandResult result = await Cli.Wrap(reducer!.FullName)
+                    .WithArguments(arguments)
+                    .ExecuteBufferedAsync();
+
+                string[] splitResult = result.StandardOutput.Split(Environment.NewLine);
 
                 Image image = new(i == 0,
-                    Path.Combine(rootFolder.Name, id.ToString(), $"{fileNameWithoutExtension}_300.{format}"),
-                    Path.Combine(rootFolder.Name, id.ToString(), $"{fileNameWithoutExtension}_330.{format}"),
-                    Path.Combine(rootFolder.Name, id.ToString(), $"{fileNameWithoutExtension}_500.{format}"),
-                    Path.Combine(rootFolder.Name, id.ToString(), $"{fileNameWithoutExtension}_700.{format}"));
+                    splitResult[0],
+                    splitResult[1],
+                    splitResult[2],
+                    splitResult[3]);
                 
                 images.Add(image);
             }
@@ -137,15 +141,6 @@ internal static class Program
 
         return await rootCommand.InvokeAsync(args);
     }
-
-    private static async Task ExecuteGraphicsMagick(string fullName, string violetDirFullName, string width, string format)
-    {
-        string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fullName);
-        string arguments = $"-convert \"{fullName}\" -resize {width}x -unsharp 0.25x0.08+8.3+0.045 -quality 82 \"{Path.Combine(violetDirFullName, $"{fileNameWithoutExtension}_{width}.{format}")}\"";
-        await Cli.Wrap("gm")
-            .WithArguments(arguments)
-            .ExecuteBufferedAsync();
-    }
 }
 
 public static class StringExtensions
@@ -155,6 +150,6 @@ public static class StringExtensions
         {
             null => throw new ArgumentNullException(nameof(input)),
             "" => throw new ArgumentException($"{nameof(input)} cannot be empty", nameof(input)),
-            _ => string.Concat(input[0].ToString().ToUpper(), input.AsSpan(1))
+            _ => String.Concat(input[0].ToString().ToUpper(), input.AsSpan(1))
         };
 }
