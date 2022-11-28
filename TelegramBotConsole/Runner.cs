@@ -12,17 +12,19 @@ namespace TelegramBotConsole;
 internal class Runner
 {
     private readonly FileInfo _maker;
-    private readonly FileInfo _root;
+    private readonly DirectoryInfo _root;
+    private readonly FileInfo _reducer;
     private Violet _currentViolet;
     private Queue<IUnit> _stages = new();
     private readonly TelegramBotClient _client;
     private IUnit _currentStage;
     private long? _chatId;
 
-    public Runner(string apiKey, FileInfo maker, FileInfo root)
+    public Runner(string apiKey, FileInfo maker, DirectoryInfo root, FileInfo reducer)
     {
         _maker = maker;
         _root = root;
+        _reducer = reducer;
 
         _client = new TelegramBotClient(apiKey);
         _client.StartReceiving(UpdateHandler, PollingErrorHandler);
@@ -128,7 +130,7 @@ internal class Runner
 
             BufferedCommandResult result = await Cli.Wrap(_maker.FullName)
                 .WithArguments(
-                    $"-n \"{_currentViolet.Name}\" -b \"{_currentViolet.Breeder}\" -d \"{_currentViolet.Description}\" --date \"{_currentViolet.BreedingDate}\" --image1 \"{_currentViolet.Images[0].W300}\" --image2 \"{_currentViolet.Images[1].W300}\" --image3 \"{_currentViolet.Images[2].W300}\" --chimera \"{_currentViolet.IsChimera}\" -t {String.Join(' ', _currentViolet.Tags.Select(tag => $"\"{tag}\""))} --colors {String.Join(' ', _currentViolet.Colors.Select(color => $"\"{color}\""))} --root \"{_root}\"")
+                    $"-n \"{_currentViolet.Name}\" -b \"{_currentViolet.Breeder}\" -d \"{_currentViolet.Description}\" --date \"{_currentViolet.BreedingDate}\" --image1 \"{_currentViolet.Images[0].W300}\" --image2 \"{_currentViolet.Images[1].W300}\" --image3 \"{_currentViolet.Images[2].W300}\" --chimera \"{_currentViolet.IsChimera}\" -t {String.Join(' ', _currentViolet.Tags.Select(tag => $"\"{tag}\""))} --colors {String.Join(' ', _currentViolet.Colors.Select(color => $"\"{color}\""))} --root \"{_root}\" --reducer \"{_reducer}\"")
                 .ExecuteBufferedAsync();
 
             if (result.StandardOutput.Contains("Success"))

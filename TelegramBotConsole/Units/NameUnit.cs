@@ -10,9 +10,9 @@ namespace TelegramBotConsole.Units;
 internal class NameUnit : IUnit
 {
     private readonly ITelegramBotClient _client;
-    private readonly FileInfo _root;
+    private readonly DirectoryInfo _root;
 
-    public NameUnit(ITelegramBotClient client, FileInfo root)
+    public NameUnit(ITelegramBotClient client, DirectoryInfo root)
     {
         _client = client;
         _root = root;
