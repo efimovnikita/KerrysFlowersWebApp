@@ -89,11 +89,7 @@ internal static class Program
                     .WithArguments(arguments)
                     .ExecuteBufferedAsync();
 
-                string[] splitResult = result.StandardOutput
-                    .Split(Environment.NewLine)
-                    .Select(s => s.Split('/'))
-                    .Select(strings => $"{strings[^3]}/{strings[^2]}/{strings[^1]}")
-                    .ToArray();
+                string[] splitResult = result.StandardOutput.Split(Environment.NewLine);
 
                 Image image = new(i == 0,
                     splitResult[0],
