@@ -46,11 +46,9 @@ impl Resolution {
             self.max_width.to_string()
         );
         let img_path = save_folder.join(&image_name);
-        let save_result = std::fs::write(&img_path, &*webp);
-        match save_result {
-            Ok(_) => Ok(img_path),
-            Err(e) => Err(e),
-        }
+        let _save_result = std::fs::write(&img_path, &*webp)?;
+
+        Ok(img_path)
     }
 }
 
