@@ -1,24 +1,24 @@
 extern crate exitcode;
-use clap::Parser;
 use image::imageops::FilterType;
 use image::GenericImageView;
 use std::path::PathBuf;
 use std::process;
 use std::thread;
+use structopt::StructOpt;
 use webp::*;
 
 /// Tool for reduce image size
-#[derive(Parser, Debug)]
-#[command(author, version, about, long_about = None)]
+#[derive(StructOpt, Debug)]
+#[structopt(name = "reducer")]
 pub struct Args {
     /// Paths to images
-    #[clap(short, long)]
+    #[structopt(parse(from_os_str))]
     pub images: Vec<PathBuf>,
     /// Path to save folder
-    #[clap(short, long)]
+    #[structopt(short, long)]
     pub folder: PathBuf,
     /// Images quality
-    #[clap(long)]
+    #[structopt(short, long)]
     pub quality: Option<f32>,
 }
 
@@ -27,7 +27,12 @@ struct Resolution {
 }
 
 fn main() {
-    let args: Args = Args::parse();
+    let args: Args = Args::from_args();
+
+    if args.images.len() == 0 {
+        eprintln!("Please provide some images");
+        process::exit(exitcode::DATAERR)
+    }
 
     for image in args.images.clone() {
         if image.exists() == false {
@@ -56,14 +61,14 @@ fn main() {
         process::exit(exitcode::DATAERR)
     }
 
-    let mut handles = Vec::with_capacity(args.images.len());
+    let mut threads = Vec::with_capacity(args.images.len());
 
     for image_path in args.images {
         // clone folder arg for threads
         let folder = args.folder.clone();
 
         // spawn new threads
-        handles.push(thread::spawn(move || {
+        threads.push(thread::spawn(move || {
 
         let img_result = image::open(&image_path);
         if img_result.is_err() {
@@ -114,7 +119,7 @@ fn main() {
         }))
     }
 
-    for handle in handles {
+    for handle in threads {
         handle.join().unwrap();
     }
 
