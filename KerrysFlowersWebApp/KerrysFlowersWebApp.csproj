@@ -10,6 +10,12 @@
     <ItemGroup>
       <Folder Include="Templates" />
       <Folder Include="wwwroot\Violets" />
+      <Folder Include="wwwroot\Violets\36209d2b-5502-4e89-a23a-b32fb5943c91" />
+      <Folder Include="wwwroot\Violets\53bc32e6-269f-43c2-bd2f-9926f6e76f23" />
+      <Folder Include="wwwroot\Violets\5abfc806-46ef-44ab-bbb2-5925b093d0ac" />
+      <Folder Include="wwwroot\Violets\76da2916-67f5-493f-bd11-ab0fb468bd4a" />
+      <Folder Include="wwwroot\Violets\85935f09-1732-4b01-af70-7d7deaf98673" />
+      <Folder Include="wwwroot\Violets\c750d28e-5573-41b0-829a-5a10d9dba445" />
     </ItemGroup>
 
     <ItemGroup>
@@ -408,6 +414,28 @@
       <Content Remove="wwwroot\Violets\04005df4-8f81-40fc-8ac4-ba0ec951e64c\240d22ae-d2fb-4407-b3b6-2feb162ccf2d_300.webp" />
       <Content Remove="wwwroot\Violets\04005df4-8f81-40fc-8ac4-ba0ec951e64c\0f26d006-be8b-47b1-b200-c1fc4b116ae3_700.webp" />
       <Content Remove="wwwroot\Violets\04005df4-8f81-40fc-8ac4-ba0ec951e64c\0f26d006-be8b-47b1-b200-c1fc4b116ae3_300.webp" />
+      <Content Remove="wwwroot\Violets\5abfc806-46ef-44ab-bbb2-5925b093d0ac\photo3_700.webp" />
+      <Content Remove="wwwroot\Violets\5abfc806-46ef-44ab-bbb2-5925b093d0ac\photo3_500.webp" />
+      <Content Remove="wwwroot\Violets\5abfc806-46ef-44ab-bbb2-5925b093d0ac\photo3_300.webp" />
+      <Content Remove="wwwroot\Violets\5abfc806-46ef-44ab-bbb2-5925b093d0ac\photo2_700.webp" />
+      <Content Remove="wwwroot\Violets\5abfc806-46ef-44ab-bbb2-5925b093d0ac\photo2_330.webp" />
+      <Content Remove="wwwroot\Violets\5abfc806-46ef-44ab-bbb2-5925b093d0ac\photo2_300.webp" />
+      <Content Remove="wwwroot\Violets\5abfc806-46ef-44ab-bbb2-5925b093d0ac\photo1_500.webp" />
+      <Content Remove="wwwroot\Violets\36209d2b-5502-4e89-a23a-b32fb5943c91\photo3_500.webp" />
+      <Content Remove="wwwroot\Violets\36209d2b-5502-4e89-a23a-b32fb5943c91\photo3_330.webp" />
+      <Content Remove="wwwroot\Violets\36209d2b-5502-4e89-a23a-b32fb5943c91\photo3_300.webp" />
+      <Content Remove="wwwroot\Violets\36209d2b-5502-4e89-a23a-b32fb5943c91\photo2_700.webp" />
+      <Content Remove="wwwroot\Violets\36209d2b-5502-4e89-a23a-b32fb5943c91\photo2_330.webp" />
+      <Content Remove="wwwroot\Violets\36209d2b-5502-4e89-a23a-b32fb5943c91\photo2_300.webp" />
+      <Content Remove="wwwroot\Violets\36209d2b-5502-4e89-a23a-b32fb5943c91\photo1_700.webp" />
+      <Content Remove="wwwroot\Violets\c750d28e-5573-41b0-829a-5a10d9dba445\photo3_330.webp" />
+      <Content Remove="wwwroot\Violets\c750d28e-5573-41b0-829a-5a10d9dba445\photo3_300.webp" />
+      <Content Remove="wwwroot\Violets\c750d28e-5573-41b0-829a-5a10d9dba445\photo2_700.webp" />
+      <Content Remove="wwwroot\Violets\c750d28e-5573-41b0-829a-5a10d9dba445\photo2_500.webp" />
+      <Content Remove="wwwroot\Violets\c750d28e-5573-41b0-829a-5a10d9dba445\photo2_330.webp" />
+      <Content Remove="wwwroot\Violets\c750d28e-5573-41b0-829a-5a10d9dba445\photo2_300.webp" />
+      <Content Remove="wwwroot\Violets\c750d28e-5573-41b0-829a-5a10d9dba445\photo1_700.webp" />
+      <Content Remove="wwwroot\Violets\c750d28e-5573-41b0-829a-5a10d9dba445\photo1_500.webp" />
     </ItemGroup>
 
 </Project>

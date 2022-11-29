@@ -75,27 +75,41 @@ internal static class Program
 
             Guid id = Guid.NewGuid();
             DirectoryInfo violetDir = Directory.CreateDirectory(Path.Combine(rootFolder!.FullName, id.ToString()));
+            
+            string arguments = $"-i \"{image1}\" -i \"{image2}\" -i \"{image3}\" -f \"{violetDir.FullName}\"";
+            BufferedCommandResult result = await Cli.Wrap(reducer!.FullName)
+                .WithArguments(arguments)
+                .ExecuteBufferedAsync();
 
-            FileInfo[] rawImages = { image1, image2, image3 };
-            List<Image> images = new(3);
-            for (int i = 0; i < rawImages.Length; i++)
+            string[] paths = result.StandardOutput
+                .Split(Environment.NewLine)
+                .OrderBy(s => s)
+                .Where(s => String.IsNullOrEmpty(s) == false)
+                .ToArray();
+
+            List<string> processedPaths = new(12);
+            foreach (string fullPath in paths)
             {
-                FileInfo fileInfo = rawImages[i];
-                string imagePath = fileInfo.FullName;
-                string folderPath = violetDir.FullName;
-                
-                string arguments = $"-i \"{imagePath}\" -f \"{folderPath}\"";
-                BufferedCommandResult result = await Cli.Wrap(reducer!.FullName)
-                    .WithArguments(arguments)
-                    .ExecuteBufferedAsync();
+                string[] split = fullPath
+                    .Split('/')
+                    .Where(s => String.IsNullOrEmpty(s) == false)
+                    .ToArray();
 
-                string[] splitResult = result.StandardOutput.Split(Environment.NewLine);
+                string[] lastElements = split.Skip(Math.Max(0, split.Length - 3)).ToArray();
+                string path = $"{lastElements[0]}/{lastElements[1]}/{lastElements[2]}";
+                processedPaths.Add(path);
+            }
 
+            List<List<string>> chunks = SplitList(processedPaths, 4).ToList();
+
+            List<Image> images = new(3);
+            for (int i = 0; i < chunks.Count; i++)
+            {
                 Image image = new(i == 0,
-                    splitResult[0],
-                    splitResult[1],
-                    splitResult[2],
-                    splitResult[3]);
+                    chunks[i][0],
+                    chunks[i][1],
+                    chunks[i][2],
+                    chunks[i][3]);
                 
                 images.Add(image);
             }
@@ -140,6 +154,14 @@ internal static class Program
         });
 
         return await rootCommand.InvokeAsync(args);
+    }
+
+    private static IEnumerable<List<T>> SplitList<T>(List<T> locations, int nSize=30)  
+    {        
+        for (int i = 0; i < locations.Count; i += nSize) 
+        { 
+            yield return locations.GetRange(i, Math.Min(nSize, locations.Count - i)); 
+        }  
     }
 }
 
