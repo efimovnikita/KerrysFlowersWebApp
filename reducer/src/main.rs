@@ -1,5 +1,6 @@
 extern crate exitcode;
 use image::imageops::FilterType;
+use image::DynamicImage;
 use image::GenericImageView;
 use std::path::PathBuf;
 use std::process;
@@ -23,7 +24,34 @@ pub struct Args {
 }
 
 struct Resolution {
-    width: u32,
+    max_width: u32,
+}
+
+impl Resolution {
+    fn save_to_webp(
+        &self,
+        img: &DynamicImage,
+        image_path: &PathBuf,
+        save_folder: &PathBuf,
+        quality: f32,
+    ) -> Result<PathBuf, std::io::Error> {
+        let thumbnail = img.resize(self.max_width, 3000, FilterType::Lanczos3);
+
+        let encoder: Encoder = Encoder::from_image(&thumbnail).unwrap();
+        let webp: WebPMemory = encoder.encode(quality);
+
+        let image_name = format!(
+            "{}_{}.webp",
+            image_path.file_stem().unwrap().to_str().unwrap(),
+            self.max_width.to_string()
+        );
+        let img_path = save_folder.join(&image_name);
+        let save_result = std::fs::write(&img_path, &*webp);
+        match save_result {
+            Ok(_) => Ok(img_path),
+            Err(e) => Err(e),
+        }
+    }
 }
 
 fn main() {
@@ -65,7 +93,7 @@ fn main() {
 
     for image_path in args.images {
         // clone folder arg for threads
-        let folder = args.folder.clone();
+        let save_folder = args.folder.clone();
 
         // spawn new threads
         threads.push(thread::spawn(move || {
@@ -85,30 +113,24 @@ fn main() {
         }
 
         let resolutions = [
-            Resolution { width: 300 },
-            Resolution { width: 330 },
-            Resolution { width: 500 },
-            Resolution { width: 700 },
+            Resolution { max_width: 300 },
+            Resolution { max_width: 330 },
+            Resolution { max_width: 500 },
+            Resolution { max_width: 700 },
         ];
 
         for resolution in resolutions {
-            let thumbnail = img.resize(resolution.width, 3000, FilterType::Lanczos3);
+            let result = resolution
+            .save_to_webp(&img, &image_path, &save_folder, quality);
 
-            let encoder: Encoder = Encoder::from_image(&thumbnail).unwrap();
-            let webp: WebPMemory = encoder.encode(quality);
-
-            let image_name = format!("{}_{}.webp", image_path.file_stem().unwrap().to_str().unwrap(), resolution.width.to_string());
-            let img_path = folder.join(&image_name);
-            let save_result = std::fs::write(&img_path, &*webp);
-            match save_result {
-                Ok(_) => {
+            match result {
+                Ok(img_path) => {
                     if img_path.exists() == false {
                         eprintln!("Something went wrong when save file {}", img_path.display());
                         process::exit(exitcode::DATAERR)
                     }
 
-                    println!("{}", img_path.display()
-                    );
+                    println!("{}", img_path.display());
                 }
                 Err(e) => {
                     eprintln!("Error while save image: {}", e);
