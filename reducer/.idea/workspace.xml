@@ -7,7 +7,9 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="278768a9-3800-4afb-912f-58e1a454a780" name="Changes" comment="" />
+    <list default="true" id="278768a9-3800-4afb-912f-58e1a454a780" name="Changes" comment="minor fixes">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -79,6 +81,21 @@
       <option name="presentableId" value="Default" />
       <updated>1669530421399</updated>
     </task>
+    <task id="LOCAL-00001" summary="fix gitignore">
+      <created>1669808468134</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1669808468134</updated>
+    </task>
+    <task id="LOCAL-00002" summary="minor fixes">
+      <created>1669809059884</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1669809059884</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -91,6 +108,11 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="fix gitignore" />
+    <MESSAGE value="minor fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="minor fixes" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

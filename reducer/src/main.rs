@@ -57,7 +57,7 @@ fn main() {
 
     if args.images.len() == 0 {
         eprintln!("Please provide some images");
-        process::exit(exitcode::DATAERR)
+        process::exit(exitcode::NOINPUT)
     }
 
     for image in &args.images {
@@ -128,14 +128,14 @@ fn main() {
                 Ok(img_path) => {
                     if img_path.exists() == false {
                         eprintln!("Something went wrong when save file \'{}\'", img_path.display());
-                        process::exit(exitcode::DATAERR)
+                        process::exit(exitcode::IOERR)
                     }
 
                     println!("{}", img_path.display());
                 }
                 Err(e) => {
                     eprintln!("Error while save image: \'{}\'", e);
-                    process::exit(exitcode::DATAERR)
+                    process::exit(exitcode::SOFTWARE)
                 }
             }
         }
