@@ -106,7 +106,7 @@ fn main() {
 
         let (w, h) = img.dimensions();
         if (w > 700 && h > 700) == false {
-            eprintln!("Image too small: width - {}px, height - {}px. Width and height should be more than 700px", w, h);
+            eprintln!("Image \'{}\' too small: width - {}px, height - {}px. Width and height should be more than 700px", image_path.display(), w, h);
             process::exit(exitcode::DATAERR)
         }
 
