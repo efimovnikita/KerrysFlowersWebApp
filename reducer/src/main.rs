@@ -60,15 +60,18 @@ fn main() {
         process::exit(exitcode::DATAERR)
     }
 
-    for image in args.images.clone() {
+    for image in &args.images {
         if image.exists() == false {
-            eprintln!("Image file {} don't exist", image.display());
+            eprintln!("Image file \'{}\' don't exist", image.display());
             process::exit(exitcode::IOERR)
         }
     }
 
     if args.folder.exists() == false {
-        eprintln!("Folder for save images don't exist");
+        eprintln!(
+            "Folder \'{}\' for save images don't exist",
+            args.folder.display()
+        );
         process::exit(exitcode::IOERR)
     }
 
@@ -98,7 +101,7 @@ fn main() {
 
         let img_result = image::open(&image_path);
         if img_result.is_err() {
-            eprintln!("Error while open image");
+            eprintln!("Error while open image \'{}\'", image_path.display());
             process::exit(exitcode::IOERR)
         }
 
@@ -119,19 +122,19 @@ fn main() {
 
         for resolution in resolutions {
             let result = resolution
-            .save_to_webp(&img, &image_path, &save_folder, quality);
+                .save_to_webp(&img, &image_path, &save_folder, quality);
 
             match result {
                 Ok(img_path) => {
                     if img_path.exists() == false {
-                        eprintln!("Something went wrong when save file {}", img_path.display());
+                        eprintln!("Something went wrong when save file \'{}\'", img_path.display());
                         process::exit(exitcode::DATAERR)
                     }
 
                     println!("{}", img_path.display());
                 }
                 Err(e) => {
-                    eprintln!("Error while save image: {}", e);
+                    eprintln!("Error while save image: \'{}\'", e);
                     process::exit(exitcode::DATAERR)
                 }
             }
