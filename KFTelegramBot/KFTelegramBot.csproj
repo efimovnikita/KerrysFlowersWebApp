@@ -17,6 +17,7 @@
     
 	<ItemGroup>
 	  <Folder Include="Abstract\" />
+	  <Folder Include="Providers\" />
 	  <Folder Include="Services\" />
 	</ItemGroup>
 
