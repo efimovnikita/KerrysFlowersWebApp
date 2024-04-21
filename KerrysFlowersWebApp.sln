@@ -1,20 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KerrysFlowersWebApp", "KerrysFlowersWebApp\KerrysFlowersWebApp.csproj", "{AD6B3125-B159-46A5-9A53-DB7D1B841002}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KerrysFlowersWebApp", "KerrysFlowersWebApp\KerrysFlowersWebApp.csproj", "{AD6B3125-B159-46A5-9A53-DB7D1B841002}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedLibrary", "SharedLibrary\SharedLibrary.csproj", "{393444ED-612E-4B1F-AFF6-D54BC3785A00}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedLibrary", "SharedLibrary\SharedLibrary.csproj", "{393444ED-612E-4B1F-AFF6-D54BC3785A00}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VioletMaker", "VioletMaker\VioletMaker.csproj", "{EE383890-5E10-44D0-A807-9E3A08A1652F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VioletMaker", "VioletMaker\VioletMaker.csproj", "{EE383890-5E10-44D0-A807-9E3A08A1652F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComponentsLibrary", "ComponentsLibrary\ComponentsLibrary.csproj", "{2BE0B86F-415F-4E67-862E-F5AEE2253117}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentsLibrary", "ComponentsLibrary\ComponentsLibrary.csproj", "{2BE0B86F-415F-4E67-862E-F5AEE2253117}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramBotConsole", "TelegramBotConsole\TelegramBotConsole.csproj", "{4BE4D717-D9D8-4CE4-B16B-6063F557DEFE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramBotConsole", "TelegramBotConsole\TelegramBotConsole.csproj", "{4BE4D717-D9D8-4CE4-B16B-6063F557DEFE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VioletRemover", "VioletRemover\VioletRemover.csproj", "{1B448B45-E569-40D3-A5E1-FC6C3C737B0F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VioletRemover", "VioletRemover\VioletRemover.csproj", "{1B448B45-E569-40D3-A5E1-FC6C3C737B0F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramBotRemoverConsole", "TelegramBotRemoverConsole\TelegramBotRemoverConsole.csproj", "{D9369EF0-038C-460E-809F-068159CDFFE7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramBotRemoverConsole", "TelegramBotRemoverConsole\TelegramBotRemoverConsole.csproj", "{D9369EF0-038C-460E-809F-068159CDFFE7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PushContentLocator", "PushContentLocator\PushContentLocator.csproj", "{2E553BE9-D0D0-4C9F-B846-E70A0D5629F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PushContentLocator", "PushContentLocator\PushContentLocator.csproj", "{2E553BE9-D0D0-4C9F-B846-E70A0D5629F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KFTelegramBot", "KFTelegramBot\KFTelegramBot.csproj", "{544C9793-282F-4F6E-B3C5-E0DB5BCE28CC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,5 +59,12 @@ Global
 		{2E553BE9-D0D0-4C9F-B846-E70A0D5629F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E553BE9-D0D0-4C9F-B846-E70A0D5629F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E553BE9-D0D0-4C9F-B846-E70A0D5629F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{544C9793-282F-4F6E-B3C5-E0DB5BCE28CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{544C9793-282F-4F6E-B3C5-E0DB5BCE28CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{544C9793-282F-4F6E-B3C5-E0DB5BCE28CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{544C9793-282F-4F6E-B3C5-E0DB5BCE28CC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal
