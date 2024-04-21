@@ -18,3 +18,4 @@ Cargo.lock
 **/*.rs.bk
 /KerrysFlowersWebApp/KerrysFlowersWebApp.csproj.user
 /.vs
+/KFTelegramBot/Properties/launchSettings.json
