@@ -1,3 +1,6 @@
+@using SharedLibrary.Providers
+@inject IVioletRepository VioletRepository
+
 <CascadingValue Value="this">
    @ChildContent 
 </CascadingValue>
@@ -6,14 +9,12 @@
     [Parameter] public RenderFragment ChildContent { get; set; }
     protected override void OnInitialized()
     {
-        string[] directories = Directory.GetDirectories(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"));
-        string violetsDirPath = directories.FirstOrDefault(s => s.Contains("Violets"));
-        string[] jsonFiles = Directory.GetFiles(violetsDirPath!, "*.json", SearchOption.AllDirectories);
+        if (Violets != null)
+        {
+            return;
+        }
 
-        Violets = jsonFiles
-            .Select(File.ReadAllText)
-            .Select(JsonConvert.DeserializeObject<Violet>)
-            .ToList();
+        Violets = VioletRepository.GetAllViolets().ToList();
         InitFilter();
 
         FiltersPanel = new FiltersPanelVisibility();

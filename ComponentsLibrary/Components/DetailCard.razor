@@ -1,22 +1,24 @@
-@using System.Globalization
-@using System.Net.Mime
 @using ComponentsLibrary.Services
-@using Microsoft.JSInterop
 @inject ClipboardService ClipboardService
 
 <article
     class="w-[330px] flex flex-col items-center text-text1 relative sm:w-[500px] md:w-[700px]">
+    @{
+        var base64Image300Src = $"data:image/jpeg;base64,{Violet.Images.FirstOrDefault(image => image.Active)!.W300}";
+        var base64Image500Src = $"data:image/jpeg;base64,{Violet.Images.FirstOrDefault(image => image.Active)!.W500}";
+        var base64Image700Src = $"data:image/jpeg;base64,{Violet.Images.FirstOrDefault(image => image.Active)!.W700}";
+    }
     <picture>
         <source
             media="(min-width: 768px)"
-            srcset="@Violet.Images.FirstOrDefault(image => image.Active)!.W700"/>
+            srcset="@base64Image700Src"/>
         <source
             media="(min-width: 640px)"
-            srcset="@Violet.Images.FirstOrDefault(image => image.Active)!.W500"/>
+            srcset="@base64Image500Src"/>
         <img
             class="w-[330px] h-[330px] object-cover rounded-t-xl sm:w-[500px] sm:h-[500px] md:w-[700px] md:h-[700px]"
-            src="@Violet.Images.FirstOrDefault(image => image.Active)!.W300"
-            alt="Фотография фиалки @Violet.Name" />
+            src="@base64Image300Src"
+            alt="Фотография фиалки @Violet.Name"/>
     </picture>
     <div class="flex gap-4 absolute top-[275px] sm:top-[475px] md:top-[675px]">
         @for (int i = 0; i < Violet.Images.Count; i++)
@@ -63,7 +65,7 @@
                     string tags = tagBuilder.ToString().TrimEnd().TrimEnd(',');
                 }
 
-                @((MarkupString) tags)
+                @((MarkupString)tags)
             </p>
         </div>
         <div class="flex gap-3 items-center">
@@ -83,7 +85,7 @@
                     string colors = colorsBuilder.ToString().TrimEnd().TrimEnd(',');
                 }
 
-                @((MarkupString) colors)
+                @((MarkupString)colors)
             </p>
         </div>
         <div class="flex gap-3 items-center">

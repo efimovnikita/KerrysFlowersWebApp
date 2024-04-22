@@ -1,8 +1,11 @@
 <article
     class="w-[300px] flex flex-col items-center text-text1 relative">
+    @{
+        var base64ImageSrc = $"data:image/jpeg;base64,{Violet.Images.FirstOrDefault(image => image.Active)!.W300}";
+    }
     <img
         class="w-[300px] h-[300px] object-cover rounded-t-xl"
-        src="@Violet.Images.FirstOrDefault(image => image.Active)!.W300"
+        src="@base64ImageSrc"
         alt="Фотография фиалки @Violet.Name"/>
     <div class="flex gap-4 absolute bottom-20">
         @for (int i = 0; i < Violet.Images.Count; i++)
@@ -22,7 +25,7 @@
         <div
             class="flex justify-center items-center font-bold p-3 bg-label rounded-md text-white text-sm absolute bottom-20 -left-5">
             <p>New!</p>
-        </div>   
+        </div>
     }
     <div class="w-[300px] flex justify-center items-center bg-white p-5 text-lg font-bold rounded-b-xl">
         <a href="@($"/details/{Violet.TransliteratedName}")" title="@Violet.Name" class="hover:underline decoration-2 underline-offset-2">
