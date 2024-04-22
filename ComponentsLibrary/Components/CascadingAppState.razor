@@ -9,11 +9,6 @@
     [Parameter] public RenderFragment ChildContent { get; set; }
     protected override void OnInitialized()
     {
-        if (Violets != null)
-        {
-            return;
-        }
-
         Violets = VioletRepository.GetAllViolets().ToList();
         InitFilter();
 
