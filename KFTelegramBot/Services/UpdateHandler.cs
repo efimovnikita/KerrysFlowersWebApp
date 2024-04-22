@@ -79,12 +79,12 @@ public class UpdateHandler : IUpdateHandler
         var allViolets = _violetRepository.GetAllViolets();
         foreach (var violet in allViolets)
         {
-            await _botClient.SendTextMessageAsync(message.Chat.Id,
+            await botClient.SendTextMessageAsync(message.Chat.Id,
                 $"{violet.Id}\n{violet.Name}",
                 cancellationToken: cancellationToken);
         }
 
-        return await _botClient.SendTextMessageAsync(message.Chat.Id,
+        return await botClient.SendTextMessageAsync(message.Chat.Id,
             "Done!",
             cancellationToken: cancellationToken);
     }
@@ -104,9 +104,12 @@ public class UpdateHandler : IUpdateHandler
         return await pipeline.ProcessCurrentItem(message, botClient);
     }
 
-    private Task<Message> ResetCommand(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    private async Task<Message> ResetCommand(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        _memoryStateProvider.ResetCurrentPipeline(message.Chat.Id);
+        return await botClient.SendTextMessageAsync(message.Chat.Id,
+            "Текущая операция отменена.",
+            cancellationToken: cancellationToken);
     }
 
     private static async Task<Message> Usage(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)

@@ -23,4 +23,14 @@ public class MemoryStateProvider : IMemoryStateProvider
 
         State[userId] = pipeline;
     }
+
+    public void ResetCurrentPipeline(long userId)
+    {
+        if (IsContainUserId(userId) == false)
+        {
+            return;
+        }
+
+        State[userId] = null;
+    }
 }

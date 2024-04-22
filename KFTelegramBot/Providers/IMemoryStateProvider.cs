@@ -8,4 +8,5 @@ public interface IMemoryStateProvider
     bool IsContainUserId(long userId);
     IPipeline? GetCurrentPipeline(long userId);
     void SetCurrentPipeline(IPipeline pipeline, long userId);
+    void ResetCurrentPipeline(long userId);
 }
