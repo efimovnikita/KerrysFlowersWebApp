@@ -1,7 +1,6 @@
 ﻿using MongoDB.Driver;
-using SharedLibrary;
 
-namespace KFTelegramBot.Providers;
+namespace SharedLibrary.Providers;
 
 public class VioletRepository : IVioletRepository
 {

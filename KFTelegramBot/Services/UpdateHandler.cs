@@ -1,6 +1,7 @@
 ﻿using KFTelegramBot.Model;
 using KFTelegramBot.Providers;
 using Microsoft.Extensions.Logging;
+using SharedLibrary.Providers;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;

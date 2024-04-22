@@ -1,5 +1,6 @@
 ﻿using KFTelegramBot.Providers;
 using SharedLibrary;
+using SharedLibrary.Providers;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 

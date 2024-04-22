@@ -1,6 +1,4 @@
-﻿using SharedLibrary;
-
-namespace KFTelegramBot.Providers;
+﻿namespace SharedLibrary.Providers;
 
 public interface IVioletRepository
 {

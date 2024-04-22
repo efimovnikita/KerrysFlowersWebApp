@@ -2,6 +2,7 @@
 using KFTelegramBot.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SharedLibrary.Providers;
 using Telegram.Bot;
 
 var host = Host.CreateDefaultBuilder(args)
