@@ -1,0 +1,29 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build-env
+
+WORKDIR /source
+
+COPY *.sln .
+COPY ./SharedLibrary/SharedLibrary.csproj ./SharedLibrary/
+COPY ./KFTelegramBot/KFTelegramBot.csproj ./KFTelegramBot/
+
+COPY ./SharedLibrary/ ./SharedLibrary/
+COPY ./KFTelegramBot/ ./KFTelegramBot/
+
+RUN dotnet publish ./SharedLibrary/SharedLibrary.csproj -c Release -o /app/publish/SharedLibrary
+RUN dotnet publish ./KFTelegramBot/KFTelegramBot.csproj -c Release -o /app/publish/KFTelegramBot
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS runtime
+WORKDIR /app
+
+RUN apk add --no-cache icu-libs krb5-libs libgcc libintl libssl3 libstdc++ zlib
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+
+RUN mkdir -p /app/SharedLibrary
+RUN mkdir -p /app/KFTelegramBot
+
+COPY --from=build-env /app/publish/SharedLibrary /app/SharedLibrary
+COPY --from=build-env /app/publish/KFTelegramBot /app/KFTelegramBot
+
+EXPOSE 80
+
+ENTRYPOINT ["dotnet", "/app/KFTelegramBot/KFTelegramBot.dll"]
