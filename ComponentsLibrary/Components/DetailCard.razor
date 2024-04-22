@@ -1,6 +1,3 @@
-@using ComponentsLibrary.Services
-@inject ClipboardService ClipboardService
-
 <article
     class="w-[330px] flex flex-col items-center text-text1 relative sm:w-[500px] md:w-[700px]">
     @{
@@ -36,7 +33,7 @@
     <div
         class="w-[330px] flex flex-col gap-2 bg-heading text-text1 px-3 py-5 text-sm sm:w-[500px] sm:gap-3 sm:px-4 md:w-[700px] md:gap-4 md:text-xl md:px-6">
         <h2
-            class="font-bold text-lg font-roboto text-center sm:text-2xl sm:text-left md:text-left md:text-4xl cursor-pointer" @onclick="CopyToClipboard">
+            class="font-bold text-lg font-roboto text-center sm:text-2xl sm:text-left md:text-left md:text-4xl cursor-pointer">
             @Violet.Name
         </h2>
         <div class="flex gap-3 items-center">
@@ -126,18 +123,5 @@
     {
         Violet.Images.ForEach(i => i.Active = false);
         image.Active = true;
-    }
-
-    async Task CopyToClipboard()
-    {
-    // Writing to the clipboard may be denied, so you must handle the exception
-        try
-        {
-            await ClipboardService.WriteTextAsync(Violet.Id.ToString());
-        }
-        catch
-        {
-            Console.WriteLine("Cannot write text to clipboard");
-        }
     }
 }
