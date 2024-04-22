@@ -2,13 +2,14 @@
 using KFTelegramBot.Providers;
 using Microsoft.Extensions.Logging;
 using SharedLibrary.Providers;
+using SharedLibrary;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InlineQueryResults;
-using Telegram.Bot.Types.ReplyMarkups;
+using File = System.IO.File;
 
 namespace KFTelegramBot.Services;
 
@@ -36,7 +37,7 @@ public class UpdateHandler : IUpdateHandler
             { CallbackQuery: { } callbackQuery }           => BotOnCallbackQueryReceived(callbackQuery, cancellationToken),
             { InlineQuery: { } inlineQuery }               => BotOnInlineQueryReceived(inlineQuery, cancellationToken),
             { ChosenInlineResult: { } chosenInlineResult } => BotOnChosenInlineResultReceived(chosenInlineResult, cancellationToken),
-            _                                              => UnknownUpdateHandlerAsync(update, cancellationToken)
+            _                                              => UnknownUpdateHandlerAsync(update)
         };
 
         await handler;
@@ -63,11 +64,12 @@ public class UpdateHandler : IUpdateHandler
 
         var action = messageText.Split(' ')[0] switch
         {
-            "/add"             => AddCommand(_botClient, message, cancellationToken),
-            "/edit"            => EditCommand(_botClient, message, cancellationToken),
+            "/start"             => AddCommand(_botClient, message),
+            "/add"             => AddCommand(_botClient, message),
             "/delete"          => DeleteCommand(_botClient, message,cancellationToken),
             "/reset"           => ResetCommand(_botClient, message,cancellationToken),
-            "/test"            => TestCommand(_botClient, message,cancellationToken),
+            "/list"            => ListCommand(_botClient, message,cancellationToken),
+            "/usage"           => UsageCommand(_botClient, message,cancellationToken),
             _                  => ProcessCommand(_botClient, message, cancellationToken)
         };
 
@@ -75,7 +77,7 @@ public class UpdateHandler : IUpdateHandler
         _logger.LogInformation("The message was sent with userId: {SentMessageId}", sentMessage.MessageId);
     }
 
-    private async Task<Message> TestCommand(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    private async Task<Message> ListCommand(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
         var allViolets = _violetRepository.GetAllViolets();
         if (allViolets.Count == 0)
@@ -85,16 +87,58 @@ public class UpdateHandler : IUpdateHandler
                 cancellationToken: cancellationToken);
         }
 
-        foreach (var violet in allViolets)
+        var violets = allViolets.OrderBy(violet => violet.PublishDate).ToArray();
+        foreach (var violet in violets.Take(violets.Count() - 1))
         {
-            await botClient.SendTextMessageAsync(message.Chat.Id,
-                $"{violet.Id}\n{violet.Name}",
+            await botClient.SendPhotoAsync(message.Chat.Id,
+                InputFile.FromStream(await GetImageStreamFromBase64(violet)),
+                caption: GetCaption(violet),
+                parseMode: ParseMode.Markdown,
                 cancellationToken: cancellationToken);
         }
 
-        return await botClient.SendTextMessageAsync(message.Chat.Id,
-            "Done!",
+        var lastViolet = violets.Last();
+
+        return await botClient.SendPhotoAsync(message.Chat.Id,
+            InputFile.FromStream(await GetImageStreamFromBase64(lastViolet)),
+            caption: GetCaption(lastViolet),
+            parseMode: ParseMode.Markdown,
             cancellationToken: cancellationToken);
+
+        string GetCaption(Violet violet) => violet.ToString("M") + $"\n*Команда для удаления:* `/delete {violet.Id}`";
+
+        async Task<FileStream> GetImageStreamFromBase64(Violet violet)
+        {
+            FileStream? imageStream = null;
+            try
+            {
+                var imagePath = ConvertBase64StringToJpgFile(violet.Images.First().W300);
+                imageStream = File.OpenRead(imagePath);
+                return imageStream;
+            }
+            catch
+            {
+                if (imageStream != null) await imageStream.DisposeAsync();
+                throw;
+            }
+        }
+    }
+
+    public static string ConvertBase64StringToJpgFile(string base64String)
+    {
+        var tempFilePath = Path.GetTempFileName();
+        var jpgFilePath = Path.ChangeExtension(tempFilePath, ".jpg");
+
+        if (File.Exists(jpgFilePath))
+        {
+            File.Delete(jpgFilePath);
+        }
+
+        var fileBytes = Convert.FromBase64String(base64String);
+
+        File.WriteAllBytes(jpgFilePath, fileBytes);
+
+        return jpgFilePath;
     }
 
     private async Task<Message> ProcessCommand(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
@@ -106,6 +150,7 @@ public class UpdateHandler : IUpdateHandler
             return await botClient.SendTextMessageAsync(
                 chatId: chatId,
                 text: GetUsageText(),
+                parseMode: ParseMode.Markdown,
                 cancellationToken: cancellationToken);
         }
 
@@ -120,38 +165,66 @@ public class UpdateHandler : IUpdateHandler
             cancellationToken: cancellationToken);
     }
 
-    private static async Task<Message> Usage(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
-    {
-        return await botClient.SendTextMessageAsync(
+    private static async Task<Message> UsageCommand(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken) =>
+        await botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
             text: GetUsageText(),
-            replyMarkup: new ReplyKeyboardRemove(),
+            parseMode:ParseMode.Markdown,
+            cancellationToken: cancellationToken);
+
+    private static string GetUsageText() =>
+        """
+        *Список команд:*
+        
+        /start - добавить фиалку
+        /add - добавить фиалку
+        /delete - удалить фиалку
+        /reset - отменить текущую команду
+        /list - показать список фиалок
+        /usage - показать список команд
+        """;
+
+    private async Task<Message> DeleteCommand(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    {
+        var strings = message.Text!.Split(' ');
+        if (strings.Length < 2)
+        {
+            return await botClient.SendTextMessageAsync(message.Chat.Id,
+                "Формат команды: `/delete <GUID>`. Попробуйте снова.",
+                parseMode: ParseMode.Markdown,
+                cancellationToken: cancellationToken);
+        }
+
+        var guidStr = strings[1];
+        if (string.IsNullOrWhiteSpace(guidStr))
+        {
+            return await botClient.SendTextMessageAsync(message.Chat.Id,
+                "Формат команды: `/delete <GUID>`. Попробуйте снова.",
+                cancellationToken: cancellationToken);
+        }
+
+        var parseStatus = Guid.TryParse(guidStr, out var guid);
+        if (parseStatus == false)
+        {
+            return await botClient.SendTextMessageAsync(message.Chat.Id,
+                "Не верный формат идентификатора. Попробуйте снова.",
+                cancellationToken: cancellationToken);
+        }
+
+        var deleteVioletStatus = _violetRepository.DeleteViolet(guid);
+        if (deleteVioletStatus)
+        {
+            return await botClient.SendTextMessageAsync(message.Chat.Id,
+                "Фиалка успешно удалена.",
+                cancellationToken: cancellationToken);
+        }
+
+        return await botClient.SendTextMessageAsync(message.Chat.Id,
+            "Не удалось удалить фиалку.",
             cancellationToken: cancellationToken);
     }
 
-    private static string GetUsageText()
-    {
-        const string usage = "Usage:\n" +
-                             "/inline_keyboard - send inline keyboard\n" +
-                             "/keyboard    - send custom keyboard\n" +
-                             "/remove      - remove custom keyboard\n" +
-                             "/photo       - send a photo\n" +
-                             "/request     - request location or contact\n" +
-                             "/inline_mode - send keyboard with Inline Query";
-        return usage;
-    }
-
-    private Task<Message> DeleteCommand(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    private Task<Message> EditCommand(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    private Task<Message> AddCommand(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    private Task<Message> AddCommand(ITelegramBotClient botClient, Message message)
     {
         var violetAddingPipeline = new VioletAddingPipeline([
             new VioletNamePipelineItem(),
@@ -219,7 +292,7 @@ public class UpdateHandler : IUpdateHandler
 
 #pragma warning disable IDE0060 // Remove unused parameter
 #pragma warning disable RCS1163 // Unused parameter.
-    private Task UnknownUpdateHandlerAsync(Update update, CancellationToken cancellationToken)
+    private Task UnknownUpdateHandlerAsync(Update update)
 #pragma warning restore RCS1163 // Unused parameter.
 #pragma warning restore IDE0060 // Remove unused parameter
     {

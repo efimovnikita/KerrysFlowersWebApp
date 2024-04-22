@@ -23,7 +23,7 @@ public class VioletColorsPipelineItem : IPipelineItem
             .Select(color => $"`{ExtensionMethods.GetEnumDescription(color)}`")
             .ToArray();
 
-        var possibleVariants = $"Возможные варианты:\n{string.Join(',', colors)}";
+        var possibleVariants = $"Возможные варианты:\n{string.Join(", ", colors)}";
         return possibleVariants;
     }
 

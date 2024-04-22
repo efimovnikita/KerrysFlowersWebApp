@@ -1,3 +1,4 @@
+﻿using Humanizer;
 using NickBuhro.Translit;
 
 namespace SharedLibrary;
@@ -40,6 +41,46 @@ public class Violet
     public bool IsChimera { get; set; }
 
     public List<VioletColor> Colors { get; set; }
+
+    public override string ToString()
+    {
+        return ToString("");
+    }
+
+    public string ToString(string format)
+    {
+        if (String.IsNullOrEmpty(format)) format = "G";
+
+        switch (format.ToUpperInvariant())
+        {
+            case "G": // General format
+                return $"""
+                        Имя: {Name}
+                        Описание: {Description.Truncate(100)}
+                        Дата публикации: {PublishDate:dd.MM.yyyy}
+                        Дата селекции: {BreedingDate:dd.MM.yyyy}
+                        Селекционер: {Breeder}
+                        Теги: {string.Join(", ", Tags.Select(s => s.ToLowerInvariant()))}
+                        Цвета: {string.Join(", ", Colors.Select(color => ExtensionMethods.GetEnumDescription(color).ToLowerInvariant()))}
+                        Химера: {(IsChimera ? "да" : "нет")}
+                        """;
+            case "M": // Markdown format
+                return $"""
+                        *Имя:* {Name}
+                        *Описание:* {Description.Truncate(100)}
+                        *Дата публикации:* {PublishDate:dd.MM.yyyy}
+                        *Дата селекции:* {BreedingDate:dd.MM.yyyy}
+                        *Селекционер:* {Breeder}
+                        *Теги:* {string.Join(", ", Tags.Select(s => s.ToLowerInvariant()))}
+                        *Цвета:* {string.Join(", ", Colors.Select(color => ExtensionMethods.GetEnumDescription(color).ToLowerInvariant()))}
+                        *Химера:* {(IsChimera ? "да" : "нет")}
+                        """;
+            case "N": // Name only
+                return Name;
+            default:
+                throw new FormatException($"The {format} format string is not supported.");
+        }
+    }
 }
 
 public class Filter
