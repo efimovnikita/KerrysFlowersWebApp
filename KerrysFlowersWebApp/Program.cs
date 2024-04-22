@@ -38,6 +38,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<ClipboardService>();
 builder.Services.AddSingleton<IVioletRepository>(_ => new VioletRepository($"mongodb://{dbAdmin}:{dbPassword}@{dbHost}:{dbPort}", dbDatabase));
+builder.WebHost.UseUrls(urls: new[] { "http://*:5000", "https://*:5001" });
 
 WebApplication app = builder.Build();
 
