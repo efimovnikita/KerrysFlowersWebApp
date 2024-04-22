@@ -1,0 +1,36 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0-jammy AS build-env
+
+WORKDIR /source
+
+COPY *.sln .
+COPY ./ComponentsLibrary/ComponentsLibrary.csproj ./ComponentsLibrary/
+COPY ./SharedLibrary/SharedLibrary.csproj ./SharedLibrary/
+COPY ./KerrysFlowersWebApp/KerrysFlowersWebApp.csproj ./KerrysFlowersWebApp/
+
+COPY ./ComponentsLibrary/ ./ComponentsLibrary/
+RUN dotnet publish ./ComponentsLibrary/ComponentsLibrary.csproj -c Release -o /app/publish/ComponentsLibrary
+
+COPY ./SharedLibrary/ ./SharedLibrary/
+RUN dotnet publish ./SharedLibrary/SharedLibrary.csproj -c Release -o /app/publish/SharedLibrary
+
+COPY ./KerrysFlowersWebApp/ ./KerrysFlowersWebApp/
+RUN dotnet publish ./KerrysFlowersWebApp/KerrysFlowersWebApp.csproj -c Release -o /app/publish/KerrysFlowersWebApp
+
+RUN dotnet dev-certs https -ep /app/publish/cert-aspnetcore.pfx -p crypticpassword
+RUN dotnet dev-certs https --trust
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-jammy AS runtime
+WORKDIR /app
+
+COPY --from=build-env /app/publish/KerrysFlowersWebApp /app
+
+COPY --from=build-env /app/publish/cert-aspnetcore.pfx /app/cert-aspnetcore.pfx
+
+RUN apt-get update \
+    && apt-get install -y ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
+
+EXPOSE 80
+EXPOSE 443
+
+ENTRYPOINT ["dotnet", "/app/KerrysFlowersWebApp.dll"]
