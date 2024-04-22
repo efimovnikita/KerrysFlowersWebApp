@@ -64,7 +64,7 @@ public class UpdateHandler : IUpdateHandler
 
         var action = messageText.Split(' ')[0] switch
         {
-            "/start"             => AddCommand(_botClient, message),
+            "/start"           => AddCommand(_botClient, message),
             "/add"             => AddCommand(_botClient, message),
             "/delete"          => DeleteCommand(_botClient, message,cancellationToken),
             "/reset"           => ResetCommand(_botClient, message,cancellationToken),
