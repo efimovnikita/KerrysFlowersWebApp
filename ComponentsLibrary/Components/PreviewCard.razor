@@ -5,9 +5,12 @@
                     "absolute w-full h-full bg-gradient-to-r from-background hover:hidden" : 
                     "absolute w-full h-full bg-gradient-to-l from-background hover:hidden")">
     </div>
+    @{
+        var base64ImageSrc = $"data:image/jpeg;base64,{Violet.Images.FirstOrDefault(image => image.Active)!.W300}";
+    }
     <img
         class="w-[300px] h-[300px] object-cover rounded-t-xl"
-        src="@Violet.Images.FirstOrDefault(image => image.Active)!.W300"
+         src="@base64ImageSrc"
         alt=""/>
     <div
         class="w-[300px] flex justify-center items-center bg-white p-5 text-lg font-bold rounded-b-xl">
