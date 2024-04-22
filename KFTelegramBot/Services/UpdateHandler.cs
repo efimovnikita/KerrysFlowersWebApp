@@ -1,8 +1,7 @@
-﻿using System.Drawing;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using SharedLibrary;
 using System.Globalization;
-using System.Threading;
+using MongoDB.Driver;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using Telegram.Bot;
@@ -21,12 +20,14 @@ public class UpdateHandler : IUpdateHandler
     private readonly ITelegramBotClient _botClient;
     private readonly ILogger<UpdateHandler> _logger;
     private readonly IMemoryStateProvider _memoryStateProvider;
+    private readonly IVioletRepository _violetRepository;
 
-    public UpdateHandler(ITelegramBotClient botClient, ILogger<UpdateHandler> logger, IMemoryStateProvider memoryStateProvider)
+    public UpdateHandler(ITelegramBotClient botClient, ILogger<UpdateHandler> logger, IMemoryStateProvider memoryStateProvider, IVioletRepository violetRepository)
     {
         _botClient = botClient;
         _logger = logger;
         _memoryStateProvider = memoryStateProvider;
+        _violetRepository = violetRepository;
     }
 
     public async Task HandleUpdateAsync(ITelegramBotClient _, Update update, CancellationToken cancellationToken)
@@ -69,11 +70,27 @@ public class UpdateHandler : IUpdateHandler
             "/edit"            => EditCommand(_botClient, message, cancellationToken),
             "/delete"          => DeleteCommand(_botClient, message,cancellationToken),
             "/reset"           => ResetCommand(_botClient, message,cancellationToken),
+            "/test"            => TestCommand(_botClient, message,cancellationToken),
             _                  => ProcessCommand(_botClient, message, cancellationToken)
         };
 
         Message sentMessage = await action;
         _logger.LogInformation("The message was sent with userId: {SentMessageId}", sentMessage.MessageId);
+    }
+
+    private async Task<Message> TestCommand(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    {
+        var allViolets = _violetRepository.GetAllViolets();
+        foreach (var violet in allViolets)
+        {
+            await _botClient.SendTextMessageAsync(message.Chat.Id,
+                $"{violet.Id}\n{violet.Name}",
+                cancellationToken: cancellationToken);
+        }
+
+        return await _botClient.SendTextMessageAsync(message.Chat.Id,
+            "Done!",
+            cancellationToken: cancellationToken);
     }
 
     private async Task<Message> ProcessCommand(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
@@ -130,15 +147,15 @@ public class UpdateHandler : IUpdateHandler
     private Task<Message> AddCommand(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
         var violetAddingPipeline = new VioletAddingPipeline([
-            // new VioletNamePipelineItem(),
-            // new VioletBreederPipelineItem(),
-            // new VioletDescriptionPipelineItem(),
-            // new VioletTagsPipelineItem(),
-            // new VioletBreedingDatePipelineItem(),
-            // new VioletChimeraPipelineItem(),
-            // new VioletColorsPipelineItem(),
+            new VioletNamePipelineItem(),
+            new VioletBreederPipelineItem(),
+            new VioletDescriptionPipelineItem(),
+            new VioletTagsPipelineItem(),
+            new VioletBreedingDatePipelineItem(),
+            new VioletChimeraPipelineItem(),
+            new VioletColorsPipelineItem(),
             new VioletImagesPipelineItem()
-        ]);
+        ], _violetRepository);
 
         _memoryStateProvider.SetCurrentPipeline(violetAddingPipeline, message.Chat.Id);
         return violetAddingPipeline.AskAQuestionForNextItem(message, botClient);
@@ -258,10 +275,13 @@ public interface IMemoryStateProvider
 
 public class VioletAddingPipeline : IPipeline
 {
-    public VioletAddingPipeline(IPipelineItem[] items)
+    private readonly IVioletRepository _violetRepository;
+
+    public VioletAddingPipeline(IPipelineItem[] items, IVioletRepository violetRepository)
     {
         PipelineItems = new Queue<IPipelineItem>(items);
         GrowingViolet = new Violet(Guid.NewGuid(), "", "", "", [], DateTime.Now, [], false, []);
+        _violetRepository = violetRepository;
     }
 
     public Queue<IPipelineItem> PipelineItems { get; set; }
@@ -296,14 +316,32 @@ public class VioletAddingPipeline : IPipeline
         }
 
         // queue is empty
-        var sentResult = SendDataToTheDatabase(GrowingViolet);
+        var sentResult = SendDataToTheDatabase(GrowingViolet, botClient, message.Chat.Id);
 
         return botClient.SendTextMessageAsync(message.Chat.Id, sentResult ? "Данные добавлены в базу данных." : "Не удалось добавить данные в базу данных.");
     }
 
-    private bool SendDataToTheDatabase(Violet violet)
+    private bool SendDataToTheDatabase(Violet violet, ITelegramBotClient botClient, long chatId)
     {
-        throw new NotImplementedException();
+        try
+        {
+            _violetRepository.GetOrCreateViolet(violet.Id,
+                violet.Name,
+                violet.Breeder,
+                violet.Description,
+                violet.Tags,
+                violet.BreedingDate,
+                violet.Images,
+                violet.IsChimera,
+                violet.Colors);
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            _ = botClient.SendTextMessageAsync(chatId, e.Message).Result;
+            return false;
+        }
     }
 }
 
@@ -692,4 +730,88 @@ public interface IPipelineItem
     Task<Message> AskAQuestion(Message message, ITelegramBotClient botClient);
     (bool, Task<Message>?) ValidateInput(Message message, ITelegramBotClient botClient);
     (bool, Task<Message>?) DoTheJob(Message message, object affectedObject, ITelegramBotClient botClient);
+}
+
+public interface IVioletRepository
+{
+    Violet GetOrCreateViolet(Guid id, string name, string breeder, string description, List<string> tags,
+        DateTime breedingDate, List<Image> images, bool isChimera, List<VioletColor> colors);
+    bool UpdateViolet(Violet updatedViolet);
+    List<Violet> GetAllViolets();
+    Violet GetVioletById(Guid id);
+    bool DeleteViolet(Guid id);
+}
+
+public class VioletRepository : IVioletRepository
+{
+    private readonly IMongoDatabase _database;
+
+    public VioletRepository(string connectionString, string dbDatabase)
+    {
+        MongoClient client = new MongoClient(connectionString);
+        _database = client.GetDatabase(dbDatabase);
+    }
+
+    public Violet GetOrCreateViolet(Guid id, string name, string breeder, string description, List<string> tags,
+        DateTime breedingDate, List<Image> images, bool isChimera, List<VioletColor> colors)
+    {
+        var violetsCollection = _database.GetCollection<Violet>("Violets");
+
+        var filter = Builders<Violet>.Filter.Eq("Id", id);
+
+        var violet = violetsCollection.Find(filter).FirstOrDefault();
+        if (violet != null)
+        {
+            return violet;
+        }
+
+        violet = new Violet(id, name, breeder, description, tags, breedingDate, images, isChimera, colors);
+        violetsCollection.InsertOne(violet);
+
+        return violet;
+    }
+
+    public bool UpdateViolet(Violet updatedViolet)
+    {
+        var violetsCollection = _database.GetCollection<Violet>("Violets");
+        var filter = Builders<Violet>.Filter.Eq("Id", updatedViolet.Id);
+
+        var updateDefinition = Builders<Violet>.Update
+            .Set(v => v.Name, updatedViolet.Name)
+            .Set(v => v.Breeder, updatedViolet.Breeder)
+            .Set(v => v.Description, updatedViolet.Description)
+            .Set(v => v.Tags, updatedViolet.Tags)
+            .Set(v => v.Images, updatedViolet.Images)
+            .Set(v => v.BreedingDate, updatedViolet.BreedingDate)
+            .Set(v => v.IsChimera, updatedViolet.IsChimera)
+            .Set(v => v.Colors, updatedViolet.Colors)
+            .CurrentDate(v => v.PublishDate); // Assuming we want to update the publish date as the current date
+        
+        var updateResult = violetsCollection.UpdateOne(filter, updateDefinition);
+
+        return updateResult.ModifiedCount > 0;
+    }
+
+    public List<Violet> GetAllViolets()
+    {
+        var violetsCollection = _database.GetCollection<Violet>("Violets");
+        return violetsCollection.Find(Builders<Violet>.Filter.Empty).ToList();
+    }
+
+    public Violet GetVioletById(Guid id)
+    {
+        var violetsCollection = _database.GetCollection<Violet>("Violets");
+        var filter = Builders<Violet>.Filter.Eq("Id", id);
+        return violetsCollection.Find(filter).FirstOrDefault();
+    }
+
+    public bool DeleteViolet(Guid id)
+    {
+        var violetsCollection = _database.GetCollection<Violet>("Violets");
+        var filter = Builders<Violet>.Filter.Eq(v => v.Id, id);
+    
+        var deleteResult = violetsCollection.DeleteOne(filter);
+
+        return deleteResult.DeletedCount > 0;
+    }
 }
