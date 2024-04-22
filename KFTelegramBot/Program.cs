@@ -1,4 +1,5 @@
-﻿using KFTelegramBot.Services;
+﻿using KFTelegramBot.Providers;
+using KFTelegramBot.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Telegram.Bot;
