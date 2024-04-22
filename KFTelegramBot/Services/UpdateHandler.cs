@@ -77,6 +77,13 @@ public class UpdateHandler : IUpdateHandler
     private async Task<Message> TestCommand(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
         var allViolets = _violetRepository.GetAllViolets();
+        if (allViolets.Count == 0)
+        {
+            return await botClient.SendTextMessageAsync(message.Chat.Id,
+                "Список пуст.",
+                cancellationToken: cancellationToken);
+        }
+
         foreach (var violet in allViolets)
         {
             await botClient.SendTextMessageAsync(message.Chat.Id,
