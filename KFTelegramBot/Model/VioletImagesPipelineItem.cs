@@ -1,9 +1,7 @@
 ﻿using SharedLibrary;
-using SixLabors.ImageSharp.Processing;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using ImageExtensions = SixLabors.ImageSharp.ImageExtensions;
 
 namespace KFTelegramBot.Model;
 
@@ -87,24 +85,5 @@ public class VioletImagesPipelineItem : IPipelineItem
 
         return (false,
             botClient.SendTextMessageAsync(message.Chat.Id, $"Загружено {violet.Images.Count} из 3 изображений."));
-    }
-
-    public class ImageResizer
-    {
-        public void ResizeImage(string inputFile, string outputFile, int newWidth)
-        {
-            using var image = SixLabors.ImageSharp.Image.Load(inputFile);
-            var newHeight = (int)(image.Height / ((float)image.Width / newWidth));
-
-            image.Mutate(ctx => ctx.Resize(newWidth, newHeight));
-
-            ImageExtensions.SaveAsJpeg(image, outputFile);
-        }
-
-        public bool HasMinimumWidth(string imagePath, int minWidth)
-        {
-            using var image = SixLabors.ImageSharp.Image.Load(imagePath);
-            return image.Width >= minWidth;
-        }
     }
 }
