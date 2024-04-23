@@ -1,4 +1,5 @@
-﻿using KFTelegramBot.Model;
+﻿using System.Text.Json;
+using KFTelegramBot.Model;
 using KFTelegramBot.Providers;
 using Microsoft.Extensions.Logging;
 using SharedLibrary.Providers;
@@ -71,12 +72,49 @@ public class UpdateHandler : IUpdateHandler
             "/list"            => ListCommand(_botClient, message,cancellationToken),
             "/usage"           => UsageCommand(_botClient, message,cancellationToken),
             "/site"            => SiteCommand(_botClient, message,cancellationToken),
+            "/backup"          => BackupCommand(_botClient, message,cancellationToken),
             _                  => ProcessCommand(_botClient, message, cancellationToken)
         };
 
         Message sentMessage = await action;
         _logger.LogInformation("The message was sent with userId: {SentMessageId}", sentMessage.MessageId);
     }
+
+    private async Task<Message> BackupCommand(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    {
+        var allViolets = _violetRepository.GetAllViolets();
+        if (allViolets.Count == 0)
+        {
+            return await botClient.SendTextMessageAsync(message.Chat.Id,
+                "Список пуст.",
+                cancellationToken: cancellationToken);
+        }
+
+        var violets = allViolets.OrderBy(violet => violet.PublishDate).ToArray();
+
+        var path = SerializeVioletsToJsonFile(violets);
+
+        await using FileStream fileStream = new(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+
+        InputFileStream inputFile = new(fileStream, Path.GetFileName(path));
+
+        return await botClient.SendDocumentAsync(message.Chat.Id, inputFile, caption: "Ваш бэкап", cancellationToken: cancellationToken);
+    }
+
+    public static string SerializeVioletsToJsonFile(Violet[] violets)
+    {
+        var options = new JsonSerializerOptions { WriteIndented = true };
+        var jsonString = JsonSerializer.Serialize(violets, options);
+
+        var tempDirectory = Path.GetTempPath();
+        const string fileName = "Violets.json";
+        var filePath = Path.Combine(tempDirectory, fileName);
+
+        File.WriteAllText(filePath, jsonString);
+
+        return filePath;
+    }
+
 
     private async Task<Message> SiteCommand(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken) =>
         await botClient.SendTextMessageAsync(
