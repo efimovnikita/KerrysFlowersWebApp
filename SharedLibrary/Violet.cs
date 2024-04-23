@@ -89,18 +89,20 @@ public class Violet
 public class Filter
 {
     public Filter(List<Tag> tags, List<Tag> colorTags, List<Tag> breederTags, List<Tag> yearTags,
-        List<Tag> chimeraTags)
+        List<Tag> chimeraTags, List<Tag> sizeTags)
     {
         Tags = tags;
         ColorTags = colorTags;
         BreederTags = breederTags;
         YearTags = yearTags;
         ChimeraTags = chimeraTags;
+        SizeTags = sizeTags;
     }
 
     public List<Tag> Tags { get; set; }
     public List<Tag> ColorTags { get; set; }
     public List<Tag> BreederTags { get; set; }
+    public List<Tag> SizeTags { get; set; }
     public List<Tag> YearTags { get; set; }
     public List<Tag> ChimeraTags { get; set; }
 }
@@ -124,4 +126,5 @@ public class FiltersPanelVisibility
     public bool BreederVisible { get; set; }
     public bool YearsVisible { get; set; }
     public bool ChimeraVisible { get; set; }
+    public bool SizesVisible { get; set; }
 }

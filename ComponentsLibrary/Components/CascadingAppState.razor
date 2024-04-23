@@ -71,6 +71,15 @@
                 })
                 .Where(violet =>
                 {
+                    List<string> activeSizeTags = Filter.SizeTags
+                        .Where(tag => tag.Active)
+                        .Select(tag => tag.Name)
+                        .ToList();
+
+                    return activeSizeTags.Count == 0 || activeSizeTags.Contains(ExtensionMethods.GetEnumDescription(violet.Size));
+                })
+                .Where(violet =>
+                {
                     List<string> activeYearTags = Filter.YearTags
                         .Where(tag => tag.Active)
                         .Select(tag => tag.Name)
@@ -98,6 +107,12 @@
             .Select(color => new Tag(ExtensionMethods.GetEnumDescription(color)))
             .ToList();
 
+        List<Tag> sizeTags = Violets
+            .Select(violet => violet.Size)
+            .Distinct()
+            .Select(size => new Tag(ExtensionMethods.GetEnumDescription(size)))
+            .ToList();
+
         List<Tag> breedersTags = Violets
             .Select(violet => violet.Breeder)
             .Distinct()
@@ -116,7 +131,7 @@
             .Select(b => new Tag(b ? "да" : "нет"))
             .ToList();
 
-        Filter = new Filter(tagsList, colorsTags, breedersTags, yearsTags, chimeraTags);
+        Filter = new Filter(tagsList, colorsTags, breedersTags, yearsTags, chimeraTags, sizeTags);
     }
 
     public void ChangeTagActivationState(Tag tag)
@@ -133,6 +148,11 @@
     public void ChangeColorsVisibility()
     {
         FiltersPanel.ColorsVisible = !FiltersPanel.ColorsVisible;
+    }
+
+    public void ChangeSizesVisibility()
+    {
+        FiltersPanel.SizesVisible = !FiltersPanel.SizesVisible;
     }
 
     public void ChangeBreedersVisibility()
@@ -154,6 +174,7 @@
     {
         Filter.Tags.ForEach(tag => tag.Active = false);
         Filter.BreederTags.ForEach(tag => tag.Active = false);
+        Filter.SizeTags.ForEach(tag => tag.Active = false);
         Filter.ChimeraTags.ForEach(tag => tag.Active = false);
         Filter.ColorTags.ForEach(tag => tag.Active = false);
         Filter.YearTags.ForEach(tag => tag.Active = false);
@@ -163,6 +184,7 @@
     public bool HasAnyActiveFilter() => 
         Filter.Tags
             .Concat(Filter.BreederTags)
+            .Concat(Filter.SizeTags)
             .Concat(Filter.ChimeraTags)
             .Concat(Filter.ColorTags)
             .Concat(Filter.YearTags)

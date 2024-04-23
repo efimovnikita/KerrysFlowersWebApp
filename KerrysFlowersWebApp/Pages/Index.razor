@@ -89,6 +89,7 @@
         </div>
         <FilterTagsContainer Title="Теги" IsTail="false" Tags="@AppState.Filter.Tags" ChangeTagState="AppState.ChangeTagActivationState" IsHidden="AppState.FiltersPanel.Invisible" ChangeVisibility="AppState.ChangeTagsVisibility" Visible="AppState.FiltersPanel.TagsVisible" />
         <FilterTagsContainer Title="Цвета" IsTail="false" Tags="@AppState.Filter.ColorTags" ChangeTagState="AppState.ChangeTagActivationState" IsHidden="AppState.FiltersPanel.Invisible" ChangeVisibility="AppState.ChangeColorsVisibility" Visible="AppState.FiltersPanel.ColorsVisible"/>
+        <FilterTagsContainer Title="Размеры" IsTail="false" Tags="@AppState.Filter.SizeTags" ChangeTagState="AppState.ChangeTagActivationState" IsHidden="AppState.FiltersPanel.Invisible" ChangeVisibility="AppState.ChangeSizesVisibility" Visible="AppState.FiltersPanel.SizesVisible"/>
         <FilterTagsContainer Title="Селекционеры" IsTail="false" Tags="@AppState.Filter.BreederTags" ChangeTagState="AppState.ChangeTagActivationState" IsHidden="AppState.FiltersPanel.Invisible" ChangeVisibility="AppState.ChangeBreedersVisibility" Visible="AppState.FiltersPanel.BreederVisible"/>
         <FilterTagsContainer Title="Годы селекции" IsTail="false" Tags="@AppState.Filter.YearTags" ChangeTagState="AppState.ChangeTagActivationState" IsHidden="AppState.FiltersPanel.Invisible" ChangeVisibility="AppState.ChangeYearsVisibility" Visible="AppState.FiltersPanel.YearsVisible"/>
         <FilterTagsContainer Title="Химеры" IsTail="true" Tags="@AppState.Filter.ChimeraTags" ChangeTagState="AppState.ChangeTagActivationState" IsHidden="AppState.FiltersPanel.Invisible" ChangeVisibility="AppState.ChangeChimeraVisibility" Visible="AppState.FiltersPanel.ChimeraVisible"/>
@@ -169,6 +170,14 @@
             case "ByBreeder":
             {
                 Tag tag = AppState.Filter.BreederTags.FirstOrDefault(tag => tag.Name.Equals(Criteria, StringComparison.OrdinalIgnoreCase));
+                if (tag == null) return;
+                AppState.ResetAllFilters();
+                AppState.ChangeTagActivationState(tag);
+                return;
+            }
+            case "BySize":
+            {
+                Tag tag = AppState.Filter.SizeTags.FirstOrDefault(tag => tag.Name.Equals(Criteria, StringComparison.OrdinalIgnoreCase));
                 if (tag == null) return;
                 AppState.ResetAllFilters();
                 AppState.ChangeTagActivationState(tag);
