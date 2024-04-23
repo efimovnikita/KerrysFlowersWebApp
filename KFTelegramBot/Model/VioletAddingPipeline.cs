@@ -59,7 +59,11 @@ public class VioletAddingPipeline : IPipeline
         // queue is empty
         var sentResult = SendDataToTheDatabase(GrowingViolet, botClient, message.Chat.Id);
 
-        return botClient.SendTextMessageAsync(message.Chat.Id, sentResult ? "Данные добавлены в базу данных." : "Не удалось добавить данные в базу данных.");
+        return botClient.SendTextMessageAsync(message.Chat.Id,
+            sentResult
+                ? $"Данные добавлены в базу данных.\n\nhttps://kerrisflowers.ru/details/{GrowingViolet.TransliteratedName}"
+                : "Не удалось добавить данные в базу данных.",
+            disableWebPagePreview: true);
     }
 
     private bool SendDataToTheDatabase(Violet violet, ITelegramBotClient botClient, long chatId)
