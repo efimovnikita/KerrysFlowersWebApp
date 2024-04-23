@@ -234,6 +234,7 @@ public class UpdateHandler : IUpdateHandler
             new VioletBreedingDatePipelineItem(),
             new VioletChimeraPipelineItem(),
             new VioletColorsPipelineItem(),
+            new VioletSizePipelineItem(),
             new VioletImagesPipelineItem()
         ], _violetRepository);
 

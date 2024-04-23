@@ -13,7 +13,7 @@ public class Violet
         DateTime breedingDate,
         List<Image> images, 
         bool isChimera, 
-        List<VioletColor> colors)
+        List<VioletColor> colors, VioletSize size)
     {
         Name = name;
         Breeder = breeder;
@@ -23,6 +23,7 @@ public class Violet
         Images = images;
         IsChimera = isChimera;
         Colors = colors;
+        Size = size;
         Id = id;
     }
 
@@ -39,8 +40,8 @@ public class Violet
     public DateTime BreedingDate { get; set; }
     public DateTime PublishDate { get; set; } = DateTime.Now;
     public bool IsChimera { get; set; }
-
     public List<VioletColor> Colors { get; set; }
+    public VioletSize Size { get; set; }
 
     public override string ToString()
     {
@@ -60,6 +61,7 @@ public class Violet
                         Дата публикации: {PublishDate:dd.MM.yyyy}
                         Дата селекции: {BreedingDate:dd.MM.yyyy}
                         Селекционер: {Breeder}
+                        Размер: {ExtensionMethods.GetEnumDescription(Size).ToLowerInvariant()}
                         Теги: {string.Join(", ", Tags.Select(s => s.ToLowerInvariant()))}
                         Цвета: {string.Join(", ", Colors.Select(color => ExtensionMethods.GetEnumDescription(color).ToLowerInvariant()))}
                         Химера: {(IsChimera ? "да" : "нет")}
@@ -71,6 +73,7 @@ public class Violet
                         *Дата публикации:* {PublishDate:dd.MM.yyyy}
                         *Дата селекции:* {BreedingDate:dd.MM.yyyy}
                         *Селекционер:* {Breeder}
+                        *Размер:* {ExtensionMethods.GetEnumDescription(Size).ToLowerInvariant()}
                         *Теги:* {string.Join(", ", Tags.Select(s => s.ToLowerInvariant()))}
                         *Цвета:* {string.Join(", ", Colors.Select(color => ExtensionMethods.GetEnumDescription(color).ToLowerInvariant()))}
                         *Химера:* {(IsChimera ? "да" : "нет")}

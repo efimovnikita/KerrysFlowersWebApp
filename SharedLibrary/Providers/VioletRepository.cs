@@ -13,7 +13,7 @@ public class VioletRepository : IVioletRepository
     }
 
     public Violet GetOrCreateViolet(Guid id, string name, string breeder, string description, List<string> tags,
-        DateTime breedingDate, List<Image> images, bool isChimera, List<VioletColor> colors)
+        DateTime breedingDate, List<Image> images, bool isChimera, List<VioletColor> colors, VioletSize size)
     {
         var violetsCollection = _database.GetCollection<Violet>("Violets");
 
@@ -25,7 +25,7 @@ public class VioletRepository : IVioletRepository
             return violet;
         }
 
-        violet = new Violet(id, name, breeder, description, tags, breedingDate, images, isChimera, colors);
+        violet = new Violet(id, name, breeder, description, tags, breedingDate, images, isChimera, colors, size);
         violetsCollection.InsertOne(violet);
 
         return violet;
@@ -45,6 +45,7 @@ public class VioletRepository : IVioletRepository
             .Set(v => v.BreedingDate, updatedViolet.BreedingDate)
             .Set(v => v.IsChimera, updatedViolet.IsChimera)
             .Set(v => v.Colors, updatedViolet.Colors)
+            .Set(v => v.Size, updatedViolet.Size)
             .CurrentDate(v => v.PublishDate); // Assuming we want to update the publish date as the current date
 
         var updateResult = violetsCollection.UpdateOne(filter, updateDefinition);

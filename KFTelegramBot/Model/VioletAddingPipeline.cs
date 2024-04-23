@@ -1,5 +1,4 @@
-﻿using KFTelegramBot.Providers;
-using SharedLibrary;
+﻿using SharedLibrary;
 using SharedLibrary.Providers;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -13,7 +12,16 @@ public class VioletAddingPipeline : IPipeline
     public VioletAddingPipeline(IPipelineItem[] items, IVioletRepository violetRepository)
     {
         PipelineItems = new Queue<IPipelineItem>(items);
-        GrowingViolet = new Violet(Guid.NewGuid(), "", "", "", [], DateTime.Now, [], false, []);
+        GrowingViolet = new Violet(Guid.NewGuid(),
+            "",
+            "",
+            "",
+            [],
+            DateTime.Now,
+            [],
+            false,
+            [],
+            VioletSize.Mini);
         _violetRepository = violetRepository;
     }
 
@@ -66,7 +74,8 @@ public class VioletAddingPipeline : IPipeline
                 violet.BreedingDate,
                 violet.Images,
                 violet.IsChimera,
-                violet.Colors);
+                violet.Colors, 
+                violet.Size);
 
             return true;
         }
