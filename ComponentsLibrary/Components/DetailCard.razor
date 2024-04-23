@@ -1,19 +1,19 @@
 <article
     class="w-[330px] flex flex-col items-center text-text1 relative sm:w-[500px] md:w-[700px]">
     @{
-        var base64Image700Src = $"data:image/jpeg;base64,{Violet.Images.FirstOrDefault(image => image.Active)!.W700}";
-        var base64ImageOriginalSrc = $"data:image/jpeg;base64,{Violet.Images.FirstOrDefault(image => image.Active)!.Original}";
+        var image500Src = $"data:image/jpeg;base64,{Violet.Images.FirstOrDefault(image => image.Active)!.W500}";
+        var image700Src = $"data:image/jpeg;base64,{Violet.Images.FirstOrDefault(image => image.Active)!.W700}";
     }
     <picture>
         <source
             media="(min-width: 768px)"
-            srcset="@base64ImageOriginalSrc"/>
+            srcset="@image700Src"/>
         <source
             media="(min-width: 640px)"
-            srcset="@base64Image700Src"/>
+            srcset="@image500Src"/>
         <img
             class="w-[330px] h-[330px] object-cover rounded-t-xl sm:w-[500px] sm:h-[500px] md:w-[700px] md:h-[700px]"
-             src="@base64Image700Src"
+             src="@image500Src"
             alt="Фотография фиалки @Violet.Name"/>
     </picture>
     <div class="flex gap-4 absolute top-[275px] sm:top-[475px] md:top-[675px]">
