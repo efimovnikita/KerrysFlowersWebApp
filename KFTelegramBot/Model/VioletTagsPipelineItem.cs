@@ -1,14 +1,31 @@
 ﻿using SharedLibrary;
+using SharedLibrary.Providers;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 namespace KFTelegramBot.Model;
 
-public class VioletTagsPipelineItem : IPipelineItem
+public class VioletTagsPipelineItem(IVioletRepository violetRepository) : IPipelineItem
 {
-    public Task<Message> AskAQuestion(Message message, ITelegramBotClient botClient) =>
-        botClient.SendTextMessageAsync(message.Chat.Id, "Введите теги (через запятую) для новой фиалки");
+    public Task<Message> AskAQuestion(Message message, ITelegramBotClient botClient)
+    {
+        var tags = violetRepository.GetAllViolets()
+            .SelectMany(violet => violet.Tags)
+            .Distinct()
+            .Select(tag => $"`{tag}`")
+            .ToArray();
+        
+        if (tags.Length <= 0)
+        {
+            return botClient.SendTextMessageAsync(message.Chat.Id, "Введите теги (через запятую) для новой фиалки");
+        }
+
+        var joinedTags = string.Join(", ", tags);
+        return botClient.SendTextMessageAsync(message.Chat.Id,
+            $"Введите теги (через запятую) для новой фиалки.\nРанее введенные теги:\n{joinedTags}",
+            parseMode: ParseMode.Markdown);
+    }
 
     public (bool, Task<Message>?) ValidateInput(Message message, ITelegramBotClient botClient)
     {

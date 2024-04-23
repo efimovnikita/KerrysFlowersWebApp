@@ -88,20 +88,38 @@ public class UpdateHandler : IUpdateHandler
         }
 
         var violets = allViolets.OrderBy(violet => violet.PublishDate).ToArray();
-        foreach (var violet in violets.Take(violets.Count() - 1))
+        foreach (var violet in violets.Take(violets.Length - 1))
         {
-            await botClient.SendPhotoAsync(message.Chat.Id,
-                InputFile.FromStream(await GetImageStreamFromBase64(violet)),
-                caption: GetCaption(violet),
-                parseMode: ParseMode.Markdown,
-                cancellationToken: cancellationToken);
+            if (violet.Images.Count != 0)
+            {
+                await botClient.SendPhotoAsync(message.Chat.Id,
+                    InputFile.FromStream(await GetImageStreamFromBase64(violet)),
+                    caption: GetCaption(violet),
+                    parseMode: ParseMode.Markdown,
+                    cancellationToken: cancellationToken);
+            }
+            else
+            {
+                await botClient.SendTextMessageAsync(message.Chat.Id,
+                    GetCaption(violet),
+                    parseMode: ParseMode.Markdown,
+                    cancellationToken: cancellationToken);
+            }
         }
 
         var lastViolet = violets.Last();
 
-        return await botClient.SendPhotoAsync(message.Chat.Id,
-            InputFile.FromStream(await GetImageStreamFromBase64(lastViolet)),
-            caption: GetCaption(lastViolet),
+        if (lastViolet.Images.Count != 0)
+        {
+            return await botClient.SendPhotoAsync(message.Chat.Id,
+                InputFile.FromStream(await GetImageStreamFromBase64(lastViolet)),
+                caption: GetCaption(lastViolet),
+                parseMode: ParseMode.Markdown,
+                cancellationToken: cancellationToken);
+        }
+
+        return await botClient.SendTextMessageAsync(message.Chat.Id,
+            GetCaption(lastViolet),
             parseMode: ParseMode.Markdown,
             cancellationToken: cancellationToken);
 
@@ -230,7 +248,7 @@ public class UpdateHandler : IUpdateHandler
             new VioletNamePipelineItem(),
             new VioletBreederPipelineItem(),
             new VioletDescriptionPipelineItem(),
-            new VioletTagsPipelineItem(),
+            new VioletTagsPipelineItem(_violetRepository),
             new VioletBreedingDatePipelineItem(),
             new VioletChimeraPipelineItem(),
             new VioletColorsPipelineItem(),
