@@ -70,12 +70,19 @@ public class UpdateHandler : IUpdateHandler
             "/reset"           => ResetCommand(_botClient, message,cancellationToken),
             "/list"            => ListCommand(_botClient, message,cancellationToken),
             "/usage"           => UsageCommand(_botClient, message,cancellationToken),
+            "/site"            => SiteCommand(_botClient, message,cancellationToken),
             _                  => ProcessCommand(_botClient, message, cancellationToken)
         };
 
         Message sentMessage = await action;
         _logger.LogInformation("The message was sent with userId: {SentMessageId}", sentMessage.MessageId);
     }
+
+    private async Task<Message> SiteCommand(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken) =>
+        await botClient.SendTextMessageAsync(
+            chatId: message.Chat.Id,
+            text: "https://kerrisflowers.ru",
+            cancellationToken: cancellationToken);
 
     private async Task<Message> ListCommand(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
@@ -200,6 +207,7 @@ public class UpdateHandler : IUpdateHandler
         /reset - отменить текущую команду
         /list - показать список фиалок
         /usage - показать список команд
+        /site - показать ссылку на сайт
         """;
 
     private async Task<Message> DeleteCommand(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
