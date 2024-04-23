@@ -46,7 +46,7 @@ public class UpdateHandler : IUpdateHandler
     private async Task BotOnMessageReceived(Message message, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Receive message type: {MessageType}", message.Type);
-        if (message.Type == MessageType.Photo)
+        if (message.Type == MessageType.Document)
         {
             await ProcessCommand(_botClient, message, cancellationToken);
         }
@@ -130,7 +130,7 @@ public class UpdateHandler : IUpdateHandler
             FileStream? imageStream = null;
             try
             {
-                var imagePath = ConvertBase64StringToJpgFile(violet.Images.First().W300);
+                var imagePath = ConvertBase64StringToJpgFile(violet.Images.First().W500);
                 imageStream = File.OpenRead(imagePath);
                 return imageStream;
             }
@@ -253,7 +253,7 @@ public class UpdateHandler : IUpdateHandler
             new VioletChimeraPipelineItem(),
             new VioletColorsPipelineItem(),
             new VioletSizePipelineItem(),
-            new VioletImagesPipelineItem()
+            new VioletDocumentsPipelineItem()
         ], _violetRepository);
 
         _memoryStateProvider.SetCurrentPipeline(violetAddingPipeline, message.Chat.Id);
