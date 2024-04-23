@@ -67,11 +67,11 @@ public class VioletColorsPipelineItem : IPipelineItem
         var values = Enum.GetValues(typeof(VioletColor));
         var possibleColors = values
             .OfType<VioletColor>()
-            .ToDictionary(color => ExtensionMethods.GetEnumDescription(color), color => color);
+            .ToDictionary(color => ExtensionMethods.GetEnumDescription(color).ToLowerInvariant(), color => color);
 
         var colors = message.Text!
             .Split(',', StringSplitOptions.RemoveEmptyEntries)
-            .Select(s => s.Trim())
+            .Select(s => s.Trim().ToLowerInvariant())
             .Select(s => possibleColors[s])
             .ToArray();
 
