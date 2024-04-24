@@ -10,12 +10,15 @@ using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InlineQueryResults;
+using Telegram.Bot.Types.ReplyMarkups;
 using File = System.IO.File;
 
 namespace KFTelegramBot.Services;
 
 public class UpdateHandler : IUpdateHandler
 {
+    private const string DeleteVioletButtonText = "Удалить фиалку";
+    private const string EditVioletPhotoButtonText = "Заменить фотографии";
     private readonly ITelegramBotClient _botClient;
     private readonly ILogger<UpdateHandler> _logger;
     private readonly IMemoryStateProvider _memoryStateProvider;
@@ -178,11 +181,14 @@ public class UpdateHandler : IUpdateHandler
         var violets = allViolets.OrderBy(violet => violet.PublishDate).ToArray();
         foreach (var violet in violets.Take(violets.Length - 1))
         {
+            var inlineKeyboard = GetInlineKeyboardMarkupForViolet(violet);
+
             if (violet.Images.Count != 0)
             {
                 await botClient.SendPhotoAsync(message.Chat.Id,
                     InputFile.FromStream(await GetImageStreamFromBase64(violet)),
                     caption: GetCaption(violet),
+                    replyMarkup: inlineKeyboard,
                     parseMode: ParseMode.Markdown,
                     cancellationToken: cancellationToken);
             }
@@ -190,6 +196,7 @@ public class UpdateHandler : IUpdateHandler
             {
                 await botClient.SendTextMessageAsync(message.Chat.Id,
                     GetCaption(violet),
+                    replyMarkup: inlineKeyboard,
                     parseMode: ParseMode.Markdown,
                     cancellationToken: cancellationToken);
             }
@@ -197,25 +204,26 @@ public class UpdateHandler : IUpdateHandler
 
         var lastViolet = violets.Last();
 
+        var inlineKeyboardForLastViolet = GetInlineKeyboardMarkupForViolet(lastViolet);
+
         if (lastViolet.Images.Count != 0)
         {
             return await botClient.SendPhotoAsync(message.Chat.Id,
                 InputFile.FromStream(await GetImageStreamFromBase64(lastViolet)),
                 caption: GetCaption(lastViolet),
+                replyMarkup: inlineKeyboardForLastViolet,
                 parseMode: ParseMode.Markdown,
                 cancellationToken: cancellationToken);
         }
 
         return await botClient.SendTextMessageAsync(message.Chat.Id,
             GetCaption(lastViolet),
+            replyMarkup: inlineKeyboardForLastViolet,
             parseMode: ParseMode.Markdown,
             cancellationToken: cancellationToken);
 
         string GetCaption(Violet violet) =>
-            violet.ToString("M") +
-            "\n----------------------" +
-            $"\n*Удалить фиалку:* `/delete {violet.Id}`" +
-            $"\n*Заменить фото:* `/edit_photos {violet.Id}`";
+            violet.ToString("M");
 
         async Task<FileStream> GetImageStreamFromBase64(Violet violet)
         {
@@ -232,6 +240,19 @@ public class UpdateHandler : IUpdateHandler
                 throw;
             }
         }
+    }
+
+    private static InlineKeyboardMarkup GetInlineKeyboardMarkupForViolet(Violet violet)
+    {
+        var deleteButton = new InlineKeyboardButton(DeleteVioletButtonText)
+            { CallbackData = $"/delete {violet.Id}" };
+        var editPhotosButton = new InlineKeyboardButton(EditVioletPhotoButtonText)
+            { CallbackData = $"/edit_photos {violet.Id}" };
+        var buttons = new[] { editPhotosButton, deleteButton }
+            .Select(button => (InlineKeyboardButton[]) [button])
+            .ToArray();
+        InlineKeyboardMarkup inlineKeyboard = new(buttons);
+        return inlineKeyboard;
     }
 
     public static string ConvertBase64StringToJpgFile(string base64String)
@@ -363,15 +384,35 @@ public class UpdateHandler : IUpdateHandler
     {
         _logger.LogInformation("Received inline keyboard callback from: {CallbackQueryId}", callbackQuery.Id);
 
+        var data = callbackQuery.Data;
+        if (string.IsNullOrWhiteSpace(data))
+        {
+            await _botClient.SendTextMessageAsync(callbackQuery.Message!.Chat.Id, "Callback query data is empty.",
+                cancellationToken: cancellationToken);
+            return;
+        }
+
+        callbackQuery.Message!.Text = data;
+
         await _botClient.AnswerCallbackQueryAsync(
             callbackQueryId: callbackQuery.Id,
             text: $"Received {callbackQuery.Data}",
             cancellationToken: cancellationToken);
 
-        await _botClient.SendTextMessageAsync(
-            chatId: callbackQuery.Message!.Chat.Id,
-            text: $"Received {callbackQuery.Data}",
-            cancellationToken: cancellationToken);
+        var inlineKeyboardButtons = callbackQuery.Message.ReplyMarkup!.InlineKeyboard
+            .Select(buttons => buttons.First())
+            .ToArray();
+
+        var button = inlineKeyboardButtons.FirstOrDefault(b => b.CallbackData!.Equals(data, StringComparison.OrdinalIgnoreCase));
+
+        if (button != null && button.Text.Contains(DeleteVioletButtonText, StringComparison.OrdinalIgnoreCase))
+        {
+            await DeleteCommand(_botClient, callbackQuery.Message, cancellationToken);
+        }
+        else
+        {
+            await EditPhotosCommand(_botClient, callbackQuery.Message, cancellationToken);
+        }
     }
 
     #region Inline Mode
