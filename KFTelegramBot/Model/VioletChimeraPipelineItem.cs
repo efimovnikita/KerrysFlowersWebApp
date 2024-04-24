@@ -7,8 +7,13 @@ namespace KFTelegramBot.Model;
 
 public class VioletChimeraPipelineItem : IPipelineItem
 {
+    private const string AnswerFormatMsg = "Дайте ответ в формате \"да\", \"yes\", \"true\" или \"нет\", \"no\", \"false\".";
+
+    private static readonly HashSet<string> PositiveAnswers = ["да", "yes", "true"];
+    private static readonly HashSet<string> NegativeAnswers = ["нет", "no", "false"];
+
     public Task<Message> AskAQuestion(Message message, ITelegramBotClient botClient) =>
-        botClient.SendTextMessageAsync(message.Chat.Id, "Фиалка химера или нет (да или нет)?");
+        botClient.SendTextMessageAsync(message.Chat.Id, $"Фиалка химера? {AnswerFormatMsg}");
 
     public (bool, Task<Message>?) ValidateInput(Message message, ITelegramBotClient botClient)
     {
@@ -16,6 +21,15 @@ public class VioletChimeraPipelineItem : IPipelineItem
         {
             return (false,
                 botClient.SendTextMessageAsync(message.Chat.Id, "Ожидалось текстовое сообщение. Повторите ввод."));
+        }
+
+        var text = message.Text!.Trim().ToLower();
+
+        if (!PositiveAnswers.Contains(text) && !NegativeAnswers.Contains(text))
+        {
+            return (false,
+                botClient.SendTextMessageAsync(message.Chat.Id,
+                    $"{AnswerFormatMsg} Повторите ввод."));
         }
 
         return (true, null);
@@ -31,13 +45,7 @@ public class VioletChimeraPipelineItem : IPipelineItem
 
         var text = message.Text!;
 
-        if ((text.Equals("да", StringComparison.OrdinalIgnoreCase) || text.Equals("нет", StringComparison.OrdinalIgnoreCase)) == false)
-        {
-            return (false,
-                botClient.SendTextMessageAsync(message.Chat.Id, "Дайте ответ в формате \"да\" или \"нет\". Повторите ввод."));
-        }
-
-        if (!text.Equals("да", StringComparison.OrdinalIgnoreCase))
+        if (PositiveAnswers.Contains(text) == false)
         {
             violet.IsChimera = false;
             return (true, null);
