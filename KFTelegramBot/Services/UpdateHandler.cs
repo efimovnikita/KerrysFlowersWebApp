@@ -260,11 +260,17 @@ public class UpdateHandler : IUpdateHandler
             return await botClient.SendTextMessageAsync(
                 chatId: chatId,
                 text: GetUsageText(),
-                parseMode: ParseMode.Markdown,
                 cancellationToken: cancellationToken);
         }
 
-        return await pipeline.ProcessCurrentItem(message, botClient);
+        var msg = await pipeline.ProcessCurrentItem(message, botClient);
+
+        if (pipeline.IsPipelineQueueEmpty())
+        {
+            _memoryStateProvider.ResetCurrentPipeline(chatId);
+        }
+
+        return msg;
     }
 
     private async Task<Message> ResetCommand(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
@@ -279,12 +285,11 @@ public class UpdateHandler : IUpdateHandler
         await botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
             text: GetUsageText(),
-            parseMode:ParseMode.Markdown,
             cancellationToken: cancellationToken);
 
     private static string GetUsageText() =>
         """
-        *Список команд:*
+        Список команд:
         
         /start - добавить фиалку
         /add - добавить фиалку

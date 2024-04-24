@@ -72,4 +72,6 @@ public class VioletPhotoEditingPipeline : IPipeline
             return false;
         }
     }
+
+    public bool IsPipelineQueueEmpty() => _items.Count == 0;
 }

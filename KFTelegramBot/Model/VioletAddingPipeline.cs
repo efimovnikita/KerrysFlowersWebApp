@@ -66,6 +66,8 @@ public class VioletAddingPipeline : IPipeline
             disableWebPagePreview: true);
     }
 
+    public bool IsPipelineQueueEmpty() => PipelineItems.Count == 0;
+
     private bool SendDataToTheDatabase(Violet violet, ITelegramBotClient botClient, long chatId)
     {
         try
