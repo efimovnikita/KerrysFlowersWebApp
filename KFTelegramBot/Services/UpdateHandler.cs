@@ -291,7 +291,7 @@ public class UpdateHandler : IUpdateHandler
     private Task<Message> AddCommand(ITelegramBotClient botClient, Message message)
     {
         var violetAddingPipeline = new VioletAddingPipeline([
-            new VioletNamePipelineItem(),
+            new VioletNamePipelineItem(_violetRepository),
             new VioletBreederPipelineItem(_violetRepository),
             new VioletDescriptionPipelineItem(),
             new VioletTagsPipelineItem(_violetRepository),

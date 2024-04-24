@@ -1,13 +1,14 @@
 ﻿using SharedLibrary;
+using SharedLibrary.Providers;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 namespace KFTelegramBot.Model;
 
-public class VioletNamePipelineItem : IPipelineItem
+public class VioletNamePipelineItem(IVioletRepository violetRepository) : IPipelineItem
 {
-    public Task<Message> AskAQuestion(Message message, ITelegramBotClient botClient) =>
+    public Task<Message> AskAQuestion(Message message, ITelegramBotClient botClient) => 
         botClient.SendTextMessageAsync(message.Chat.Id, "Введите имя новой фиалки");
 
     public (bool, Task<Message>?) ValidateInput(Message message, ITelegramBotClient botClient)
@@ -16,6 +17,16 @@ public class VioletNamePipelineItem : IPipelineItem
         {
             return (false,
                 botClient.SendTextMessageAsync(message.Chat.Id, "Ожидалось текстовое сообщение. Повторите ввод."));
+        }
+
+        var names = violetRepository.GetAllViolets()
+            .Select(violet => violet.Name.ToLowerInvariant())
+            .ToArray();
+
+        if (names.Contains(message.Text!.ToLowerInvariant()))
+        {
+            return (false,
+                botClient.SendTextMessageAsync(message.Chat.Id, "Фиалка с таким именем уже существует. Повторите ввод."));
         }
 
         return (true, null);
