@@ -7,13 +7,13 @@ namespace KFTelegramBot.Model;
 
 public class VioletChimeraPipelineItem : IPipelineItem
 {
-    private const string AnswerFormatMsg = "Дайте ответ в формате \"да\", \"yes\", \"true\" или \"нет\", \"no\", \"false\".";
+    private const string AnswerFormatMsg = "Дайте ответ в формате `да`, `yes`, `true` или `нет`, `no`, `false`.";
 
     private static readonly HashSet<string> PositiveAnswers = ["да", "yes", "true"];
     private static readonly HashSet<string> NegativeAnswers = ["нет", "no", "false"];
 
     public Task<Message> AskAQuestion(Message message, ITelegramBotClient botClient) =>
-        botClient.SendTextMessageAsync(message.Chat.Id, $"Фиалка химера? {AnswerFormatMsg}");
+        botClient.SendTextMessageAsync(message.Chat.Id, $"Фиалка химера? {AnswerFormatMsg}", parseMode: ParseMode.Markdown);
 
     public (bool, Task<Message>?) ValidateInput(Message message, ITelegramBotClient botClient)
     {
@@ -29,7 +29,7 @@ public class VioletChimeraPipelineItem : IPipelineItem
         {
             return (false,
                 botClient.SendTextMessageAsync(message.Chat.Id,
-                    $"{AnswerFormatMsg} Повторите ввод."));
+                    $"{AnswerFormatMsg} Повторите ввод.", parseMode: ParseMode.Markdown));
         }
 
         return (true, null);
