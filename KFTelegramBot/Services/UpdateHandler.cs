@@ -73,11 +73,55 @@ public class UpdateHandler : IUpdateHandler
             "/usage"           => UsageCommand(_botClient, message,cancellationToken),
             "/site"            => SiteCommand(_botClient, message,cancellationToken),
             "/backup"          => BackupCommand(_botClient, message,cancellationToken),
+            "/edit_photos"     => EditPhotosCommand(_botClient, message,cancellationToken),
             _                  => ProcessCommand(_botClient, message, cancellationToken)
         };
 
         Message sentMessage = await action;
         _logger.LogInformation("The message was sent with userId: {SentMessageId}", sentMessage.MessageId);
+    }
+
+    private async Task<Message> EditPhotosCommand(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    {
+        var strings = message.Text!.Split(' ');
+        if (strings.Length < 2)
+        {
+            return await botClient.SendTextMessageAsync(message.Chat.Id,
+                "Формат команды: `/edit_photos <GUID>`. Попробуйте снова.",
+                parseMode: ParseMode.Markdown,
+                cancellationToken: cancellationToken);
+        }
+
+        var guidStr = strings[1];
+        if (string.IsNullOrWhiteSpace(guidStr))
+        {
+            return await botClient.SendTextMessageAsync(message.Chat.Id,
+                "Формат команды: `/edit_photos <GUID>`. Попробуйте снова.",
+                cancellationToken: cancellationToken);
+        }
+
+        var parseStatus = Guid.TryParse(guidStr, out var guid);
+        if (parseStatus == false)
+        {
+            return await botClient.SendTextMessageAsync(message.Chat.Id,
+                "Не верный формат идентификатора. Попробуйте снова.",
+                cancellationToken: cancellationToken);
+        }
+
+        var violet = _violetRepository.GetVioletById(guid);
+        if (violet == null)
+        {
+            return await botClient.SendTextMessageAsync(message.Chat.Id,
+                "Фиалки с таким id не найдено. Попробуйте снова.",
+                cancellationToken: cancellationToken);
+        }
+
+        var violetPhotoEditingPipeline = new VioletPhotoEditingPipeline(violet, [
+            new VioletDocumentsPipelineItem()
+        ], _violetRepository);
+
+        _memoryStateProvider.SetCurrentPipeline(violetPhotoEditingPipeline, message.Chat.Id);
+        return await violetPhotoEditingPipeline.AskAQuestionForNextItem(message, botClient);
     }
 
     private async Task<Message> BackupCommand(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
@@ -114,7 +158,6 @@ public class UpdateHandler : IUpdateHandler
 
         return filePath;
     }
-
 
     private async Task<Message> SiteCommand(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken) =>
         await botClient.SendTextMessageAsync(
@@ -168,7 +211,11 @@ public class UpdateHandler : IUpdateHandler
             parseMode: ParseMode.Markdown,
             cancellationToken: cancellationToken);
 
-        string GetCaption(Violet violet) => violet.ToString("M") + $"\n*Команда для удаления:* `/delete {violet.Id}`";
+        string GetCaption(Violet violet) =>
+            violet.ToString("M") +
+            "\n----------------------" +
+            $"\n*Удалить фиалку:* `/delete {violet.Id}`" +
+            $"\n*Заменить фото:* `/edit_photos {violet.Id}`";
 
         async Task<FileStream> GetImageStreamFromBase64(Violet violet)
         {
@@ -241,6 +288,7 @@ public class UpdateHandler : IUpdateHandler
         
         /start - добавить фиалку
         /add - добавить фиалку
+        /edit_photos - заменить фотографии
         /delete - удалить фиалку
         /reset - отменить текущую команду
         /list - показать список фиалок

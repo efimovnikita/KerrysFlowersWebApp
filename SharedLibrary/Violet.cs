@@ -56,6 +56,7 @@ public class Violet
         {
             case "G": // General format
                 return $"""
+                        Id: {Id}
                         Имя: {Name}
                         Описание: {Description.Truncate(100)}
                         Год селекции: {BreedingDate:yyyy}
@@ -68,6 +69,7 @@ public class Violet
                         """;
             case "M": // Markdown format
                 return $"""
+                        *Id:* `{Id}`
                         *Имя:* {Name}
                         *Описание:* {Description.Truncate(100)}
                         *Год селекции:* {BreedingDate:yyyy}
