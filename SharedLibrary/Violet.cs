@@ -58,8 +58,8 @@ public class Violet
                 return $"""
                         Имя: {Name}
                         Описание: {Description.Truncate(100)}
+                        Год селекции: {BreedingDate:yyyy}
                         Дата публикации: {PublishDate:dd.MM.yyyy}
-                        Дата селекции: {BreedingDate:dd.MM.yyyy}
                         Селекционер: {Breeder}
                         Размер: {ExtensionMethods.GetEnumDescription(Size).ToLowerInvariant()}
                         Теги: {string.Join(", ", Tags.Select(s => s.ToLowerInvariant()))}
@@ -70,8 +70,8 @@ public class Violet
                 return $"""
                         *Имя:* {Name}
                         *Описание:* {Description.Truncate(100)}
+                        *Год селекции:* {BreedingDate:yyyy}
                         *Дата публикации:* {PublishDate:dd.MM.yyyy}
-                        *Дата селекции:* {BreedingDate:dd.MM.yyyy}
                         *Селекционер:* {Breeder}
                         *Размер:* {ExtensionMethods.GetEnumDescription(Size).ToLowerInvariant()}
                         *Теги:* {string.Join(", ", Tags.Select(s => s.ToLowerInvariant()))}

@@ -8,10 +8,10 @@ namespace KFTelegramBot.Model;
 
 public class VioletBreedingDatePipelineItem : IPipelineItem
 {
-    private const string DateFormat = "dd.MM.yyyy";
+    private const string DateFormat = "yyyy";
 
     public Task<Message> AskAQuestion(Message message, ITelegramBotClient botClient) =>
-        botClient.SendTextMessageAsync(message.Chat.Id, "Введите дату селекции фиалки (в формате \"dd.MM.yyyy\")");
+        botClient.SendTextMessageAsync(message.Chat.Id, $"Введите год селекции фиалки (в формате \"{DateFormat}\")");
 
     public (bool, Task<Message>?) ValidateInput(Message message, ITelegramBotClient botClient)
     {
@@ -43,7 +43,7 @@ public class VioletBreedingDatePipelineItem : IPipelineItem
         var text = message.Text;
         var dateTime = DateTime.ParseExact(text!, DateFormat, CultureInfo.InvariantCulture);
 
-        violet.BreedingDate = dateTime;
+        violet.BreedingDate = dateTime + TimeSpan.FromDays(1);
         return (true, null);
     }
 }
