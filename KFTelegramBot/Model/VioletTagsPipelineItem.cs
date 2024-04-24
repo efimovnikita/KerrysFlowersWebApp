@@ -16,7 +16,7 @@ public class VioletTagsPipelineItem(IVioletRepository violetRepository) : IPipel
             .Select(tag => $"`{tag}`")
             .ToArray();
         
-        if (tags.Length <= 0)
+        if (tags.Length == 0)
         {
             return botClient.SendTextMessageAsync(message.Chat.Id, "Введите теги (через запятую) для новой фиалки");
         }

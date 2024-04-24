@@ -1,14 +1,31 @@
 ﻿using SharedLibrary;
+using SharedLibrary.Providers;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 namespace KFTelegramBot.Model;
 
-public class VioletBreederPipelineItem : IPipelineItem
+public class VioletBreederPipelineItem(IVioletRepository violetRepository) : IPipelineItem
 {
-    public Task<Message> AskAQuestion(Message message, ITelegramBotClient botClient) =>
-        botClient.SendTextMessageAsync(message.Chat.Id, "Введите имя селекционера фиалки");
+    public Task<Message> AskAQuestion(Message message, ITelegramBotClient botClient)
+    {
+        var breeders = violetRepository.GetAllViolets()
+            .Select(violet => violet.Breeder)
+            .Distinct()
+            .Select(breeder => $"`{breeder}`")
+            .ToArray();
+
+        if (breeders.Length == 0)
+        {
+            return botClient.SendTextMessageAsync(message.Chat.Id, "Введите имя селекционера фиалки");
+        }
+
+        var joinedBreeders = string.Join(", ", breeders);
+        return botClient.SendTextMessageAsync(message.Chat.Id,
+            $"Введите имя селекционера фиалки.\nРанее введенные имена:\n{joinedBreeders}",
+            parseMode: ParseMode.Markdown);
+    }
 
     public (bool, Task<Message>?) ValidateInput(Message message, ITelegramBotClient botClient)
     {

@@ -292,7 +292,7 @@ public class UpdateHandler : IUpdateHandler
     {
         var violetAddingPipeline = new VioletAddingPipeline([
             new VioletNamePipelineItem(),
-            new VioletBreederPipelineItem(),
+            new VioletBreederPipelineItem(_violetRepository),
             new VioletDescriptionPipelineItem(),
             new VioletTagsPipelineItem(_violetRepository),
             new VioletBreedingDatePipelineItem(),
