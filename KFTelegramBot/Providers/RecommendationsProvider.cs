@@ -63,8 +63,15 @@ public class RecommendationsProvider(string apiKey, HttpClient httpClient, ILogg
         foreach (var link in firstThreeLinks)
         {
             var url = link.InnerText.Trim();
-            var stringAsync = await client.GetStringAsync($"https://{url}");
-            builder.Append(ExtractPlainTextFromHtmDoc(stringAsync));
+            try
+            {
+                var stringAsync = await client.GetStringAsync($"https://{url}");
+                builder.Append(ExtractPlainTextFromHtmDoc(stringAsync));
+            }
+            catch
+            {
+                // ignored
+            }
         }
 
         return builder;
