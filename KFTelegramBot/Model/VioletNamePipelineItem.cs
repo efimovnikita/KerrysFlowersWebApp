@@ -8,7 +8,8 @@ namespace KFTelegramBot.Model;
 
 public class VioletNamePipelineItem(IVioletRepository violetRepository) : IPipelineItem
 {
-    public Task<Message> AskAQuestion(Message message, ITelegramBotClient botClient) => 
+    public Task<Message> AskAQuestion(Message message, ITelegramBotClient botClient, 
+        object? violetObject = null) => 
         botClient.SendTextMessageAsync(message.Chat.Id, "Введите имя новой фиалки");
 
     public (bool, Task<Message>?) ValidateInput(Message message, ITelegramBotClient botClient)

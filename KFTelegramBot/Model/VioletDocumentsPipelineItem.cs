@@ -7,7 +7,7 @@ namespace KFTelegramBot.Model;
 
 public class VioletDocumentsPipelineItem : IPipelineItem
 {
-    public Task<Message> AskAQuestion(Message message, ITelegramBotClient botClient) =>
+    public Task<Message> AskAQuestion(Message message, ITelegramBotClient botClient, object? violetObject = null) =>
         botClient.SendTextMessageAsync(message.Chat.Id, "Отправьте файлы изображений фиалки (3 шт., минимальный размер по ширине 700 px)");
 
     public (bool, Task<Message>?) ValidateInput(Message message, ITelegramBotClient botClient)

@@ -10,7 +10,8 @@ public class VioletBreedingDatePipelineItem : IPipelineItem
 {
     private const string DateFormat = "yyyy";
 
-    public Task<Message> AskAQuestion(Message message, ITelegramBotClient botClient) =>
+    public Task<Message> AskAQuestion(Message message, ITelegramBotClient botClient, 
+        object? violetObject = null) =>
         botClient.SendTextMessageAsync(message.Chat.Id, $"Введите год селекции фиалки (в формате \"{DateFormat}\")");
 
     public (bool, Task<Message>?) ValidateInput(Message message, ITelegramBotClient botClient)

@@ -8,7 +8,8 @@ namespace KFTelegramBot.Model;
 
 public class VioletTagsPipelineItem(IVioletRepository violetRepository) : IPipelineItem
 {
-    public Task<Message> AskAQuestion(Message message, ITelegramBotClient botClient)
+    public Task<Message> AskAQuestion(Message message, ITelegramBotClient botClient, 
+        object? violetObject = null)
     {
         var tags = violetRepository.GetAllViolets()
             .SelectMany(violet => violet.Tags)

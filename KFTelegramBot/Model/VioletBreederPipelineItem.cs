@@ -8,7 +8,8 @@ namespace KFTelegramBot.Model;
 
 public class VioletBreederPipelineItem(IVioletRepository violetRepository) : IPipelineItem
 {
-    public Task<Message> AskAQuestion(Message message, ITelegramBotClient botClient)
+    public Task<Message> AskAQuestion(Message message, ITelegramBotClient botClient, 
+        object? violetObject = null)
     {
         var breeders = violetRepository.GetAllViolets()
             .Select(violet => violet.Breeder)

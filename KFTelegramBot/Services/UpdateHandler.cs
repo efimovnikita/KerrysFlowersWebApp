@@ -23,13 +23,17 @@ public class UpdateHandler : IUpdateHandler
     private readonly ILogger<UpdateHandler> _logger;
     private readonly IMemoryStateProvider _memoryStateProvider;
     private readonly IVioletRepository _violetRepository;
+    private readonly IRecommendationsProvider _recommendationsProvider;
 
-    public UpdateHandler(ITelegramBotClient botClient, ILogger<UpdateHandler> logger, IMemoryStateProvider memoryStateProvider, IVioletRepository violetRepository)
+    public UpdateHandler(ITelegramBotClient botClient, ILogger<UpdateHandler> logger,
+        IMemoryStateProvider memoryStateProvider, IVioletRepository violetRepository,
+        IRecommendationsProvider recommendationsProvider)
     {
         _botClient = botClient;
         _logger = logger;
         _memoryStateProvider = memoryStateProvider;
         _violetRepository = violetRepository;
+        _recommendationsProvider = recommendationsProvider;
     }
 
     public async Task HandleUpdateAsync(ITelegramBotClient _, Update update, CancellationToken cancellationToken)
@@ -367,7 +371,7 @@ public class UpdateHandler : IUpdateHandler
         var violetAddingPipeline = new VioletAddingPipeline([
             new VioletNamePipelineItem(_violetRepository),
             new VioletBreederPipelineItem(_violetRepository),
-            new VioletDescriptionPipelineItem(),
+            new VioletDescriptionPipelineItem(_recommendationsProvider),
             new VioletTagsPipelineItem(_violetRepository),
             new VioletBreedingDatePipelineItem(),
             new VioletChimeraPipelineItem(),

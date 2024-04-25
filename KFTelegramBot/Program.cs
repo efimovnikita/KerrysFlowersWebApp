@@ -2,6 +2,7 @@
 using KFTelegramBot.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using SharedLibrary.Providers;
 using Telegram.Bot;
 
@@ -61,6 +62,11 @@ var host = Host.CreateDefaultBuilder(args)
             throw new ArgumentNullException(nameof(dbDatabase), "Environment variable DBDATABASE is not set.");
         }
 
+        string? openaiApiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
+        if(String.IsNullOrEmpty(openaiApiKey))
+        {
+            throw new ArgumentNullException(nameof(openaiApiKey), "Environment variable OPENAI_API_KEY is not set.");
+        }
 
         services.AddHttpClient("telegram_bot_client")
             .AddTypedClient<ITelegramBotClient>((httpClient, _) =>
@@ -70,6 +76,14 @@ var host = Host.CreateDefaultBuilder(args)
             });
 
         services.AddSingleton<IMemoryStateProvider>(_ => new MemoryStateProvider(arrayOfIds));
+        services.AddHttpClient();
+        services.AddSingleton<IRecommendationsProvider>(provider =>
+        {
+            var httpClientFactory = provider.GetRequiredService<IHttpClientFactory>();
+            var httpClient = httpClientFactory.CreateClient();
+            var logger = provider.GetRequiredService<ILogger<RecommendationsProvider>>();
+            return new RecommendationsProvider(openaiApiKey, httpClient, logger);
+        });
         services.AddSingleton<IVioletRepository>(_ => new VioletRepository($"mongodb://{dbAdmin}:{dbPassword}@{dbHost}:{dbPort}", dbDatabase));
 
         services.AddScoped<UpdateHandler>();

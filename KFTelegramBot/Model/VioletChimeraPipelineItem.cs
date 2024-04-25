@@ -12,7 +12,8 @@ public class VioletChimeraPipelineItem : IPipelineItem
     private static readonly HashSet<string> PositiveAnswers = ["да", "yes", "true"];
     private static readonly HashSet<string> NegativeAnswers = ["нет", "no", "false"];
 
-    public Task<Message> AskAQuestion(Message message, ITelegramBotClient botClient) =>
+    public Task<Message> AskAQuestion(Message message, ITelegramBotClient botClient, 
+        object? violetObject = null) =>
         botClient.SendTextMessageAsync(message.Chat.Id, $"Фиалка химера? {AnswerFormatMsg}", parseMode: ParseMode.Markdown);
 
     public (bool, Task<Message>?) ValidateInput(Message message, ITelegramBotClient botClient)

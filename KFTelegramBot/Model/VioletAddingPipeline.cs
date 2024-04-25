@@ -30,7 +30,7 @@ public class VioletAddingPipeline : IPipeline
     public Task<Message> AskAQuestionForNextItem(Message message, ITelegramBotClient botClient)
     {
         var pipelineItem = PipelineItems.Peek();
-        return pipelineItem.AskAQuestion(message, botClient);
+        return pipelineItem.AskAQuestion(message, botClient, GrowingViolet);
     }
 
     public Task<Message> ProcessCurrentItem(Message message, ITelegramBotClient botClient)
@@ -53,7 +53,7 @@ public class VioletAddingPipeline : IPipeline
         var peekResult = PipelineItems.TryPeek(out var nextItem);
         if (peekResult)
         {
-            return nextItem!.AskAQuestion(message, botClient);
+            return nextItem!.AskAQuestion(message, botClient, GrowingViolet);
         }
 
         // queue is empty

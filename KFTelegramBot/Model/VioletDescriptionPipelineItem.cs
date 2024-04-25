@@ -1,14 +1,40 @@
-﻿using SharedLibrary;
+﻿using KFTelegramBot.Providers;
+using SharedLibrary;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 namespace KFTelegramBot.Model;
 
-public class VioletDescriptionPipelineItem : IPipelineItem
+public class VioletDescriptionPipelineItem(IRecommendationsProvider recommendationsProvider) : IPipelineItem
 {
-    public Task<Message> AskAQuestion(Message message, ITelegramBotClient botClient) =>
-        botClient.SendTextMessageAsync(message.Chat.Id, "Введите описание фиалки");
+    public async Task<Message> AskAQuestion(Message message, ITelegramBotClient botClient, 
+        object? violetObject = null)
+    {
+        const string msg = "Введите описание фиалки";
+        var chatId = message.Chat.Id;
+        const string aiRecommendationMsg = "_Рекомендация от ИИ:_";
+        var question = await botClient.SendTextMessageAsync(chatId, $"{msg}\n\n{aiRecommendationMsg} \u23f1\ufe0f", parseMode: ParseMode.Markdown);
+
+        _ = Task.Run(async () =>
+        {
+            if (violetObject is Violet violet)
+            {
+                var recommendation = await recommendationsProvider.GetDescriptionRecommendation($"Фиалка+{violet.Name}+{violet.Breeder}");
+                if (string.IsNullOrEmpty(recommendation) == false)
+                {
+                    await botClient.EditMessageTextAsync(chatId, question.MessageId, $"{msg}\n\n{aiRecommendationMsg}\n`{recommendation}`",
+                        parseMode: ParseMode.Markdown);
+                }
+                else
+                {
+                    await botClient.EditMessageTextAsync(chatId, question.MessageId, msg, parseMode: ParseMode.Markdown);
+                }
+            }
+        });
+
+        return question;
+    }
 
     public (bool, Task<Message>?) ValidateInput(Message message, ITelegramBotClient botClient)
     {
