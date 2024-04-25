@@ -375,9 +375,9 @@ public class UpdateHandler : IUpdateHandler
             new VioletTagsPipelineItem(_violetRepository),
             new VioletBreedingDatePipelineItem(),
             new VioletChimeraPipelineItem(),
-            new VioletColorsPipelineItem(),
+            new VioletDocumentsPipelineItem(),
+            new VioletColorsPipelineItem(_recommendationsProvider),
             new VioletSizePipelineItem(),
-            new VioletDocumentsPipelineItem()
         ], _violetRepository);
 
         _memoryStateProvider.SetCurrentPipeline(violetAddingPipeline, message.Chat.Id);

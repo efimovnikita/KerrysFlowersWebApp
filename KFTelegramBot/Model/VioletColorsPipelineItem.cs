@@ -1,18 +1,40 @@
-﻿using SharedLibrary;
+﻿using KFTelegramBot.Providers;
+using SharedLibrary;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 namespace KFTelegramBot.Model;
 
-public class VioletColorsPipelineItem : IPipelineItem
+public class VioletColorsPipelineItem(IRecommendationsProvider recommendationsProvider) : IPipelineItem
 {
-    public Task<Message> AskAQuestion(Message message, ITelegramBotClient botClient, object? violetObject = null)
+    public async Task<Message> AskAQuestion(Message message, ITelegramBotClient botClient, object? violetObject = null)
     {
+        var chatId = message.Chat.Id;
+        const string aiRecommendationMsg = "_Рекомендация от ИИ:_";
         var possibleVariants = GetPossibleVariants();
+        var msg = $"Введите, через запятую, цвета новой фиалки.\n{possibleVariants}";
 
-        var text = $"Введите, через запятую, цвета новой фиалки.\n{possibleVariants}";
-        return botClient.SendTextMessageAsync(message.Chat.Id, text, parseMode: ParseMode.Markdown);
+        var question = await botClient.SendTextMessageAsync(chatId, $"{msg}\n\n{aiRecommendationMsg} \u23f1\ufe0f", parseMode: ParseMode.Markdown);
+
+        _ = Task.Run(async () =>
+        {
+            if (violetObject is Violet violet)
+            {
+                var recommendation = await recommendationsProvider.GetColorsRecommendation(violet.Images.First().W700);
+                if (string.IsNullOrEmpty(recommendation) == false)
+                {
+                    await botClient.EditMessageTextAsync(chatId, question.MessageId, $"{msg}\n\n{aiRecommendationMsg}\n`{recommendation}`",
+                        parseMode: ParseMode.Markdown);
+                }
+                else
+                {
+                    await botClient.EditMessageTextAsync(chatId, question.MessageId, msg, parseMode: ParseMode.Markdown);
+                }
+            }
+        });
+
+        return question;
     }
 
     private static string GetPossibleVariants()
