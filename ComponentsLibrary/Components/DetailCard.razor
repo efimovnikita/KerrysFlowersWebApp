@@ -1,32 +1,23 @@
-<article
-    class="w-[330px] flex flex-col items-center text-text1 relative sm:w-[500px] md:w-[700px]">
-    @{
-        var image500Src = $"data:image/jpeg;base64,{Violet.Images.FirstOrDefault(image => image.Active)!.W500}";
-        var image700Src = $"data:image/jpeg;base64,{Violet.Images.FirstOrDefault(image => image.Active)!.W700}";
-    }
-    <picture>
-        <source
-            media="(min-width: 768px)"
-            srcset="@image700Src"/>
-        <source
-            media="(min-width: 640px)"
-            srcset="@image500Src"/>
-        <img
-            class="w-[330px] h-[330px] object-cover rounded-t-xl sm:w-[500px] sm:h-[500px] md:w-[700px] md:h-[700px]"
-             src="@image500Src"
-            alt="Фотография фиалки @Violet.Name"/>
-    </picture>
-    <div class="flex gap-4 absolute top-[275px] sm:top-[475px] md:top-[675px]">
-        @for (int i = 0; i < Violet.Images.Count; i++)
-        {
-            string style = "bg-menu w-3 h-3 rounded-full cursor-pointer hover:bg-label";
-            Image image = Violet.Images[i];
-            if (image.Active)
-            {
-                style = $"{style} border-[3px] border-label";
-            }
+@using Microsoft.JSInterop
 
-            <button title="@($"Изображение №{i + 1}")" class="@style" @onclick="() => SetActive(image)"></button>
+<article class="w-[330px] flex flex-col items-center text-text1 sm:w-[500px] md:w-[700px]">
+    <div @ref="_photoContainer" class="overflow-x-auto flex snap-x snap-always snap-mandatory first:rounded-t-xl last:rounded-t-xr">
+        @foreach (var image in Violet.Images)
+        {
+            <div class="snap-center shrink-0">
+                <picture>
+                    <source
+                        media="(min-width: 768px)"
+                        srcset="@($"data:image/jpeg;base64,{image.W700}")"/>
+                    <source
+                        media="(min-width: 640px)"
+                        srcset="@($"data:image/jpeg;base64,{image.W500}")"/>
+                    <img
+                        class="w-[330px] h-[330px] object-cover sm:w-[500px] sm:h-[500px] md:w-[700px] md:h-[700px]"
+                        src="@($"data:image/jpeg;base64,{image.W500}")"
+                        alt="Фотография фиалки @Violet.Name"/>
+                </picture>
+            </div>
         }
     </div>
     <div
@@ -124,8 +115,20 @@
 
 @code
 {
+    [Inject] private IJSRuntime JsRuntime { get; set; }
+
     [Parameter]
     public Violet Violet { get; set; }
+
+    private ElementReference _photoContainer;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JsRuntime.InvokeVoidAsync("initializeHorizontalScroll", _photoContainer);
+        }
+    }
 
     private void SetActive(Image image)
     {

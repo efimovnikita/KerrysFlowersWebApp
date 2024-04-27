@@ -1,52 +1,57 @@
-<article
-    class="w-[300px] flex flex-col items-center text-text1 relative">
-    @{
-        var base64ImageSrc = $"data:image/jpeg;base64,{Violet.Images.FirstOrDefault(image => image.Active)!.W500}";
-    }
-    <img
-        class="w-[300px] h-[300px] object-cover rounded-t-xl"
-        src="@base64ImageSrc"
-        alt="Фотография фиалки @Violet.Name"/>
-    <div class="flex gap-4 absolute bottom-20">
-        @for (int i = 0; i < Violet.Images.Count; i++)
-        {
-            string style = "bg-menu w-3 h-3 rounded-full cursor-pointer hover:bg-label";
-            Image image = Violet.Images[i];
-            if (image.Active)
-            {
-                style = $"{style} border-[3px] border-label";
-            }
+@using Microsoft.JSInterop
 
-            <button title="@($"Изображение №{i + 1}")" class="@style" @onclick="() => SetActive(image)"></button>
+<article class="w-[300px] flex flex-col items-center text-text1 relative">
+    <div @ref="_photoContainer" class="overflow-x-auto flex snap-x snap-always snap-mandatory first:rounded-t-xl last:rounded-t-xr" id="photo-container">
+        @foreach (var image in Violet.Images)
+        {
+            var base64ImageSrc = $"data:image/jpeg;base64,{image.W500}";
+
+            <div class="snap-center shrink-0">
+                <img
+                    class="w-[300px] h-[300px] object-cover"
+                    src="@base64ImageSrc"
+                    alt="Фотография фиалки @Violet.Name"/>
+            </div>
+        }
+        @if (Violet.NewLabel)
+        {
+            <div class="flex justify-center items-center font-bold p-3 bg-label rounded-md text-white text-sm absolute bottom-28 -left-5">
+                <p>New!</p>
+            </div>
         }
     </div>
-    @if (Violet.NewLabel)
-    {
-        <div
-            class="flex justify-center items-center font-bold p-3 bg-label rounded-md text-white text-sm absolute bottom-20 -left-5">
-            <p>New!</p>
-        </div>
-    }
-    <div class="w-[300px] flex justify-center items-center bg-white p-5 text-lg font-bold rounded-b-xl">
-        <a href="@($"/details/{Violet.TransliteratedName}")" title="@Violet.Name" class="hover:underline decoration-2 underline-offset-2">
+    <a href="@($"/details/{Violet.TransliteratedName}")" title="@Violet.Name">
+        <div class="w-[300px] flex justify-center items-center bg-white p-5 text-lg font-bold rounded-b-xl hover:underline decoration-2 underline-offset-2">
             @{
-                string name = Violet.Name;
+                var name = Violet.Name;
                 if (name.Length > 23)
                 {
-                    string substring = name.Substring(0, 20);
+                    var substring = name[..20];
                     substring = $"{substring}...";
                     name = substring;
                 }
             }
 
             @name
-        </a>
-    </div>
+        </div>
+    </a>
 </article>
 
 @code
 {
+    [Inject] private IJSRuntime JsRuntime { get; set; }
+
     [Parameter] public Violet Violet { get; set; }
+
+    private ElementReference _photoContainer;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JsRuntime.InvokeVoidAsync("initializeHorizontalScroll", _photoContainer);
+        }
+    }
 
     private void SetActive(Image image)
     {
