@@ -1,7 +1,7 @@
 @using Microsoft.JSInterop
 
 <article class="w-[300px] flex flex-col items-center text-text1 relative">
-    <div @ref="_photoContainer" class="overflow-x-auto flex snap-x snap-always snap-mandatory first:rounded-t-xl last:rounded-t-xr" id="photo-container">
+    <div @ref="_photoContainer" class="scrollbar scrollbar-h-2 scrollbar-thumb-gray-400 scrollbar-track-white overflow-x-auto flex snap-x snap-always snap-mandatory first:rounded-t-xl last:rounded-t-xr" id="photo-container">
         @foreach (var image in Violet.Images)
         {
             var base64ImageSrc = $"data:image/jpeg;base64,{image.W500}";

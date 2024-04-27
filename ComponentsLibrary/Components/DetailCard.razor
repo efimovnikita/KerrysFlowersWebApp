@@ -1,7 +1,7 @@
 @using Microsoft.JSInterop
 
 <article class="w-[330px] flex flex-col items-center text-text1 sm:w-[500px] md:w-[700px]">
-    <div @ref="_photoContainer" class="overflow-x-auto flex snap-x snap-always snap-mandatory first:rounded-t-xl last:rounded-t-xr">
+    <div @ref="_photoContainer" class="scrollbar scrollbar-h-2 scrollbar-thumb-gray-400 scrollbar-track-white overflow-x-auto flex snap-x snap-always snap-mandatory first:rounded-t-xl last:rounded-t-xr">
         @foreach (var image in Violet.Images)
         {
             <div class="snap-center shrink-0">
