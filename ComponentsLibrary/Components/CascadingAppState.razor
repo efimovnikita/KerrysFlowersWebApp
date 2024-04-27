@@ -95,40 +95,46 @@
     public Filter Filter { get; private set; }
     private void InitFilter()
     {
-        List<Tag> tagsList = Violets
+        var tagsList = Violets
             .SelectMany(violet => violet.Tags)
             .Distinct()
+            .OrderBy(tag => tag)
             .Select(tag => new Tag(tag))
             .ToList();
 
-        List<Tag> colorsTags = Violets
+        var colorsTags = Violets
             .SelectMany(violet => violet.Colors)
             .Distinct()
             .Select(color => new Tag(ExtensionMethods.GetEnumDescription(color)))
+            .OrderBy(tag => tag.Name)
             .ToList();
 
-        List<Tag> sizeTags = Violets
+        var sizeTags = Violets
             .Select(violet => violet.Size)
             .Distinct()
             .Select(size => new Tag(ExtensionMethods.GetEnumDescription(size)))
+            .OrderBy(tag => tag.Name)
             .ToList();
 
-        List<Tag> breedersTags = Violets
+        var breedersTags = Violets
             .Select(violet => violet.Breeder)
             .Distinct()
+            .OrderBy(name => name)
             .Select(breeder => new Tag(breeder))
             .ToList();
 
-        List<Tag> yearsTags = Violets
+        var yearsTags = Violets
             .Select(violet => violet.BreedingDate)
             .Distinct()
+            .OrderBy(time => time)
             .Select(dateTime => new Tag(dateTime.Year.ToString()))
             .ToList();
 
-        List<Tag> chimeraTags = Violets
+        var chimeraTags = Violets
             .Select(violet => violet.IsChimera)
             .Distinct()
             .Select(b => new Tag(b ? "да" : "нет"))
+            .OrderBy(tag => tag.Name)
             .ToList();
 
         Filter = new Filter(tagsList, colorsTags, breedersTags, yearsTags, chimeraTags, sizeTags);
