@@ -125,9 +125,12 @@
             <p class="@style">Не обнаружено ни одной фиалки удовлетворяющей текущим настройкам фильтра...</p>
         }
 
-        @foreach (Violet violet in filteredViolets)
+        @foreach (var violet in filteredViolets)
         {
-            <CatalogCard Violet="violet"/>
+            <CatalogCard Violet="violet" 
+                         AddToFavourites="()=>AppState.AddToFavouritesCallback(violet)" 
+                         RemoveFromFavourites="()=>AppState.RemoveFromFavouritesCallback(violet)"
+                         IsInFavourites="AppState.FavouriteViolets.Contains(violet)"/>
         }
     </CatalogContainer>
 

@@ -1,11 +1,14 @@
+@using Blazored.LocalStorage
 @using SharedLibrary.Providers
 @inject IVioletRepository VioletRepository
+@inject ILocalStorageService LocalStorage
 
 <CascadingValue Value="this">
    @ChildContent 
 </CascadingValue>
 
 @code {
+    private const string FavouritesLocalStorageKey = "FavouriteViolets";
     [Parameter] public RenderFragment ChildContent { get; set; }
     protected override void OnInitialized()
     {
@@ -13,6 +16,34 @@
         InitFilter();
 
         FiltersPanel = new FiltersPanelVisibility();
+    }
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var itemsString = await LocalStorage.GetItemAsync<string>(FavouritesLocalStorageKey);
+            if (string.IsNullOrEmpty(itemsString))
+            {
+                return;
+            }
+        
+            var guidArray = JsonConvert.DeserializeObject<string[]>(itemsString);
+        
+            foreach (var guidStr in guidArray)
+            {
+                var isSuccess = Guid.TryParse(guidStr, out var guid);
+                if (!isSuccess)
+                {
+                    continue;
+                }
+
+                var foundViolet = Violets.FirstOrDefault(violet => violet.Id.Equals(guid));
+                if (foundViolet == null) continue;
+                FavouriteViolets.Add(foundViolet);
+                StateHasChanged();
+            }   
+        }
     }
 
     private List<Violet> _violets;
@@ -91,7 +122,32 @@
         }
     }
 
+    public List<Violet> FavouriteViolets { get; } = [];
 
+    public async Task AddToFavouritesCallback(Violet violet)
+    {
+        if (FavouriteViolets.Contains(violet))
+        {
+            return;
+        }
+
+        FavouriteViolets.Add(violet);
+
+        await LocalStorage.SetItemAsync(FavouritesLocalStorageKey, FavouriteViolets.Select(v => v.Id).ToArray());
+    }
+
+    public async Task RemoveFromFavouritesCallback(Violet violet)
+    {
+        if (!FavouriteViolets.Contains(violet))
+        {
+            return;
+        }
+
+        FavouriteViolets.Remove(violet);
+        
+        await LocalStorage.SetItemAsync(FavouritesLocalStorageKey, FavouriteViolets.Select(v => v.Id).ToArray());
+    }
+    
     public Filter Filter { get; private set; }
     private void InitFilter()
     {

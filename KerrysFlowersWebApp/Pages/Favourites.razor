@@ -1,0 +1,41 @@
+﻿@page "/favourites"
+
+<PageTitle>Избранные фиалки</PageTitle>
+<HeadContent>
+    <meta name="description" content="Страница избранных фиалок.">
+</HeadContent>
+
+<MainContainer>
+
+    <header class="hidden md:flex md:flex-col md:items-center md:gap-8">
+        <h2 class="text-heading font-roboto font-bold text-6xl">
+            Избранное
+        </h2>
+    </header>
+
+    <CatalogContainer>
+        @if (AppState.FavouriteViolets.Count == 0)
+        {
+            <p class="@("bg-text2 text-text1 rounded-md p-5")">Список избранных фиалок пуст...</p>
+        }
+
+        @{
+            var favouriteViolets = AppState.FavouriteViolets;
+        }
+
+        @foreach (var violet in favouriteViolets)
+        {
+            <CatalogCard Violet="violet" 
+                         AddToFavourites="()=>AppState.AddToFavouritesCallback(violet)" 
+                         RemoveFromFavourites="()=>AppState.RemoveFromFavouritesCallback(violet)"
+                         IsInFavourites="AppState.FavouriteViolets.Contains(violet)"/>
+        }
+    </CatalogContainer>
+
+</MainContainer>
+
+
+@code
+{
+    [CascadingParameter] public CascadingAppState AppState { get; set; }
+}

@@ -16,4 +16,8 @@
       <ProjectReference Include="..\SharedLibrary\SharedLibrary.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Blazored.LocalStorage.TestExtensions" Version="4.5.0" />
+    </ItemGroup>
+
 </Project>
