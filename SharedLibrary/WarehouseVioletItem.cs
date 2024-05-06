@@ -1,5 +1,9 @@
-﻿namespace SharedLibrary;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
+namespace SharedLibrary;
+
+[Serializable]
 public class WarehouseVioletItem
 {
     public WarehouseVioletItem(Guid violetId,
@@ -18,7 +22,8 @@ public class WarehouseVioletItem
         WholePlantCount = wholePlantCount;
         WholePlantPrice = wholePlantPrice;
     }
-
+    
+    public Guid Id { get; set; }
     public Guid VioletId { get; set; }
     public int LeafCount { get; set; }
     public double LeafPrice { get; set; }

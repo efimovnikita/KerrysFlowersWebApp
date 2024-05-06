@@ -12,7 +12,25 @@
     [Parameter] public RenderFragment ChildContent { get; set; }
     protected override void OnInitialized()
     {
-        Violets = VioletRepository.GetAllViolets().ToList();
+        var violets = VioletRepository.GetAllViolets().ToList();
+        var warehouseVioletItems = VioletRepository.GetAllWarehouseVioletItems().ToList();
+
+        var storedViolets = new List<StoredViolet>();
+        foreach (var violet in violets)
+        {
+            var warehouseVioletItem = warehouseVioletItems.FirstOrDefault(item => item.VioletId.Equals(violet.Id));
+            if (warehouseVioletItem != null)
+            {
+                var storedViolet = new StoredViolet(violet, warehouseVioletItem);
+                storedViolets.Add(storedViolet);
+                continue;
+            }
+
+            var sv = new StoredViolet(violet);
+            storedViolets.Add(sv);
+        }
+        
+        Violets = storedViolets;
         InitFilter();
 
         FiltersPanel = new FiltersPanelVisibility();
@@ -46,8 +64,8 @@
         }
     }
 
-    private List<Violet> _violets;
-    public List<Violet> Violets
+    private List<StoredViolet> _violets;
+    public List<StoredViolet> Violets
     {
         get => _violets;
         private set
@@ -59,7 +77,7 @@
 
     public FiltersPanelVisibility FiltersPanel { get; private set; }
 
-    public List<Violet> FilteredViolets
+    public List<StoredViolet> FilteredViolets
     {
         get
         {
@@ -122,9 +140,9 @@
         }
     }
 
-    public List<Violet> FavouriteViolets { get; } = [];
+    public List<StoredViolet> FavouriteViolets { get; } = [];
 
-    public async Task AddToFavouritesCallback(Violet violet)
+    public async Task AddToFavouritesCallback(StoredViolet violet)
     {
         if (FavouriteViolets.Contains(violet))
         {
@@ -136,7 +154,7 @@
         await LocalStorage.SetItemAsync(FavouritesLocalStorageKey, FavouriteViolets.Select(v => v.Id).ToArray());
     }
 
-    public async Task RemoveFromFavouritesCallback(Violet violet)
+    public async Task RemoveFromFavouritesCallback(StoredViolet violet)
     {
         if (!FavouriteViolets.Contains(violet))
         {

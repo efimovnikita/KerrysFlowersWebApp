@@ -106,7 +106,7 @@
 
 
         @{
-            List<Violet> filteredViolets;
+            List<StoredViolet> filteredViolets;
             if (SortByName)
             {
                 filteredViolets = AppState.FilteredViolets.OrderBy(violet => violet.Name).ToList();

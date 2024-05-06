@@ -10,7 +10,7 @@
 
 <DetailsContainer>
     @{
-        (Violet leftViolet, Violet rightViolet) = GetAdjacentViolets();
+        (StoredViolet leftViolet, StoredViolet rightViolet) = GetAdjacentViolets();
     }
     <section class="flex justify-center items-center gap-6">
         @if (AppState.FilteredViolets.Count < 3)
@@ -38,14 +38,14 @@
     [Parameter]
     public string VioletName { get; set; }
 
-    private Violet Violet { get; set; }
+    private StoredViolet Violet { get; set; }
 
     protected override void OnParametersSet()
     {
         Violet = AppState.FilteredViolets.FirstOrDefault(violet => violet.TransliteratedName.Equals(VioletName));
     }
 
-    private (Violet leftViolet, Violet rightViolet) GetAdjacentViolets()
+    private (StoredViolet leftViolet, StoredViolet rightViolet) GetAdjacentViolets()
     {
         int currentIndex = AppState.FilteredViolets.FindIndex(violet => violet.Id.Equals(this.Violet.Id));
 
@@ -70,8 +70,8 @@
             rightIndex = currentIndex + 1;
         }
 
-        Violet leftViolet = AppState.FilteredViolets.ElementAt(leftIndex < 0 ? 0 : leftIndex);
-        Violet rightViolet = AppState.FilteredViolets.ElementAt(rightIndex);
+        StoredViolet leftViolet = AppState.FilteredViolets.ElementAt(leftIndex < 0 ? 0 : leftIndex);
+        StoredViolet rightViolet = AppState.FilteredViolets.ElementAt(rightIndex);
         return (leftViolet, rightViolet);
     }
 }
