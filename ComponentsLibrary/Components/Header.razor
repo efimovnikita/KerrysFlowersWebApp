@@ -1,24 +1,42 @@
 <header class="bg-menu">
-    <div class="max-w-7xl flex flex-col p-4 space-y-8 items-center md:m-auto md:flex-row md:items-center md:space-y-0 md:justify-between">
+    <div class="max-w-7xl flex flex-col p-4 space-y-8 items-center lg:m-auto lg:flex-row lg:items-center lg:space-y-0 lg:justify-between">
         <Logo/>
         <nav class="font-montserrat text-menutext text-xl">
-            <ul class="flex flex-col items-center space-y-[10px] md:flex-row md:space-x-5 md:space-y-0 lg:space-x-10">
-                <li class="p-3 rounded-md hover:bg-text1">
-                    <NavLink href="catalog" Match="NavLinkMatch.All">
+            <ul class="flex flex-col items-center space-y-[10px] lg:flex-row lg:space-x-5 lg:space-y-0 lg:space-x-10">
+                <NavLink href="catalog" Match="NavLinkMatch.All">
+                    <li class="p-3 hover:bg-text1 hover:rounded-md">
                         Каталог
-                    </NavLink>
-                </li>
-                <li class="p-3 hover:bg-text1 hover:rounded-md">
-                    <NavLink href="favourites">
+                    </li>
+                </NavLink>
+                <NavLink href="favourites">
+                    <li class="p-3 hover:bg-text1 hover:rounded-md">
                         Избранное
-                    </NavLink>
-                </li>
-                <li class="p-3 hover:bg-text1 hover:rounded-md">
-                    <NavLink href="contacts">
+                    </li>
+                </NavLink>
+                <NavLink href="cart">
+                    <li class="p-3 hover:bg-text1 hover:rounded-md relative">
+                        <div>
+                            Корзина
+                        </div>
+                        @if (AppState.ShoppingCart.Count > 0)
+                        {
+                            <div class="absolute w-6 h-6 flex justify-center items-center bg-orange-600 rounded-full top-0 -right-2 text-xs">
+                                @AppState.ShoppingCart.Count
+                            </div>   
+                        }
+                    </li>
+                </NavLink>
+                <NavLink href="contacts">
+                    <li class="p-3 hover:bg-text1 hover:rounded-md">
                         Контакты
-                    </NavLink>
-                </li>
+                    </li>
+                </NavLink>
             </ul>
         </nav>
     </div>
 </header>
+
+@code
+{
+    [CascadingParameter] public CascadingAppState AppState { get; set; }
+}
