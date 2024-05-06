@@ -1,3 +1,4 @@
+@using Humanizer
 @using Microsoft.JSInterop
 
 <article class="w-[300px] flex flex-col items-center text-text1 relative">
@@ -15,7 +16,7 @@
         }
         @if (Violet.NewLabel)
         {
-            <div class="flex justify-center items-center font-bold p-2 bg-label rounded-xl text-white text-sm absolute bottom-24 -left-5">
+            <div class="flex justify-center items-center font-bold p-2 bg-label rounded-xl text-white text-sm absolute top-60 -left-5">
                 <p>New!</p>
             </div>
         }
@@ -29,21 +30,36 @@
             </svg>
         </div>
     </div>
-    <a href="@($"/details/{Violet.TransliteratedName}")" title="@Violet.Name">
-        <div class="w-[300px] flex justify-center items-center bg-white p-5 text-lg font-bold rounded-b-xl hover:underline decoration-2 underline-offset-2">
-            @{
-                var name = Violet.Name;
-                if (name.Length > 23)
-                {
-                    var substring = name[..20];
-                    substring = $"{substring}...";
-                    name = substring;
-                }
+    <div class="flex w-[300px]">
+        <a class="w-full" href="@($"/details/{Violet.TransliteratedName}")" title="@Violet.Name">
+            <div class="@($"flex justify-center items-center bg-white py-5 px-2 text-lg font-bold rounded-bl-xl hover:underline decoration-2 underline-offset-2{(Violet.IsWarehouseInfoValid() ? "" : " rounded-br-xl")}")">
+                @Violet.Name.Truncate(22, Truncator.FixedLength)
+            </div>
+        </a>
+        @if (Violet.IsWarehouseInfoValid())
+        {
+            @if (IsAddedToCart == false)
+            {
+                <button class="flex justify-center items-center bg-white rounded-br-xl pr-1" @onclick="AddToCartAsync" title="Добавить в корзину">
+                    <svg class="fill-text1 hover:fill-label" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd" d="M9.5 19.5a1 1 0 1 0 0-2a1 1 0 0 0 0 2m0 1a2 2 0 1 0 0-4a2 2 0 0 0 0 4m7-1a1 1 0 1 0 0-2a1 1 0 0 0 0 2m0 1a2 2 0 1 0 0-4a2 2 0 0 0 0 4M3 4a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .476.348L9.37 14.5H17a.5.5 0 0 1 0 1H9.004a.5.5 0 0 1-.476-.348L5.135 4.5H3.5A.5.5 0 0 1 3 4" clip-rule="evenodd" />
+                        <path d="M8.5 13L6 6h13.337a.5.5 0 0 1 .48.637l-1.713 6a.5.5 0 0 1-.481.363z" />
+                    </svg>
+                </button>
             }
-
-            @name
-        </div>
-    </a>
+            else
+            {
+                <div class="flex justify-center items-center bg-white rounded-br-xl pr-1">
+                    <svg class="fill-lime-600" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+                        <g>
+                            <path d="M10.243 16.314L6 12.07l1.414-1.414l2.829 2.828l5.656-5.657l1.415 1.415z" />
+                            <path fill-rule="evenodd" d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12m11 9a9 9 0 1 1 0-18a9 9 0 0 1 0 18" clip-rule="evenodd" />
+                        </g>
+                    </svg>
+                </div>    
+            }
+        }
+    </div>
 </article>
 
 @code
@@ -58,7 +74,20 @@
 
     [Parameter] public bool IsInFavourites { get; set; }
 
+    private bool IsAddedToCart { get; set; }
+
     private ElementReference _photoContainer;
+
+    private async Task AddToCartAsync()
+    {
+        IsAddedToCart = true;
+        StateHasChanged(); 
+
+        await Task.Delay(TimeSpan.FromSeconds(3));
+
+        IsAddedToCart = false;
+        StateHasChanged();
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
