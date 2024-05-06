@@ -2,6 +2,7 @@
 using KFTelegramBot.Model;
 using KFTelegramBot.Providers;
 using Microsoft.Extensions.Logging;
+using NPOI.HSSF.UserModel;
 using SharedLibrary.Providers;
 using SharedLibrary;
 using Telegram.Bot;
@@ -81,11 +82,131 @@ public class UpdateHandler : IUpdateHandler
             "/site"            => SiteCommand(_botClient, message,cancellationToken),
             "/backup"          => BackupCommand(_botClient, message,cancellationToken),
             "/edit_photos"     => EditPhotosCommand(_botClient, message,cancellationToken),
+            "/get_warehouse"   => GetWarehouseCommand(_botClient, message,cancellationToken),
+            "/set_warehouse"   => SetWarehouseCommand(_botClient, message),
             _                  => ProcessCommand(_botClient, message, cancellationToken)
         };
 
         Message sentMessage = await action;
         _logger.LogInformation("The message was sent with userId: {SentMessageId}", sentMessage.MessageId);
+    }
+
+    private Task<Message> SetWarehouseCommand(ITelegramBotClient botClient, Message message)
+    {
+        var violetAddingPipeline = new SetWarehousePipeline([
+            new DigestWarehouseXlsPipelineItem()
+        ]);
+
+        _memoryStateProvider.SetCurrentPipeline(violetAddingPipeline, message.Chat.Id);
+        return violetAddingPipeline.AskAQuestionForNextItem(message, botClient);
+    }
+
+    private async Task<Message> GetWarehouseCommand(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    {
+        var allViolets = _violetRepository.GetAllViolets();
+        if (allViolets.Count == 0)
+        {
+            return await botClient.SendTextMessageAsync(message.Chat.Id,
+                "Список пуст.",
+                cancellationToken: cancellationToken);
+        }
+
+        // Create a new workbook and a sheet
+        var workbook = new HSSFWorkbook();
+        var sheet = workbook.CreateSheet("Sheet1");
+
+        // Create a bold font
+        var boldFont = (HSSFFont)workbook.CreateFont();
+        boldFont.Boldweight = (short)NPOI.SS.UserModel.FontBoldWeight.Bold;
+
+        // Create a cell style with the bold font
+        var boldStyle = (HSSFCellStyle)workbook.CreateCellStyle();
+        boldStyle.SetFont(boldFont);
+
+        // Create a header row
+        var headerRow = sheet.CreateRow(0);
+        
+        var cell0 = headerRow.CreateCell(0);
+        cell0.SetCellValue("Id");
+        cell0.CellStyle = boldStyle;
+        
+        var cell1 = headerRow.CreateCell(1);
+        cell1.SetCellValue("Название");
+        cell1.CellStyle = boldStyle;
+
+        var cell2 = headerRow.CreateCell(2);
+        cell2.SetCellValue("Лист (кол-во)");
+        cell2.CellStyle = boldStyle;
+
+        var cell3 = headerRow.CreateCell(3);
+        cell3.SetCellValue("Лист (цена)");
+        cell3.CellStyle = boldStyle;
+        
+        var cell4 = headerRow.CreateCell(4);
+        cell4.SetCellValue("Пасынок/детка (кол-во)");
+        cell4.CellStyle = boldStyle;
+
+        var cell5 = headerRow.CreateCell(5);
+        cell5.SetCellValue("Пасынок/детка (цена)");
+        cell5.CellStyle = boldStyle;
+
+        var cell6 = headerRow.CreateCell(6);
+        cell6.SetCellValue("Целое растение (кол-во)");
+        cell6.CellStyle = boldStyle;
+
+        var cell7 = headerRow.CreateCell(7);
+        cell7.SetCellValue("Целое растение (цена)");
+        cell7.CellStyle = boldStyle;
+        
+        sheet.SetColumnHidden(0, true);
+
+        var violets = allViolets.OrderBy(violet => violet.PublishDate).ToArray();
+        
+        for (var i = 0; i < violets.Length; i++)
+        {
+            var violet = violets[i];
+            var row = sheet.CreateRow(i + 1);
+            row.CreateCell(0).SetCellValue(violet.Id.ToString());
+            row.CreateCell(1).SetCellValue(violet.Name);
+            row.CreateCell(2).SetCellValue(0);
+            row.CreateCell(3).SetCellValue(0);
+            row.CreateCell(4).SetCellValue(0);
+            row.CreateCell(5).SetCellValue(0);
+            row.CreateCell(6).SetCellValue(0);   
+            row.CreateCell(7).SetCellValue(0);   
+        }
+
+        // Auto-size columns
+        for (var columnIndex = 0; columnIndex < 6; columnIndex++)
+        {
+            sheet.AutoSizeColumn(columnIndex);
+        }
+
+        // Create a new file name with a .xls extension
+        var tempXlsFilePath = Path.Combine(Path.GetTempPath(), 
+            "Складские остатки и цены.xls");
+
+        // If a file with the .xls extension already exists (rare case), delete it
+        if (File.Exists(tempXlsFilePath))
+        {
+            File.Delete(tempXlsFilePath);
+        }
+
+        // Now save the Excel workbook in the newly named .xls file
+        using (var createStream = new FileStream(tempXlsFilePath, FileMode.OpenOrCreate, FileAccess.Write))
+        {
+            workbook.Write(createStream);
+        }
+        
+        // Create a FileStream to your text file
+        await using FileStream fileStream = new(tempXlsFilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+        // Create a new InputOnlineFile from the FileStream
+        InputFileStream inputFile = new(fileStream, Path.GetFileName(tempXlsFilePath));
+        
+        return await botClient.SendDocumentAsync(
+            chatId: message.Chat.Id,
+            document: inputFile,
+            cancellationToken: cancellationToken);
     }
 
     private async Task<Message> EditPhotosCommand(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
