@@ -95,7 +95,8 @@ public class UpdateHandler : IUpdateHandler
     {
         var violetAddingPipeline = new SetWarehousePipeline([
             new DigestWarehouseXlsPipelineItem()
-        ]);
+        ],
+        _violetRepository);
 
         _memoryStateProvider.SetCurrentPipeline(violetAddingPipeline, message.Chat.Id);
         return violetAddingPipeline.AskAQuestionForNextItem(message, botClient);

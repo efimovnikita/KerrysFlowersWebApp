@@ -1,10 +1,11 @@
 ﻿using SharedLibrary;
+using SharedLibrary.Providers;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
 namespace KFTelegramBot.Model;
 
-public class SetWarehousePipeline(IPipelineItem[] items) : IPipeline
+public class SetWarehousePipeline(IPipelineItem[] items, IVioletRepository violetRepository) : IPipeline
 {
     private List<WarehouseVioletItem> WarehouseVioletItems { get; } = [];
     private Queue<IPipelineItem> PipelineItems { get; } = new(items);
@@ -37,11 +38,21 @@ public class SetWarehousePipeline(IPipelineItem[] items) : IPipeline
         {
             return nextItem!.AskAQuestion(message, botClient);
         }
+        
+        if (WarehouseVioletItems.Count == 0)
+        {
+            return botClient.SendTextMessageAsync(message.Chat.Id,
+                "Не удалось добавить данные о складских остатках и ценах...");
+        }
 
-        // TODO
-        // queue is empty
-        //var sentResult = SendDataToTheDatabase(GrowingViolet, botClient, message.Chat.Id);
-        var sentResult = false;
+        var clearAllWarehouseVioletItems = violetRepository.ClearAllWarehouseVioletItems();
+        if (clearAllWarehouseVioletItems == false)
+        {
+            return botClient.SendTextMessageAsync(message.Chat.Id,
+                "Не удалось удалить предыдущие данные о складских остатках и ценах...");
+        }
+
+        var sentResult = violetRepository.InsertWarehouseVioletItems(WarehouseVioletItems);
 
         return botClient.SendTextMessageAsync(message.Chat.Id,
             sentResult

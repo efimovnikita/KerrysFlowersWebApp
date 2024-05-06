@@ -8,4 +8,7 @@ public interface IVioletRepository
     List<Violet> GetAllViolets();
     Violet GetVioletById(Guid id);
     bool DeleteViolet(Guid id);
+    bool InsertWarehouseVioletItems(IEnumerable<WarehouseVioletItem> items);
+    List<WarehouseVioletItem> GetAllWarehouseVioletItems();
+    bool ClearAllWarehouseVioletItems();
 }

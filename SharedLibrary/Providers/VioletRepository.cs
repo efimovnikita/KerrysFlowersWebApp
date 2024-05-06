@@ -75,4 +75,40 @@ public class VioletRepository : IVioletRepository
 
         return deleteResult.DeletedCount > 0;
     }
+    
+    public bool InsertWarehouseVioletItems(IEnumerable<WarehouseVioletItem> items)
+    {
+        var warehouseCollection = _database.GetCollection<WarehouseVioletItem>("WarehouseVioletItems");
+        try
+        {
+            warehouseCollection.InsertMany(items);
+            return true; // Indicates success
+        }
+        catch (Exception ex)
+        {
+            // Log or handle the exception
+            return false; // Indicates failure
+        }
+    }
+
+    public List<WarehouseVioletItem> GetAllWarehouseVioletItems()
+    {
+        var warehouseCollection = _database.GetCollection<WarehouseVioletItem>("WarehouseVioletItems");
+        return warehouseCollection.Find(Builders<WarehouseVioletItem>.Filter.Empty).ToList();
+    }
+
+    public bool ClearAllWarehouseVioletItems()
+    {
+        var warehouseCollection = _database.GetCollection<WarehouseVioletItem>("WarehouseVioletItems");
+        try
+        {
+            warehouseCollection.DeleteMany(Builders<WarehouseVioletItem>.Filter.Empty);
+            return true; // Indicates success
+        }
+        catch (Exception ex)
+        {
+            // Log or handle the exception
+            return false; // Indicates failure
+        }
+    }
 }
