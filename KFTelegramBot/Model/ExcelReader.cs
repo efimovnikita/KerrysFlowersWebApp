@@ -1,4 +1,4 @@
-﻿using NPOI.HSSF.UserModel;
+﻿using NPOI.XSSF.UserModel;
 using SharedLibrary;
 
 namespace KFTelegramBot.Model;
@@ -13,7 +13,7 @@ public static class ExcelReader
         {
             using (var file = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {
-                var workbook = new HSSFWorkbook(file);
+                var workbook = new XSSFWorkbook(file);
                 var sheet = workbook.GetSheetAt(0); // Assuming that the data is in the first sheet.
 
                 for (var row = 1; row <= sheet.LastRowNum; row++) // Skip header row (row 0)

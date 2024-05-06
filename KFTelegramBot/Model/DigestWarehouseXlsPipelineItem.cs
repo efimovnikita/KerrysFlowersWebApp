@@ -23,11 +23,11 @@ public class DigestWarehouseXlsPipelineItem : IPipelineItem
         var fileName = document!.FileName;
         var extension = Path.GetExtension(fileName);
 
-        if (extension!.Equals(".xls", StringComparison.OrdinalIgnoreCase) == false)
+        if (extension!.Equals(".xlsx", StringComparison.OrdinalIgnoreCase) == false)
         {
             return (false,
                 botClient.SendTextMessageAsync(message.Chat.Id,
-                    "Формат документа должен быть 'xls'. Повторите ввод."));
+                    "Формат документа должен быть 'xlsx'. Повторите ввод."));
         }
 
         return (true, null);
