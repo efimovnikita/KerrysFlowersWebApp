@@ -142,6 +142,28 @@
 
     public List<StoredViolet> FavouriteViolets { get; } = [];
 
+    public List<StoredViolet> ShoppingCart { get; } = [];
+    
+    public void AddToShoppingCartCallback(StoredViolet violet)
+    {
+        if (ShoppingCart.Contains(violet))
+        {
+            return;
+        }
+
+        ShoppingCart.Add(violet); 
+    }
+
+    public void RemoveFromShoppingCartCallback(StoredViolet violet)
+    {
+        if (!ShoppingCart.Contains(violet))
+        {
+            return;
+        }
+
+        ShoppingCart.Remove(violet);
+    }
+
     public async Task AddToFavouritesCallback(StoredViolet violet)
     {
         if (FavouriteViolets.Contains(violet))

@@ -71,7 +71,9 @@
     [Parameter] public EventCallback AddToFavourites { get; set; }
 
     [Parameter] public EventCallback RemoveFromFavourites { get; set; }
-
+    
+    [Parameter] public EventCallback AddToShoppingCart { get; set; }
+    
     [Parameter] public bool IsInFavourites { get; set; }
 
     private bool IsAddedToCart { get; set; }
@@ -83,8 +85,13 @@
         IsAddedToCart = true;
         StateHasChanged(); 
 
-        await Task.Delay(TimeSpan.FromSeconds(3));
+        if (AddToShoppingCart.HasDelegate)
+        {
+            await AddToShoppingCart.InvokeAsync(this);
+        }
 
+        await Task.Delay(TimeSpan.FromSeconds(3));
+        
         IsAddedToCart = false;
         StateHasChanged();
     }
