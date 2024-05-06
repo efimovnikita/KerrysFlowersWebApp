@@ -18,36 +18,36 @@ public static class ExcelReader
 
                 for (var row = 1; row <= sheet.LastRowNum; row++) // Skip header row (row 0)
                 {
-                    var currentRow = sheet.GetRow(row);
-                
-                    // Read cells from the current row and create a new WarehouseVioletItem object.
-                    // Ensuring that there is a row and cells aren't null
-                    if (currentRow == null) continue;
-                    var stringGuidValue = currentRow.GetCell(0).StringCellValue;
-                    var violetId = Guid.Parse(stringGuidValue);
-                    var leafCount = (int)currentRow.GetCell(2).NumericCellValue;
-                    var leafPrice = currentRow.GetCell(3).NumericCellValue;
-                    var childCount = (int)currentRow.GetCell(4).NumericCellValue;
-                    var childPrice = currentRow.GetCell(5).NumericCellValue;
-                    var wholePlantCount = (int)currentRow.GetCell(6).NumericCellValue;
-                    var wholePlantPrice = currentRow.GetCell(7).NumericCellValue;
-                    var item = new WarehouseVioletItem
+                    try
                     {
-                        VioletId = violetId,
-                        LeafCount = leafCount,
-                        LeafPrice = leafPrice,
-                        ChildCount = childCount,
-                        ChildPrice = childPrice,
-                        WholePlantCount = wholePlantCount,
-                        WholePlantPrice = wholePlantPrice
-                    };
-                    items.Add(item);
+                        var currentRow = sheet.GetRow(row);
+                
+                        // Read cells from the current row and create a new WarehouseVioletItem object.
+                        // Ensuring that there is a row and cells aren't null
+                        if (currentRow == null) continue;
+                        var stringGuidValue = currentRow.GetCell(0).StringCellValue;
+                        var violetId = Guid.Parse(stringGuidValue);
+                        var leafCount = (int)currentRow.GetCell(2).NumericCellValue;
+                        var leafPrice = currentRow.GetCell(3).NumericCellValue;
+                        var childCount = (int)currentRow.GetCell(4).NumericCellValue;
+                        var childPrice = currentRow.GetCell(5).NumericCellValue;
+                        var wholePlantCount = (int)currentRow.GetCell(6).NumericCellValue;
+                        var wholePlantPrice = currentRow.GetCell(7).NumericCellValue;
+                    
+                        var item = new WarehouseVioletItem(violetId, leafCount, leafPrice, childCount, childPrice,
+                            wholePlantCount, wholePlantPrice);
+                        items.Add(item);
+                    }
+                    catch (Exception)
+                    {
+                        // ignored
+                    }
                 }
             }
         }
         catch (Exception)
         {
-            // ignored
+            return items;
         }
 
         return items;
