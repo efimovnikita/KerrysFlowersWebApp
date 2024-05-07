@@ -1,8 +1,8 @@
 <header class="bg-menu">
-    <div class="max-w-7xl flex flex-col p-4 space-y-8 items-center lg:m-auto lg:flex-row lg:items-center lg:space-y-0 lg:justify-between">
+    <div class="max-w-7xl flex flex-col p-1 lg:p-4 items-center lg:m-auto lg:flex-row lg:items-center lg:space-y-0 lg:justify-between">
         <Logo/>
         <nav class="font-montserrat text-menutext text-xl">
-            <ul class="flex flex-col items-center space-y-[10px] lg:flex-row lg:space-x-5 lg:space-y-0 lg:space-x-10">
+            <ul class="flex flex-col items-center space-y-[2px] lg:flex-row lg:space-x-5 lg:space-y-0 lg:space-x-10">
                 <NavLink href="catalog" Match="NavLinkMatch.All">
                     <li class="p-3 hover:bg-text1 hover:rounded-md">
                         Каталог
@@ -20,7 +20,7 @@
                         </div>
                         @if (AppState.ShoppingCart.Count > 0)
                         {
-                            <div class="absolute w-6 h-6 flex justify-center items-center bg-orange-600 rounded-full top-0 -right-2 text-xs">
+                            <div class="absolute w-6 h-6 flex justify-center items-center rounded-full top-0 -right-2 text-xs border border-menutext">
                                 @AppState.ShoppingCart.Count
                             </div>   
                         }
