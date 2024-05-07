@@ -24,7 +24,7 @@
         {
             foreach (var violet in AppState.ShoppingCart)
             {
-                <CartCard Violet="violet"/>
+                <CartCard Violet="violet" RemoveFromShoppingCart="() => AppState.RemoveFromShoppingCartCallback(violet)"/>
             }
         }
     </CartContainer>

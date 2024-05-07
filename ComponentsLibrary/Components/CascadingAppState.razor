@@ -9,6 +9,8 @@
 
 @code {
     private const string FavouritesLocalStorageKey = "FavouriteViolets";
+    private const string CartLocalStorageKey = "ShoppingCart";
+
     [Parameter] public RenderFragment ChildContent { get; set; }
     protected override void OnInitialized()
     {
@@ -40,6 +42,7 @@
     {
         if (firstRender)
         {
+            // Favs
             var itemsString = await LocalStorage.GetItemAsync<string>(FavouritesLocalStorageKey);
             if (string.IsNullOrEmpty(itemsString))
             {
@@ -61,6 +64,34 @@
                 FavouriteViolets.Add(foundViolet);
                 StateHasChanged();
             }   
+            
+            // Cart
+            var itemAsync = await LocalStorage.GetItemAsync<string>(CartLocalStorageKey);
+            if (string.IsNullOrEmpty(itemAsync))
+            {
+                return;
+            }
+
+            var guidArrayForCart = JsonConvert.DeserializeObject<string[]>(itemAsync);
+            
+            foreach (var gStr in guidArrayForCart)
+            {
+                var isSuccess = Guid.TryParse(gStr, out var guid);
+                if (!isSuccess)
+                {
+                    continue;
+                }
+                
+                var foundViolet = Violets.FirstOrDefault(violet => violet.Id.Equals(guid));
+                if (foundViolet == null) continue;
+                if (foundViolet.IsWarehouseInfoValid() == false)
+                {
+                    return;
+                }
+                
+                ShoppingCart.Add(foundViolet);
+                StateHasChanged();
+            }
         }
     }
 
@@ -144,7 +175,7 @@
 
     public List<StoredViolet> ShoppingCart { get; } = [];
     
-    public void AddToShoppingCartCallback(StoredViolet violet)
+    public async Task AddToShoppingCartCallback(StoredViolet violet)
     {
         if (ShoppingCart.Contains(violet))
         {
@@ -153,9 +184,11 @@
 
         ShoppingCart.Add(violet); 
         StateHasChanged();
+        
+        await LocalStorage.SetItemAsync(CartLocalStorageKey, ShoppingCart.Select(v => v.Id).ToArray());
     }
 
-    public void RemoveFromShoppingCartCallback(StoredViolet violet)
+    public async Task RemoveFromShoppingCartCallback(StoredViolet violet)
     {
         if (!ShoppingCart.Contains(violet))
         {
@@ -163,6 +196,9 @@
         }
 
         ShoppingCart.Remove(violet);
+        StateHasChanged();
+        
+        await LocalStorage.SetItemAsync(CartLocalStorageKey, ShoppingCart.Select(v => v.Id).ToArray());
     }
 
     public async Task AddToFavouritesCallback(StoredViolet violet)

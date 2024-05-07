@@ -2,11 +2,11 @@
 
 <div class="flex flex-col">
     <div class="flex items-center gap-2">
-        @*<button class="flex items-center justify-center">
+        <button class="flex items-center justify-center border border-text1 rounded-full hover:bg-[#d1d1c7]" title="Удалить из корзины" @onclick="RemoveFromCart">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 15 15">
                 <path fill="#44403C" fill-rule="evenodd" d="M11.782 4.032a.575.575 0 1 0-.813-.814L7.5 6.687L4.032 3.218a.575.575 0 0 0-.814.814L6.687 7.5l-3.469 3.468a.575.575 0 0 0 .814.814L7.5 8.313l3.469 3.469a.575.575 0 0 0 .813-.814L8.313 7.5z" clip-rule="evenodd"/>
             </svg>
-        </button>*@
+        </button>
         <img
             class="w-[50px] h-[50px] object-cover border border-text1 rounded"
             src="@($"data:image/jpeg;base64,{Violet.Images[0].W300}")"
@@ -113,6 +113,15 @@
 
 @code
 {
-    [Parameter]
-    public StoredViolet Violet { get; set; }
+    [Parameter] public StoredViolet Violet { get; set; }
+
+    [Parameter] public EventCallback RemoveFromShoppingCart { get; set; }
+
+    private async Task RemoveFromCart()
+    {
+        if (RemoveFromShoppingCart.HasDelegate)
+        {
+            await RemoveFromShoppingCart.InvokeAsync(this);
+        }
+    }
 }
