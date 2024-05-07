@@ -20,7 +20,8 @@
         else
         {
             <PreviewCard IsLeft="true" Violet="leftViolet"/>
-            <DetailCard Violet="Violet"/>
+            <DetailCard Violet="Violet"
+                        AddToShoppingCart="() => AppState.AddToShoppingCartCallback(Violet)"/>
             <PreviewCard IsLeft="false" Violet="rightViolet"/>
         }
     </section>
