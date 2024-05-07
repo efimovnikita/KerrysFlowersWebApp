@@ -1,116 +1,111 @@
 ﻿@using Humanizer
 
-<div class="flex flex-col">
+<div class="max-w-2xl grid grid-cols-1 gap-2 sm:grid-cols-2 sm:place-items-center md:gap-10">
     <div class="flex items-center gap-2">
         <button class="flex items-center justify-center border border-text1 rounded-full hover:bg-[#d1d1c7]" title="Удалить из корзины" @onclick="RemoveFromCart">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 15 15">
                 <path fill="#44403C" fill-rule="evenodd" d="M11.782 4.032a.575.575 0 1 0-.813-.814L7.5 6.687L4.032 3.218a.575.575 0 0 0-.814.814L6.687 7.5l-3.469 3.468a.575.575 0 0 0 .814.814L7.5 8.313l3.469 3.469a.575.575 0 0 0 .813-.814L8.313 7.5z" clip-rule="evenodd"/>
             </svg>
         </button>
-        <a href="@($"/details/{Violet.TransliteratedName}")" title="@Violet.Name">
+        <a class="shrink-0" href="@($"/details/{Violet.TransliteratedName}")" title="@Violet.Name">
             <img
                 class="w-[50px] h-[50px] object-cover border border-text1 rounded"
                 src="@($"data:image/jpeg;base64,{Violet.Images[0].W300}")"
                 alt="Фотография фиалки @Violet.Name"/>
         </a>
         <a class="font-bold hover:underline decoration-2 underline-offset-2" href="@($"/details/{Violet.TransliteratedName}")" title="@Violet.Name">
-            @(Violet.Name.Truncate(22, Truncator.FixedLength))
+            @("ЕК-Небесное создание".Truncate(20, Truncator.FixedLength))
         </a>
     </div>
-    <table>
-        <tbody>
-        <tr>
-            <td>
-                <div class="flex items-center gap-1">
-                    <svg class="border border-text1 rounded" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
-                        <path fill="#44403C" d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66l.95-2.3c.48.17.98.3 1.34.3C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8"/>
+    <div class="grid grid-cols-1">
+        <div class="grid grid-cols-3 gap-4">
+            <div class="flex items-center gap-1">
+                <svg class="border border-text1 rounded shrink-0" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                    <path fill="#44403C" d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66l.95-2.3c.48.17.98.3 1.34.3C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8" />
+                </svg>
+                <p>
+                    лист
+                </p>
+            </div>
+            <div class="flex items-center justify-center gap-3">
+                <button>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 32 32">
+                        <path fill="#44403C" d="m19.031 4.281l-11 11l-.687.719l.687.719l11 11l1.438-1.438L10.187 16L20.47 5.719z"/>
                     </svg>
-                    <p>лист -</p>
-                </div>
-            </td>
-            <td>
-                <div class="flex">
-                    <select class="bg-transparent">
-                        <option value="0">0</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                    </select>
-                    <p>шт.,</p>
-                </div>
-            </td>
-            <td>
-                <div class="flex items-center gap-1">
-                    <p>цена:</p>
-                    <p>120</p>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256">
-                        <path fill="#44403C" d="M148 152a60 60 0 0 0 0-120H88a8 8 0 0 0-8 8v96H56a8 8 0 0 0 0 16h24v16H56a8 8 0 0 0 0 16h24v32a8 8 0 0 0 16 0v-32h48a8 8 0 0 0 0-16H96v-16ZM96 48h52a44 44 0 0 1 0 88H96Z" />
+                </button>
+                <p>0</p>
+                <button>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 32 32">
+                        <path fill="#44403C" d="M12.969 4.281L11.53 5.72L21.812 16l-10.28 10.281l1.437 1.438l11-11l.687-.719l-.687-.719z"/>
                     </svg>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <div class="flex items-center gap-1">
-                    <svg class="border border-text1 rounded" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
-                        <path fill="#44403C" d="M9.127 21q-.546 0-.975-.338q-.429-.339-.585-.88l-1.027-4.05h10.923l-1.03 4.052q-.155.54-.584.878q-.429.339-.975.339zM12 8.673q.192-1.961 1.577-3.346t3.346-1.558q-.173 1.808-1.415 3.16T12.5 8.63V11h7.154v2.346q0 .671-.472 1.143t-1.143.472H6q-.671 0-1.143-.471q-.473-.473-.473-1.144V11H11.5V8.63q-1.766-.35-2.998-1.692T7.077 3.77q1.961.173 3.346 1.558T12 8.673" />
+                </button>
+            </div>
+            <div class="flex items-center justify-center">
+                <p class="font-bold">120</p>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256">
+                    <path fill="#44403C" d="M148 152a60 60 0 0 0 0-120H88a8 8 0 0 0-8 8v96H56a8 8 0 0 0 0 16h24v16H56a8 8 0 0 0 0 16h24v32a8 8 0 0 0 16 0v-32h48a8 8 0 0 0 0-16H96v-16ZM96 48h52a44 44 0 0 1 0 88H96Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="grid grid-cols-3 gap-4">
+            <div class="flex items-center gap-1">
+                <svg class="border border-text1 rounded shrink-0" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                    <path fill="#44403C" d="M9.127 21q-.546 0-.975-.338q-.429-.339-.585-.88l-1.027-4.05h10.923l-1.03 4.052q-.155.54-.584.878q-.429.339-.975.339zM12 8.673q.192-1.961 1.577-3.346t3.346-1.558q-.173 1.808-1.415 3.16T12.5 8.63V11h7.154v2.346q0 .671-.472 1.143t-1.143.472H6q-.671 0-1.143-.471q-.473-.473-.473-1.144V11H11.5V8.63q-1.766-.35-2.998-1.692T7.077 3.77q1.961.173 3.346 1.558T12 8.673" />
+                </svg>
+                <p>
+                    детка
+                </p>
+            </div>
+            <div class="flex items-center justify-center gap-3">
+                <button>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 32 32">
+                        <path fill="#44403C" d="m19.031 4.281l-11 11l-.687.719l.687.719l11 11l1.438-1.438L10.187 16L20.47 5.719z"/>
                     </svg>
-                    <p>детка -</p>
-                </div>
-            </td>
-            <td>
-                <div class="flex">
-                    <select class="bg-transparent">
-                        <option value="0">0</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                    </select>
-                    <p>шт.,</p>
-                </div>
-            </td>
-            <td>
-                <div class="flex items-center gap-1">
-                    <p>цена:</p>
-                    <p>120</p>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256">
-                        <path fill="#44403C" d="M148 152a60 60 0 0 0 0-120H88a8 8 0 0 0-8 8v96H56a8 8 0 0 0 0 16h24v16H56a8 8 0 0 0 0 16h24v32a8 8 0 0 0 16 0v-32h48a8 8 0 0 0 0-16H96v-16ZM96 48h52a44 44 0 0 1 0 88H96Z" />
+                </button>
+                <p>0</p>
+                <button>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 32 32">
+                        <path fill="#44403C" d="M12.969 4.281L11.53 5.72L21.812 16l-10.28 10.281l1.437 1.438l11-11l.687-.719l-.687-.719z"/>
                     </svg>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <div class="flex items-center gap-1">
-                    <svg class="border border-text1 rounded" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256">
-                        <path fill="#44403C" d="M200 144h-76.7l22.41-22.41a59.55 59.55 0 0 0 26.1 6.36a49.56 49.56 0 0 0 25.89-7.22c23.72-14.36 36.43-47.6 34-88.92a8 8 0 0 0-7.52-7.52c-41.32-2.43-74.56 10.28-88.93 34c-9.35 15.45-9.59 34.11-.86 52L120 124.68l-12.21-12.21c6-13.25 5.57-27-1.39-38.48C95.53 56 70.61 46.41 39.73 48.22a8 8 0 0 0-7.51 7.51C30.4 86.6 40 111.52 58 122.4a38.2 38.2 0 0 0 20 5.6a45 45 0 0 0 18.52-4.19L108.69 136l-8 8H56a8 8 0 0 0 0 16h9.59l13.21 59.47A15.89 15.89 0 0 0 94.42 232h67.17a15.91 15.91 0 0 0 15.62-12.53L190.42 160H200a8 8 0 0 0 0-16" />
+                </button>
+            </div>
+            <div class="flex items-center justify-center">
+                <p class="font-bold">120</p>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256">
+                    <path fill="#44403C" d="M148 152a60 60 0 0 0 0-120H88a8 8 0 0 0-8 8v96H56a8 8 0 0 0 0 16h24v16H56a8 8 0 0 0 0 16h24v32a8 8 0 0 0 16 0v-32h48a8 8 0 0 0 0-16H96v-16ZM96 48h52a44 44 0 0 1 0 88H96Z" />
+                </svg>
+            </div>
+        </div>
+        <div class="grid grid-cols-3 gap-4">
+            <div class="flex items-center gap-1">
+                <svg class="border border-text1 rounded shrink-0" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256">
+                    <path fill="#44403C" d="M200 144h-76.7l22.41-22.41a59.55 59.55 0 0 0 26.1 6.36a49.56 49.56 0 0 0 25.89-7.22c23.72-14.36 36.43-47.6 34-88.92a8 8 0 0 0-7.52-7.52c-41.32-2.43-74.56 10.28-88.93 34c-9.35 15.45-9.59 34.11-.86 52L120 124.68l-12.21-12.21c6-13.25 5.57-27-1.39-38.48C95.53 56 70.61 46.41 39.73 48.22a8 8 0 0 0-7.51 7.51C30.4 86.6 40 111.52 58 122.4a38.2 38.2 0 0 0 20 5.6a45 45 0 0 0 18.52-4.19L108.69 136l-8 8H56a8 8 0 0 0 0 16h9.59l13.21 59.47A15.89 15.89 0 0 0 94.42 232h67.17a15.91 15.91 0 0 0 15.62-12.53L190.42 160H200a8 8 0 0 0 0-16" />
+                </svg>
+                <p>
+                    растение
+                </p>
+            </div>
+            <div class="flex items-center justify-center gap-3">
+                <button>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 32 32">
+                        <path fill="#44403C" d="m19.031 4.281l-11 11l-.687.719l.687.719l11 11l1.438-1.438L10.187 16L20.47 5.719z"/>
                     </svg>
-                    <p>растение -</p>
-                </div>
-            </td>
-            <td>
-                <div class="flex">
-                    <select class="bg-transparent">
-                        <option value="0">0</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                    </select>
-                    <p>шт.,</p>
-                </div>
-            </td>
-            <td>
-                <div class="flex items-center gap-1">
-                    <p>цена:</p>
-                    <p>120</p>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256">
-                        <path fill="#44403C" d="M148 152a60 60 0 0 0 0-120H88a8 8 0 0 0-8 8v96H56a8 8 0 0 0 0 16h24v16H56a8 8 0 0 0 0 16h24v32a8 8 0 0 0 16 0v-32h48a8 8 0 0 0 0-16H96v-16ZM96 48h52a44 44 0 0 1 0 88H96Z" />
+                </button>
+                <p>0</p>
+                <button>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 32 32">
+                        <path fill="#44403C" d="M12.969 4.281L11.53 5.72L21.812 16l-10.28 10.281l1.437 1.438l11-11l.687-.719l-.687-.719z"/>
                     </svg>
-                </div>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+                </button>
+            </div>
+            <div class="flex items-center justify-center">
+                <p class="font-bold">120</p>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256">
+                    <path fill="#44403C" d="M148 152a60 60 0 0 0 0-120H88a8 8 0 0 0-8 8v96H56a8 8 0 0 0 0 16h24v16H56a8 8 0 0 0 0 16h24v32a8 8 0 0 0 16 0v-32h48a8 8 0 0 0 0-16H96v-16ZM96 48h52a44 44 0 0 1 0 88H96Z" />
+                </svg>
+            </div>
+        </div>
+    </div>
 </div>
 
 @code
