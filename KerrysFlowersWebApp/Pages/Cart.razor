@@ -1,0 +1,38 @@
+﻿@page "/cart"
+
+<PageTitle>Корзина</PageTitle>
+<HeadContent>
+    <meta name="description" content="Корзина.">
+</HeadContent>
+
+<MainContainer>
+
+    <header class="hidden md:flex md:flex-col md:items-center md:gap-8">
+        <h2 class="text-heading font-roboto font-bold text-6xl">
+            Корзина
+        </h2>
+    </header>
+
+    <CartContainer>
+        @if (AppState.ShoppingCart.Count == 0)
+        {
+            <div>
+                Корзина пуста...
+            </div>
+        }
+        else
+        {
+            foreach (var violet in AppState.ShoppingCart)
+            {
+                <CartCard Violet="violet"/>
+            }
+        }
+    </CartContainer>
+
+</MainContainer>
+
+
+@code
+{
+    [CascadingParameter] public CascadingAppState AppState { get; set; }
+}
