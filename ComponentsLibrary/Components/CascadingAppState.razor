@@ -243,6 +243,14 @@
         StateHasChanged();
     }
 
+    public async Task ClearShoppingCart()
+    {
+        ShoppingCart.Clear();
+        await LocalStorage.SetItemAsync(CartLocalStorageKey, ShoppingCart.Select(v => v.Id).ToArray());
+
+        StateHasChanged();
+    }
+
     public async Task AddToShoppingCartCallback(StoredViolet violet)
     {
         if (ShoppingCart.Contains(violet))

@@ -28,6 +28,18 @@
             }
         }
     </CartContainer>
+
+    @if (AppState.ShoppingCart.Count > 0)
+    {
+        <nav class="w-full font-montserrat text-menutext text-lg flex items-center justify-between">
+            <button class="uppercase p-3 cursor-pointer hover:border border-menutext" @onclick="AppState.ClearShoppingCart">
+                Очистить
+            </button>
+            <button class="uppercase border border-menutext p-3 hover:bg-text1 cursor-pointer">
+                Оформить
+            </button>
+        </nav>
+    }
     
 </MainContainer>
 
