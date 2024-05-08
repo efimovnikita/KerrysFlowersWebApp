@@ -9,25 +9,23 @@ public class StoredViolet(Violet violet, WarehouseVioletItem warehouseItem = nul
 
     private int LeafCount { get; set; } = warehouseItem?.LeafCount ?? DefaultCount;
     private double LeafPrice { get; set; } = warehouseItem?.LeafPrice ?? DefaultPrice;
-    private int SelectedLeafs { get; set; }
+    public int SelectedLeafs { get; set; }
     private int ChildCount { get; set; } = warehouseItem?.ChildCount ?? DefaultCount;
     private double ChildPrice { get; set; } = warehouseItem?.ChildPrice ?? DefaultPrice;
-    private int SelectedChildren { get; set; }
+    public int SelectedChildren { get; set; }
     private int WholePlantCount { get; set; } = warehouseItem?.WholePlantCount ?? DefaultCount;
     private double WholePlantPrice { get; set; } = warehouseItem?.WholePlantPrice ?? DefaultPrice;
-    private int SelectedWholePlants { get; set; }
+    public int SelectedWholePlants { get; set; }
 
     public bool IsLeafsInfoValid() => LeafCount != 0 && LeafPrice != 0.0;
     public bool IsChildrenInfoValid() => ChildCount != 0 && ChildPrice != 0.0;
     public bool IsWholePlantInfoValid() => WholePlantCount != 0 && WholePlantPrice != 0.0;
     public bool IsWarehouseInfoValid() => IsLeafsInfoValid() || IsChildrenInfoValid() || IsWholePlantInfoValid();
-
-    public double CalcSelectedLeafsPrice() => SelectedLeafs * LeafCount;
-    public double CalcSelectedChildrenPrice() => SelectedChildren * ChildPrice;
-    public double CalcSelectedWholePlantsPrice() => SelectedWholePlants * WholePlantPrice;
-
-    public double CalcTotalPriceForViolet() =>
-        CalcSelectedLeafsPrice() + CalcSelectedChildrenPrice() + CalcSelectedWholePlantsPrice();
+    public double CalculatedLeafsPrice => SelectedLeafs * LeafPrice;
+    public double CalculatedChildrenPrice => SelectedChildren * ChildPrice;
+    public double CalculatedWholePlantsPrice => SelectedWholePlants * WholePlantPrice;
+    public double CalculatedTotalVioletPrice =>
+        CalculatedLeafsPrice + CalculatedChildrenPrice + CalculatedWholePlantsPrice;
     public void IncreaseNumberOfSelectedLeafs()
     {
         if (SelectedLeafs + 1 > LeafCount)
