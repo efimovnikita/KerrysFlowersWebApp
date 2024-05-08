@@ -1,8 +1,17 @@
-﻿<section id="cart-container" class="w-full bg-text2 text-text1 rounded-md px-2 py-5 grid grid-cols-1 gap-4 sm:place-items-center">
+﻿<section id="cart-container" class="w-full bg-text2 text-text1 rounded-md px-2 py-5 grid grid-cols-1 gap-4 sm:place-items-center md:px-20 lg:px-32 xl:px-52">
     @ChildContent
+    @if (AppState.ShoppingCart.Count > 0)
+    {
+        <div class="flex items-center justify-self-end font-bold">
+            <p>Итоговая сумма: @AppState.TotalCartPrice</p>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256">
+                <path fill="#44403C" d="M148 152a60 60 0 0 0 0-120H88a8 8 0 0 0-8 8v96H56a8 8 0 0 0 0 16h24v16H56a8 8 0 0 0 0 16h24v32a8 8 0 0 0 16 0v-32h48a8 8 0 0 0 0-16H96v-16ZM96 48h52a44 44 0 0 1 0 88H96Z" />
+            </svg>
+        </div>   
+    }
 </section>
 
 @code {
-[Parameter]
-public RenderFragment ChildContent { get; set; }
+    [CascadingParameter] public CascadingAppState AppState { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; }
 }

@@ -837,6 +837,10 @@ video {
   margin-bottom: calc(10px * var(--tw-space-y-reverse));
 }
 
+.justify-self-end {
+  justify-self: end;
+}
+
 .overflow-x-auto {
   overflow-x: auto;
 }
@@ -1132,6 +1136,10 @@ video {
 
 .pl-4 {
   padding-left: 1rem;
+}
+
+.text-left {
+  text-align: left;
 }
 
 .text-center {
@@ -1441,6 +1449,11 @@ video {
     margin: auto;
   }
 
+  .md\:mx-40 {
+    margin-left: 10rem;
+    margin-right: 10rem;
+  }
+
   .md\:flex {
     display: flex;
   }
@@ -1542,6 +1555,21 @@ video {
     padding-bottom: 2.5rem;
   }
 
+  .md\:px-40 {
+    padding-left: 10rem;
+    padding-right: 10rem;
+  }
+
+  .md\:px-32 {
+    padding-left: 8rem;
+    padding-right: 8rem;
+  }
+
+  .md\:px-20 {
+    padding-left: 5rem;
+    padding-right: 5rem;
+  }
+
   .md\:text-left {
     text-align: left;
   }
@@ -1612,12 +1640,27 @@ video {
   .lg\:p-4 {
     padding: 1rem;
   }
+
+  .lg\:px-32 {
+    padding-left: 8rem;
+    padding-right: 8rem;
+  }
 }
 
 @media (min-width: 1280px) {
   .xl\:px-32 {
     padding-left: 8rem;
     padding-right: 8rem;
+  }
+
+  .xl\:px-40 {
+    padding-left: 10rem;
+    padding-right: 10rem;
+  }
+
+  .xl\:px-52 {
+    padding-left: 13rem;
+    padding-right: 13rem;
   }
 }
 

@@ -1,19 +1,19 @@
 ﻿@using Humanizer
 
-<div class="flex justify-between flex-col gap-2 w-full sm:flex-row md:max-w-[700px] p-1 rounded border border-text1 sm:place-items-center md:gap-10">
+<div class="flex justify-between flex-col gap-2 w-full sm:flex-row p-1 rounded border border-text1 sm:place-items-center md:gap-10">
     <div class="flex items-center gap-2">
         <button class="flex items-center justify-center border border-text1 rounded-full hover:bg-[#d1d1c7]" title="Удалить из корзины" @onclick="RemoveFromCart">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 15 15">
                 <path fill="#44403C" fill-rule="evenodd" d="M11.782 4.032a.575.575 0 1 0-.813-.814L7.5 6.687L4.032 3.218a.575.575 0 0 0-.814.814L6.687 7.5l-3.469 3.468a.575.575 0 0 0 .814.814L7.5 8.313l3.469 3.469a.575.575 0 0 0 .813-.814L8.313 7.5z" clip-rule="evenodd"/>
             </svg>
         </button>
-        <a class="shrink-0" href="@($"/details/{Violet.TransliteratedName}#details-container")" title="@Violet.Name">
+        <a class="shrink-0" href="@($"/details/{Violet.TransliteratedName}")" title="@Violet.Name">
             <img
                 class="w-[50px] h-[50px] object-cover border border-text1 rounded"
                 src="@($"data:image/jpeg;base64,{Violet.Images[0].W300}")"
                 alt="Фотография фиалки @Violet.Name"/>
         </a>
-        <a class="font-bold hover:underline decoration-2 underline-offset-2" href="@($"/details/{Violet.TransliteratedName}#details-container")" title="@Violet.Name">
+        <a class="font-bold hover:underline decoration-2 underline-offset-2" href="@($"/details/{Violet.TransliteratedName}")" title="@Violet.Name">
             @(Violet.Name.Truncate(20, Truncator.FixedLength))
         </a>
     </div>
@@ -24,8 +24,8 @@
                 PurchaseOption="VioletPurchaseOption.Leaf" 
                 Amount="Violet.SelectedLeafs" 
                 PartPrice="Violet.CalculatedLeafsPrice"
-                DecreaseQuantity="Violet.DecreaseNumberOfSelectedLeafs"
-                IncreaseQuantity="Violet.IncreaseNumberOfSelectedLeafs "/>
+                DecreaseQuantity="() => AppState.DecreaseNumberOfSelectedLeafs(Violet)"
+                IncreaseQuantity="() => AppState.IncreaseNumberOfSelectedLeafs(Violet) "/>
         }
         
         @if (Violet.IsChildrenInfoValid())
@@ -34,8 +34,8 @@
                 PurchaseOption="VioletPurchaseOption.Offshoot" 
                 Amount="Violet.SelectedChildren"
                 PartPrice="Violet.CalculatedChildrenPrice"
-                DecreaseQuantity="Violet.DecreaseNumberOfSelectedChildren"
-                IncreaseQuantity="Violet.IncreaseNumberOfSelectedChildren" />
+                DecreaseQuantity="() => AppState.DecreaseNumberOfSelectedChildren(Violet)"
+                IncreaseQuantity="() => AppState.IncreaseNumberOfSelectedChildren(Violet)" />
         }
         
         @if (Violet.IsWholePlantInfoValid())
@@ -44,14 +44,16 @@
                 PurchaseOption="VioletPurchaseOption.WholePlant" 
                 Amount="Violet.SelectedWholePlants" 
                 PartPrice="Violet.CalculatedWholePlantsPrice"
-                DecreaseQuantity="Violet.DecreaseNumberOfSelectedWholePlants"
-                IncreaseQuantity="Violet.IncreaseNumberOfSelectedWholePlants" />
+                DecreaseQuantity="() => AppState.DecreaseNumberOfSelectedWholePlants(Violet)"
+                IncreaseQuantity="() => AppState.IncreaseNumberOfSelectedWholePlants(Violet)" />
         }
     </div>
 </div>
 
 @code
 {
+    [CascadingParameter] public CascadingAppState AppState { get; set; }
+
     [Parameter] public StoredViolet Violet { get; set; }
 
     [Parameter] public EventCallback RemoveFromShoppingCart { get; set; }

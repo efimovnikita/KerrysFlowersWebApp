@@ -7,13 +7,13 @@ public class StoredViolet(Violet violet, WarehouseVioletItem warehouseItem = nul
     private const int DefaultCount = 0;
     private const double DefaultPrice = 0.0;
 
-    private int LeafCount { get; set; } = warehouseItem?.LeafCount ?? DefaultCount;
+    public int LeafCount { get; set; } = warehouseItem?.LeafCount ?? DefaultCount;
     private double LeafPrice { get; set; } = warehouseItem?.LeafPrice ?? DefaultPrice;
     public int SelectedLeafs { get; set; }
-    private int ChildCount { get; set; } = warehouseItem?.ChildCount ?? DefaultCount;
+    public int ChildCount { get; set; } = warehouseItem?.ChildCount ?? DefaultCount;
     private double ChildPrice { get; set; } = warehouseItem?.ChildPrice ?? DefaultPrice;
     public int SelectedChildren { get; set; }
-    private int WholePlantCount { get; set; } = warehouseItem?.WholePlantCount ?? DefaultCount;
+    public int WholePlantCount { get; set; } = warehouseItem?.WholePlantCount ?? DefaultCount;
     private double WholePlantPrice { get; set; } = warehouseItem?.WholePlantPrice ?? DefaultPrice;
     public int SelectedWholePlants { get; set; }
 
@@ -26,64 +26,5 @@ public class StoredViolet(Violet violet, WarehouseVioletItem warehouseItem = nul
     public double CalculatedWholePlantsPrice => SelectedWholePlants * WholePlantPrice;
     public double CalculatedTotalVioletPrice =>
         CalculatedLeafsPrice + CalculatedChildrenPrice + CalculatedWholePlantsPrice;
-    public void IncreaseNumberOfSelectedLeafs()
-    {
-        if (SelectedLeafs + 1 > LeafCount)
-        {
-            return;
-        }
-
-        SelectedLeafs += 1;
-    }
-    
-    public void DecreaseNumberOfSelectedLeafs()
-    {
-        if (SelectedLeafs == 0)
-        {
-            return;
-        }
-
-        SelectedLeafs -= 1;
-    }
-    
-    public void IncreaseNumberOfSelectedChildren()
-    {
-        if (SelectedChildren + 1 > ChildCount)
-        {
-            return;
-        }
-
-        SelectedChildren += 1;
-    }
-    
-    public void DecreaseNumberOfSelectedChildren()
-    {
-        if (SelectedChildren == 0)
-        {
-            return;
-        }
-
-        SelectedChildren -= 1;
-    }
-    
-    public void IncreaseNumberOfSelectedWholePlants()
-    {
-        if (SelectedWholePlants + 1 > WholePlantCount)
-        {
-            return;
-        }
-
-        SelectedWholePlants += 1;
-    }
-    
-    public void DecreaseNumberOfSelectedWholePlants()
-    {
-        if (SelectedWholePlants == 0)
-        {
-            return;
-        }
-
-        SelectedWholePlants -= 1;
-    }
 }
 

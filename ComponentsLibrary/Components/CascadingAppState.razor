@@ -174,7 +174,75 @@
     public List<StoredViolet> FavouriteViolets { get; } = [];
 
     public List<StoredViolet> ShoppingCart { get; } = [];
+
+    public double TotalCartPrice => ShoppingCart.Sum(violet => violet.CalculatedTotalVioletPrice);
     
+    public void IncreaseNumberOfSelectedLeafs(StoredViolet violet)
+    {
+        if (violet.SelectedLeafs + 1 > violet.LeafCount)
+        {
+            return;
+        }
+
+        violet.SelectedLeafs += 1;
+        StateHasChanged();
+    }
+    
+    public void DecreaseNumberOfSelectedLeafs(StoredViolet violet)
+    {
+        if (violet.SelectedLeafs == 0)
+        {
+            return;
+        }
+
+        violet.SelectedLeafs -= 1;
+        StateHasChanged();
+    }
+    
+    public void IncreaseNumberOfSelectedChildren(StoredViolet violet)
+    {
+        if (violet.SelectedChildren + 1 > violet.ChildCount)
+        {
+            return;
+        }
+
+        violet.SelectedChildren += 1;
+        StateHasChanged();
+    }
+    
+    public void DecreaseNumberOfSelectedChildren(StoredViolet violet)
+    {
+        if (violet.SelectedChildren == 0)
+        {
+            return;
+        }
+
+        violet.SelectedChildren -= 1;
+        StateHasChanged();
+    }
+    
+    public void IncreaseNumberOfSelectedWholePlants(StoredViolet violet)
+    {
+        if (violet.SelectedWholePlants + 1 > violet.WholePlantCount)
+        {
+            return;
+        }
+
+        violet.SelectedWholePlants += 1;
+        StateHasChanged();
+    }
+    
+    public void DecreaseNumberOfSelectedWholePlants(StoredViolet violet)
+    {
+        if (violet.SelectedWholePlants == 0)
+        {
+            return;
+        }
+
+        violet.SelectedWholePlants -= 1;
+        StateHasChanged();
+    }
+
     public async Task AddToShoppingCartCallback(StoredViolet violet)
     {
         if (ShoppingCart.Contains(violet))

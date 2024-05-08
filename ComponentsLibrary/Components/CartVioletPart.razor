@@ -70,6 +70,8 @@
         {
             await IncreaseQuantity.InvokeAsync();
         }
+        
+        StateHasChanged();
     }
     
     private async Task Decrease()
@@ -78,5 +80,7 @@
         {
             await DecreaseQuantity.InvokeAsync();
         }
+        
+        StateHasChanged();
     }
 }
