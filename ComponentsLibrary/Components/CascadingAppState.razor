@@ -160,6 +160,19 @@
                 })
                 .Where(violet =>
                 {
+                    var activeAvailabilityTags = Filter.AvailableParts
+                        .Where(tag => tag.Active)
+                        .Select(tag => tag.Name)
+                        .ToList();
+                    
+                    return activeAvailabilityTags.Count == 0 || violet.PurchaseOptions.Any(option =>
+                    {
+                        var description = ExtensionMethods.GetEnumDescription(option).ToLowerInvariant();
+                        return activeAvailabilityTags.Contains(description);
+                    });
+                })
+                .Where(violet =>
+                {
                     List<string> activeYearTags = Filter.YearTags
                         .Where(tag => tag.Active)
                         .Select(tag => tag.Name)
@@ -245,6 +258,11 @@
 
     public async Task ClearShoppingCart()
     {
+        foreach (var violet in ShoppingCart)
+        {
+            SetDefaultSelectedValues(violet);
+        }
+        
         ShoppingCart.Clear();
         await LocalStorage.SetItemAsync(CartLocalStorageKey, ShoppingCart.Select(v => v.Id).ToArray());
 
@@ -271,14 +289,19 @@
             return;
         }
 
-        violet.SelectedLeafs = 0;
-        violet.SelectedChildren = 0;
-        violet.SelectedWholePlants = 0;
-        
+        SetDefaultSelectedValues(violet);
+
         ShoppingCart.Remove(violet);
         StateHasChanged();
         
         await LocalStorage.SetItemAsync(CartLocalStorageKey, ShoppingCart.Select(v => v.Id).ToArray());
+    }
+
+    private static void SetDefaultSelectedValues(StoredViolet violet)
+    {
+        violet.SelectedLeafs = 0;
+        violet.SelectedChildren = 0;
+        violet.SelectedWholePlants = 0;
     }
 
     public async Task AddToFavouritesCallback(StoredViolet violet)
@@ -350,7 +373,15 @@
             .OrderBy(tag => tag.Name)
             .ToList();
 
-        Filter = new Filter(tagsList, colorsTags, breedersTags, yearsTags, chimeraTags, sizeTags);
+        var availabilityTags = Violets
+            .Where(violet => violet.IsWarehouseInfoValid())
+            .SelectMany(violet => violet.PurchaseOptions)
+            .Distinct()
+            .Select(purchaseOption => new Tag(ExtensionMethods.GetEnumDescription(purchaseOption).ToLowerInvariant()) )
+            .OrderBy(tag => tag.Name)
+            .ToList();
+
+        Filter = new Filter(tagsList, colorsTags, breedersTags, yearsTags, chimeraTags, sizeTags, availabilityTags);
     }
 
     public void ChangeTagActivationState(Tag tag)
@@ -388,6 +419,11 @@
     {
         FiltersPanel.ChimeraVisible = !FiltersPanel.ChimeraVisible;
     }
+    
+    public void ChangeAvailablePartsVisibility()
+    {
+        FiltersPanel.AvailableVisible = !FiltersPanel.AvailableVisible;
+    }
 
     public void ResetAllFilters()
     {
@@ -397,6 +433,7 @@
         Filter.ChimeraTags.ForEach(tag => tag.Active = false);
         Filter.ColorTags.ForEach(tag => tag.Active = false);
         Filter.YearTags.ForEach(tag => tag.Active = false);
+        Filter.AvailableParts.ForEach(tag => tag.Active = false);
         StateHasChanged();
     }
 
@@ -407,6 +444,7 @@
             .Concat(Filter.ChimeraTags)
             .Concat(Filter.ColorTags)
             .Concat(Filter.YearTags)
+            .Concat(Filter.AvailableParts)
             .ToList()
             .Any(tag => tag.Active);
 }

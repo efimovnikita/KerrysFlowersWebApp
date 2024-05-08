@@ -92,6 +92,10 @@
         <FilterTagsContainer Title="Размеры" IsTail="false" Tags="@AppState.Filter.SizeTags" ChangeTagState="AppState.ChangeTagActivationState" IsHidden="AppState.FiltersPanel.Invisible" ChangeVisibility="AppState.ChangeSizesVisibility" Visible="AppState.FiltersPanel.SizesVisible"/>
         <FilterTagsContainer Title="Селекционеры" IsTail="false" Tags="@AppState.Filter.BreederTags" ChangeTagState="AppState.ChangeTagActivationState" IsHidden="AppState.FiltersPanel.Invisible" ChangeVisibility="AppState.ChangeBreedersVisibility" Visible="AppState.FiltersPanel.BreederVisible"/>
         <FilterTagsContainer Title="Годы селекции" IsTail="false" Tags="@AppState.Filter.YearTags" ChangeTagState="AppState.ChangeTagActivationState" IsHidden="AppState.FiltersPanel.Invisible" ChangeVisibility="AppState.ChangeYearsVisibility" Visible="AppState.FiltersPanel.YearsVisible"/>
+        @if (AppState.Filter.AvailableParts.Count > 0)
+        {
+            <FilterTagsContainer Title="Наличие" IsTail="false" Tags="@AppState.Filter.AvailableParts" ChangeTagState="AppState.ChangeTagActivationState" IsHidden="AppState.FiltersPanel.Invisible" ChangeVisibility="AppState.ChangeAvailablePartsVisibility" Visible="AppState.FiltersPanel.AvailableVisible"/>   
+        }
         <FilterTagsContainer Title="Химеры" IsTail="true" Tags="@AppState.Filter.ChimeraTags" ChangeTagState="AppState.ChangeTagActivationState" IsHidden="AppState.FiltersPanel.Invisible" ChangeVisibility="AppState.ChangeChimeraVisibility" Visible="AppState.FiltersPanel.ChimeraVisible"/>
     </div>
 
