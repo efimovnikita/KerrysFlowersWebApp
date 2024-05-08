@@ -31,7 +31,7 @@
         </div>
     </div>
     <div class="flex w-[300px]">
-        <a class="w-full" href="@($"/details/{Violet.TransliteratedName}")" title="@Violet.Name">
+        <a class="w-full" href="@($"/details/{Violet.TransliteratedName}#details-container")" title="@Violet.Name">
             <div class="@($"flex justify-center items-center bg-white py-5 px-2 text-lg font-bold rounded-bl-xl hover:underline decoration-2 underline-offset-2{(Violet.IsWarehouseInfoValid() ? "" : " rounded-br-xl")}")">
                 @Violet.Name.Truncate(22, Truncator.FixedLength)
             </div>
