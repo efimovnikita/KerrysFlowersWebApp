@@ -7,6 +7,8 @@ namespace KFTelegramBot.Model;
 
 public class VioletDocumentsPipelineItem : IPipelineItem
 {
+    private const string SiteWatermarkText = "Kerri's flowers";
+
     public Task<Message> AskAQuestion(Message message, ITelegramBotClient botClient, object? violetObject = null) =>
         botClient.SendTextMessageAsync(message.Chat.Id, "Отправьте файлы изображений фиалки (3 шт., минимальный размер по ширине 700 px)");
 
@@ -68,25 +70,25 @@ public class VioletDocumentsPipelineItem : IPipelineItem
 
         var name300 = $"{Path.GetFileNameWithoutExtension(fileName)}_300.jpg";
         var path300 = Path.Combine(tempPath, name300);
-        resizer.ResizeImage(fullDocumentFileName, path300, 300);
+        resizer.ResizeImage(fullDocumentFileName, path300, 300, violet.Name,  SiteWatermarkText,18, 6);
         var imageBytes300 = System.IO.File.ReadAllBytes(path300);
         var base64300 = Convert.ToBase64String(imageBytes300);
 
         var name330 = $"{Path.GetFileNameWithoutExtension(fileName)}_330.jpg";
         var path330 = Path.Combine(tempPath, name330);
-        resizer.ResizeImage(fullDocumentFileName, path330, 330);
+        resizer.ResizeImage(fullDocumentFileName, path330, 330, violet.Name,  SiteWatermarkText,18, 6);
         var imageBytes330 = System.IO.File.ReadAllBytes(path330);
         var base64330 = Convert.ToBase64String(imageBytes330);
 
         var name500 = $"{Path.GetFileNameWithoutExtension(fileName)}_500.jpg";
         var path500 = Path.Combine(tempPath, name500);
-        resizer.ResizeImage(fullDocumentFileName, path500, 500);
+        resizer.ResizeImage(fullDocumentFileName, path500, 500, violet.Name,  SiteWatermarkText,20);
         var imageBytes500 = System.IO.File.ReadAllBytes(path500);
         var base64500 = Convert.ToBase64String(imageBytes500);
 
         var name700 = $"{Path.GetFileNameWithoutExtension(fileName)}_700.jpg";
         var path700 = Path.Combine(tempPath, name700);
-        resizer.ResizeImage(fullDocumentFileName, path700, 700);
+        resizer.ResizeImage(fullDocumentFileName, path700, 700, violet.Name,  SiteWatermarkText,20);
         var imageBytes700 = System.IO.File.ReadAllBytes(path700);
         var base64700 = Convert.ToBase64String(imageBytes700);
 
