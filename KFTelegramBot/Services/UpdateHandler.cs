@@ -356,7 +356,7 @@ public class UpdateHandler : IUpdateHandler
             FileStream? imageStream = null;
             try
             {
-                var imagePath = ConvertBase64StringToJpgFile(violet.Images.First().W500);
+                var imagePath = ConvertBase64StringToJpgFile(violet.Images.First().W330);
                 imageStream = File.OpenRead(imagePath);
                 return imageStream;
             }
