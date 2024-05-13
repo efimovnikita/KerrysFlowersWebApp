@@ -7,14 +7,14 @@ public class StoredViolet(Violet violet, WarehouseVioletItem warehouseItem = nul
     private const int DefaultCount = 0;
     private const double DefaultPrice = 0.0;
 
-    public int LeafCount { get; set; } = warehouseItem?.LeafCount ?? DefaultCount;
-    private double LeafPrice { get; set; } = warehouseItem?.LeafPrice ?? DefaultPrice;
+    public int LeafCount { get; } = warehouseItem?.LeafCount ?? DefaultCount;
+    public double LeafPrice { get; } = warehouseItem?.LeafPrice ?? DefaultPrice;
     public int SelectedLeafs { get; set; }
-    public int ChildCount { get; set; } = warehouseItem?.ChildCount ?? DefaultCount;
-    private double ChildPrice { get; set; } = warehouseItem?.ChildPrice ?? DefaultPrice;
+    public int ChildCount { get; } = warehouseItem?.ChildCount ?? DefaultCount;
+    public double ChildPrice { get; } = warehouseItem?.ChildPrice ?? DefaultPrice;
     public int SelectedChildren { get; set; }
-    public int WholePlantCount { get; set; } = warehouseItem?.WholePlantCount ?? DefaultCount;
-    private double WholePlantPrice { get; set; } = warehouseItem?.WholePlantPrice ?? DefaultPrice;
+    public int WholePlantCount { get; } = warehouseItem?.WholePlantCount ?? DefaultCount;
+    public double WholePlantPrice { get; } = warehouseItem?.WholePlantPrice ?? DefaultPrice;
     public int SelectedWholePlants { get; set; }
 
     public VioletPurchaseOption[] PurchaseOptions
@@ -52,4 +52,3 @@ public class StoredViolet(Violet violet, WarehouseVioletItem warehouseItem = nul
     public double CalculatedTotalVioletPrice =>
         CalculatedLeafsPrice + CalculatedChildrenPrice + CalculatedWholePlantsPrice;
 }
-
