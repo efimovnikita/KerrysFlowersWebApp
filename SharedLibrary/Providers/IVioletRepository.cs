@@ -11,4 +11,8 @@ public interface IVioletRepository
     bool InsertWarehouseVioletItems(IEnumerable<WarehouseVioletItem> items);
     List<WarehouseVioletItem> GetAllWarehouseVioletItems();
     bool ClearAllWarehouseVioletItems();
+    bool InsertOrder(Order order);
+    bool SetOrderInactive(Guid orderId);
+    List<Order> GetAllActiveOrders();
+    bool DeleteAllOrders();
 }

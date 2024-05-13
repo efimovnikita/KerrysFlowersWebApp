@@ -188,6 +188,8 @@
 
     public List<StoredViolet> ShoppingCart { get; } = [];
 
+    public Order Order { get; set; }
+
     public double TotalCartPrice => ShoppingCart.Sum(violet => violet.CalculatedTotalVioletPrice);
     
     public void IncreaseNumberOfSelectedLeafs(StoredViolet violet)
@@ -267,6 +269,34 @@
         await LocalStorage.SetItemAsync(CartLocalStorageKey, ShoppingCart.Select(v => v.Id).ToArray());
 
         StateHasChanged();
+    }
+    
+    public void ClearOrder()
+    {
+        Order = null;
+        StateHasChanged();
+    }
+    
+    public void PrepareOrder()
+    {
+        var orderedViolets = ShoppingCart
+            .Where(violet => violet.HasSomeOrderedParts)
+            .Select(violet => new OrderedViolet(violet))
+            .ToArray();
+        Order = new Order(orderedViolets);
+    }
+    
+    public async Task CreateOrder()
+    {
+        if (Order.Violets.All(violet => violet.HasSomeOrderedParts) == false)
+        {
+            return;
+        }
+
+        VioletRepository.InsertOrder(Order);
+
+        await ClearShoppingCart();
+        ClearOrder();
     }
 
     public async Task AddToShoppingCartCallback(StoredViolet violet)

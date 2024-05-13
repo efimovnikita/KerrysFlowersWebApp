@@ -1,7 +1,4 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-
-namespace SharedLibrary;
+﻿namespace SharedLibrary;
 
 [Serializable]
 public class WarehouseVioletItem

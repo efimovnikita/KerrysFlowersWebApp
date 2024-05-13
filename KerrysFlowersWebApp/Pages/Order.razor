@@ -1,0 +1,138 @@
+﻿@inject NavigationManager NavigationManager
+@page "/order"
+
+<PageTitle>Заказ</PageTitle>
+<HeadContent>
+    <meta name="description" content="Заказ">
+</HeadContent>
+
+<MainContainer>
+
+    <header class="hidden md:flex md:flex-col md:items-center md:gap-8">
+        <h2 class="text-heading font-roboto font-bold text-6xl">
+            Заказ
+        </h2>
+    </header>
+
+    <OrderContainer>
+        @if (AppState.Order != null)
+        {
+            <div class="w-full">
+                <label for="name" class="block text-sm font-medium leading-6 text-gray-900">Имя</label>
+                <div class="relative mt-2 rounded-md shadow-sm">
+                    <input type="text" name="name" id="name" 
+                           class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" 
+                           placeholder="Имя"
+                           @bind="AppState.Order.Name">
+                </div>
+            </div>
+            <div class="w-full">
+                <label for="phone" class="block text-sm font-medium leading-6 text-gray-900">Телефон</label>
+                <div class="relative mt-2 rounded-md shadow-sm">
+                    <input type="text" name="phone" id="phone" 
+                           class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" 
+                           placeholder="+79031111111"
+                           @bind="AppState.Order.PhoneNumber">
+                </div>
+            </div>
+            <div class="w-full">
+                <label for="address" class="block text-sm font-medium leading-6 text-gray-900">Адрес</label>
+                <div class="relative mt-2 rounded-md shadow-sm">
+                    <input type="text" name="address" id="address" 
+                           class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" 
+                           placeholder="Ходынский бульвар, 17, Москва, 125252"
+                           @bind="AppState.Order.Address">
+                </div>
+            </div>
+            <div class="w-full">
+                <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email</label>
+                <div class="relative mt-2 rounded-md shadow-sm">
+                    <input type="email" name="email" id="email" autocomplete="email"
+                           class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" 
+                           placeholder="mail@email.com"
+                           @bind="AppState.Order.Email">
+                </div>
+            </div>
+            <div class="w-full grid grid-cols-1 gap-4 p-1 border-dashed border border-text1 rounded">
+                @foreach (var violet in AppState.Order.Violets)
+                {
+                    <div>
+                        <p class="font-bold">@violet.Name</p>
+                        @if (violet.SelectedLeafs > 0)
+                        {
+                            <div>Листьев @violet.SelectedLeafs шт. - @violet.CalculatedLeafsPrice руб.</div>
+                        }
+
+                        @if (violet.SelectedChildren > 0)
+                        {
+                            <div>Деток @violet.SelectedChildren шт. - @violet.CalculatedChildrenPrice руб.</div>
+                        }
+
+                        @if (violet.SelectedWholePlants > 0)
+                        {
+                            <div>Растений @violet.SelectedWholePlants шт. - @violet.CalculatedWholePlantsPrice руб.</div>
+                        }
+                    </div>
+                }
+
+                <p class="font-bold justify-self-end">Итого: @AppState.Order.TotalPrice руб.</p>
+            </div>
+        }
+        else
+        {
+            <div>
+                Ничего не заказано...
+            </div>
+        }
+    </OrderContainer>
+
+    @if (AppState.Order != null)
+    {
+        <nav class="w-full font-montserrat text-menutext text-lg flex items-center justify-between">
+            <button class="uppercase p-3 cursor-pointer hover:border border-menutext" @onclick="ClearShoppingCart">
+                Отменить
+            </button>
+            @{
+                var orderBtnStyle = "uppercase border border-menutext p-3";
+            }
+            
+            @if (IsOrderButtonEnable)
+            {
+                orderBtnStyle += " hover:bg-text1 cursor-pointer";
+                <button class="@orderBtnStyle" @onclick="CreateOrder">
+                    Заказать
+                </button>    
+            }
+            else
+            {
+                orderBtnStyle += " disabled:opacity-50";
+                <button class="@orderBtnStyle" disabled="disabled">
+                    Заказать
+                </button>    
+            }
+            
+        </nav>
+    }
+    
+</MainContainer>
+
+
+@code
+{
+    [CascadingParameter] public CascadingAppState AppState { get; set; }
+
+    private bool IsOrderButtonEnable => 
+        !string.IsNullOrWhiteSpace(AppState.Order.PhoneNumber) && !string.IsNullOrWhiteSpace(AppState.Order.Address);
+
+    private void ClearShoppingCart()
+    {
+        AppState.ClearOrder();
+        NavigationManager.NavigateTo("/");
+    }
+
+    private async Task CreateOrder()
+    {
+        await AppState.CreateOrder();
+        NavigationManager.NavigateTo("/");
+    }
+}

@@ -1,4 +1,5 @@
-﻿@page "/cart"
+﻿@inject NavigationManager NavigationManager
+@page "/cart"
 
 <PageTitle>Корзина</PageTitle>
 <HeadContent>
@@ -35,9 +36,25 @@
             <button class="uppercase p-3 cursor-pointer hover:border border-menutext" @onclick="AppState.ClearShoppingCart">
                 Очистить
             </button>
-            <button class="uppercase border border-menutext p-3 hover:bg-text1 cursor-pointer">
-                Оформить
-            </button>
+
+            @{
+                var orderBtnStyle = "uppercase border border-menutext p-3";
+            }
+
+            @if (AppState.ShoppingCart.Any(violet => violet.HasSomeOrderedParts))
+            {
+                orderBtnStyle += " hover:bg-text1 cursor-pointer";
+                <button class="@orderBtnStyle" @onclick="PrepareOrder">
+                    Оформить
+                </button>
+            }
+            else
+            {
+                orderBtnStyle += " disabled:opacity-50";
+                <button class="@orderBtnStyle" disabled="disabled">
+                    Оформить
+                </button>
+            }
         </nav>
     }
     
@@ -47,4 +64,10 @@
 @code
 {
     [CascadingParameter] public CascadingAppState AppState { get; set; }
+
+    private void PrepareOrder()
+    {
+        AppState.PrepareOrder();
+        NavigationManager.NavigateTo("/order#order-container");
+    }
 }

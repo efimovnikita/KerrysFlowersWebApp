@@ -1,4 +1,5 @@
-﻿using KFTelegramBot.Providers;
+﻿using KFTelegramBot.Model;
+using KFTelegramBot.Providers;
 using KFTelegramBot.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -89,6 +90,7 @@ var host = Host.CreateDefaultBuilder(args)
         services.AddScoped<UpdateHandler>();
         services.AddScoped<ReceiverService>();
         services.AddHostedService<PollingService>();
+        services.AddHostedService<CheckNewOrdersBackgroundTask>();
     })
     .Build();
 

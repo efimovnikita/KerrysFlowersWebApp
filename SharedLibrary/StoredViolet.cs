@@ -41,6 +41,29 @@ public class StoredViolet(Violet violet, WarehouseVioletItem warehouseItem = nul
             return result.ToArray();
         }
     }
+    
+    public bool HasSomeOrderedParts
+    {
+        get
+        {
+            if (SelectedLeafs > 0)
+            {
+                return true;
+            }
+
+            if (SelectedChildren > 0)
+            {
+                return true;
+            }
+            
+            if (SelectedWholePlants > 0)
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
 
     public bool IsLeafsInfoValid() => LeafCount != 0 && LeafPrice != 0.0;
     public bool IsChildrenInfoValid() => ChildCount != 0 && ChildPrice != 0.0;

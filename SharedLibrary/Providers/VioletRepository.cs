@@ -84,7 +84,7 @@ public class VioletRepository : IVioletRepository
             warehouseCollection.InsertMany(items);
             return true; // Indicates success
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             // Log or handle the exception
             return false; // Indicates failure
@@ -105,10 +105,66 @@ public class VioletRepository : IVioletRepository
             warehouseCollection.DeleteMany(Builders<WarehouseVioletItem>.Filter.Empty);
             return true; // Indicates success
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             // Log or handle the exception
             return false; // Indicates failure
+        }
+    }
+    
+    public bool InsertOrder(Order order)
+    {
+        try
+        {
+            var ordersCollection = _database.GetCollection<Order>("Orders");
+            ordersCollection.InsertOne(order);
+            return true;
+        }
+        catch (Exception)
+        {
+            // Log or handle the exception
+            return false;
+        }
+    }
+
+    public bool SetOrderInactive(Guid orderId)
+    {
+        try
+        {
+            var ordersCollection = _database.GetCollection<Order>("Orders");
+            var filter = Builders<Order>.Filter.Eq(o => o.Id, orderId);
+            var update = Builders<Order>.Update.Set(o => o.Active, false);
+            var updateResult = ordersCollection.UpdateOne(filter, update);
+            return updateResult.ModifiedCount > 0;
+        }
+        catch (Exception)
+        {
+            // Log or handle the exception
+            return false;
+        }
+    }
+    
+    public List<Order> GetAllActiveOrders()
+    {
+        var ordersCollection = _database.GetCollection<Order>("Orders");
+        var activeOrdersFilter = Builders<Order>.Filter.Eq(order => order.Active, true);
+        return ordersCollection.Find(activeOrdersFilter).ToList();
+    }
+    
+    public bool DeleteAllOrders()
+    {
+        var ordersCollection = _database.GetCollection<Order>("Orders");
+        try
+        {
+            var deleteResult = ordersCollection.DeleteMany(Builders<Order>.Filter.Empty);
+
+            // Check whether any documents were deleted.
+            return deleteResult.DeletedCount > 0;
+        }
+        catch (Exception ex)
+        {
+            // Log or handle the exception as needed.
+            return false; // Indicates failure.
         }
     }
 }
