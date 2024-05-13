@@ -70,9 +70,9 @@ public class CheckNewOrdersBackgroundTask(
                                  Новый заказ ({order.Date:dddd, dd MMMM yyyy HH:mm:ss})
 
                                  Имя: {(string.IsNullOrWhiteSpace(order.Name) == false ? order.Name : "-")}
+                                 Email: {(string.IsNullOrWhiteSpace(order.Email) == false ? order.Email : "-")}
                                  Телефон: {order.PhoneNumber}
                                  Адрес: {order.Address}
-                                 Email: {(string.IsNullOrWhiteSpace(order.Email) == false ? order.Email : "-")}
 
                                  Состав заказа:
 
@@ -90,7 +90,12 @@ public class CheckNewOrdersBackgroundTask(
                 logger.LogError(ex, "Error performing periodic work");
             }
 
-            await Task.Delay(TimeSpan.FromHours(2), stoppingToken);
+            var delay = TimeSpan.FromSeconds(30);
+
+#if RELEASE
+            delay = TimeSpan.FromHours(2);
+#endif
+            await Task.Delay(delay, stoppingToken);
         }
     }
 }
