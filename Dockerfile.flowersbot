@@ -15,7 +15,7 @@ RUN dotnet publish ./KFTelegramBot/KFTelegramBot.csproj -c Release -o /app/publi
 FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS runtime
 WORKDIR /app
 
-RUN apk add --no-cache icu-libs krb5-libs libgcc libintl libssl3 libstdc++ zlib
+RUN apk add --no-cache icu-libs krb5-libs libgcc libintl libssl3 libstdc++ zlib ttf-liberation
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 
 RUN mkdir -p /app/SharedLibrary
