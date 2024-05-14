@@ -1,3 +1,4 @@
+@inject NavigationManager NavigationManager
 @using Microsoft.JSInterop
 
 <article class="w-[330px] flex flex-col items-center text-text1 sm:w-[500px] md:w-[700px]">
@@ -113,7 +114,7 @@
     </div>
     @if (Violet.IsWarehouseInfoValid())
     {
-        @if (IsAddedToCart == false)
+        @if (AppState.ShoppingCart.Contains(Violet) == false)
         {
             <button class="w-[330px] sm:w-[500px] md:w-[700px] flex items-center justify-center bg-heading py-1 rounded-b-xl gap-1 hover:bg-[#fcb98d]" @onclick="AddToCartAsync" title="Добавить в корзину">
                 <svg class="fill-text1 hover:fill-label" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
@@ -127,14 +128,17 @@
         }
         else
         {
-            <div class="w-[330px] sm:w-[500px] md:w-[700px] flex items-center justify-center bg-heading py-1 rounded-b-xl gap-1">
+            <button class="w-[330px] sm:w-[500px] md:w-[700px] flex items-center justify-center bg-heading py-1 rounded-b-xl gap-1" @onclick="GoToCart">
                 <svg class="fill-lime-600" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
                     <g>
                         <path d="M10.243 16.314L6 12.07l1.414-1.414l2.829 2.828l5.656-5.657l1.415 1.415z" />
                         <path fill-rule="evenodd" d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12m11 9a9 9 0 1 1 0-18a9 9 0 0 1 0 18" clip-rule="evenodd" />
                     </g>
                 </svg>
-            </div>
+                <div class="text-lime-600 uppercase">
+                    в корзине
+                </div>
+            </button>
         }
     }
 </article>
@@ -143,27 +147,19 @@
 {
     [Inject] private IJSRuntime JsRuntime { get; set; }
 
+    [CascadingParameter] public CascadingAppState AppState { get; set; }
+
     [Parameter]
     public StoredViolet Violet { get; set; }
-
-    private bool IsAddedToCart { get; set; }
     
     [Parameter] public EventCallback AddToShoppingCart { get; set; }
 
     private async Task AddToCartAsync()
     {
-        IsAddedToCart = true;
-        StateHasChanged(); 
-
         if (AddToShoppingCart.HasDelegate)
         {
             await AddToShoppingCart.InvokeAsync(this);
         }
-
-        await Task.Delay(TimeSpan.FromSeconds(3));
-        
-        IsAddedToCart = false;
-        StateHasChanged();
     }
 
     private ElementReference _photoContainer;
@@ -181,4 +177,6 @@
         Violet.Images.ForEach(i => i.Active = false);
         image.Active = true;
     }
+
+    private void GoToCart() => NavigationManager.NavigateTo("/cart");
 }
