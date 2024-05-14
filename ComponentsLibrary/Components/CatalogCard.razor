@@ -8,7 +8,7 @@
         {
             var base64ImageSrc = $"data:image/jpeg;base64,{image.W500}";
 
-            <div class="snap-center shrink-0">
+            <div class="snap-center shrink-0" @onclick="GoToDetails">
                 <img
                     class="w-[300px] h-[300px] object-cover"
                     src="@base64ImageSrc"
@@ -32,7 +32,7 @@
         </div>
     </div>
     <div class="flex w-[300px]">
-        <a class="w-full" href="@($"/details/{Violet.TransliteratedName}")" title="@Violet.Name">
+        <a class="w-full" href="@GetDetailsPath()" title="@Violet.Name">
             <div class="@($"flex justify-center items-center bg-white py-5 px-2 text-lg font-bold rounded-bl-xl hover:underline decoration-2 underline-offset-2{(Violet.IsWarehouseInfoValid() ? "" : " rounded-br-xl")}")">
                 @Violet.Name.Truncate(22, Truncator.FixedLength)
             </div>
@@ -104,4 +104,8 @@
     }
     
     private void GoToCart() => NavigationManager.NavigateTo("/cart");
+
+    private string GetDetailsPath() => $"/details/{Violet.TransliteratedName}";
+
+    private void GoToDetails() => NavigationManager.NavigateTo(GetDetailsPath());
 }
