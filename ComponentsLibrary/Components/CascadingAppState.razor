@@ -89,6 +89,12 @@
                     return;
                 }
                 
+                // add a leaf by default
+                if (foundViolet.LeafCount > 0)
+                {
+                    foundViolet.SelectedLeafs = 1;
+                }
+                
                 ShoppingCart.Add(foundViolet);
                 StateHasChanged();
             }
