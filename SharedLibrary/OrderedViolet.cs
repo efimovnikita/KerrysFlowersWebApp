@@ -3,6 +3,7 @@
 public class OrderedViolet(StoredViolet storedViolet)
 {
     public string Name { get; set; } = storedViolet.Name;
+    public Guid VioletId { get; set; } = storedViolet.Id;
     public double LeafPrice { get; set; } = storedViolet.LeafPrice;
     public int SelectedLeafs { get; set; } = storedViolet.SelectedLeafs;
     public double ChildPrice { get; set; } = storedViolet.ChildPrice;
