@@ -1,8 +1,24 @@
-<main class="flex flex-col items-center px-5 py-5 flex-1 gap-4 md:gap-7 xl:px-32 2xl:px-56">
+<main class="flex flex-col items-center px-5 py-5 flex-1 gap-4 md:gap-7 xl:px-32 2xl:px-56 @(AppState.ShowSuccessModal ? "blur-lg" : "")">
     @ChildContent
 </main>
+
+@if (AppState.ShowSuccessModal)
+{
+    <div id="modal" class="absolute bottom-0 left-0 w-full h-full flex justify-center items-center px-[10px] bg-text1/80">
+        <div id="modal-window" class="w-full bg-text2 rounded-[15px] lg:max-w-[900px] flex flex-col border-[1px] border-[#CDDBFE]">
+            <div id="modal-content" class="flex gap-4 text-[#374151] scrollbar-thin scrollbar-thumb-[#B4C6FC] scrollbar-track-[#E5EDFF] overflow-auto max-h-[350px] flex flex-col w-full p-[10px]">
+                <div class="flex flex-col justify-start items-center gap-[10px]">
+                    <p class="text-lime-600 uppercase">Заказ успешно создан! 🥳</p>
+                    <p>Наш менеджер клиентской службы свяжется с вами в ближайшее время!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 @code {
     [Parameter]
     public RenderFragment ChildContent { get; set; }
+    
+    [CascadingParameter] public CascadingAppState AppState { get; set; }
 }

@@ -221,6 +221,15 @@
     private async Task CreateOrder(string name, string phone, string address, string email)
     {
         await AppState.CreateOrder(name, phone, address, email);
+
+        AppState.ShowSuccessModal = true;
+        StateHasChanged();
+        
+        await Task.Delay(TimeSpan.FromSeconds(5));
+        
+        AppState.ShowSuccessModal = false;
+        StateHasChanged();
+        
         NavigationManager.NavigateTo("/");
     }
 }
