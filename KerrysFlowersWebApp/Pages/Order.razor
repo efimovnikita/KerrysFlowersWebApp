@@ -55,7 +55,10 @@
                            @bind="Email">
                 </div>
             </div>
-            <div class="w-full grid grid-cols-1 gap-4 p-1 border-dashed border border-text1 rounded">
+            <div class="relative w-full grid grid-cols-1 gap-4 p-1  border border-text1 rounded">
+                <div class="flex items-center justify-center absolute px-1 bg-text2  -top-[9px] right-2">
+                    <p class="text-xs lowercase">Состав заказа</p>
+                </div>
                 @foreach (var violet in AppState.Order.Violets)
                 {
                     <div>
