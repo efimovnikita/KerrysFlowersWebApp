@@ -1,5 +1,7 @@
 ﻿@inject NavigationManager NavigationManager
 @page "/order"
+@using System.Net.Mail
+@using System.Text.RegularExpressions
 
 <PageTitle>Заказ</PageTitle>
 <HeadContent>
@@ -18,39 +20,39 @@
         @if (AppState.Order != null)
         {
             <div class="w-full">
-                <label for="name" class="block text-sm font-medium leading-6 text-gray-900">Имя</label>
+                <label for="name" class="block text-sm font-medium leading-6 @(IsNameValid == false ? "text-label" : "text-gray-900")">Имя</label>
                 <div class="relative mt-2 rounded-md shadow-sm">
                     <input type="text" name="name" id="name" 
-                           class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" 
+                           class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset @(IsNameValid == false ? "ring-label" : "ring-gray-300") placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-text1 sm:text-sm sm:leading-6" 
                            placeholder="Имя"
-                           @bind="AppState.Order.Name">
+                           @bind="Name">
                 </div>
             </div>
             <div class="w-full">
-                <label for="phone" class="block text-sm font-medium leading-6 text-gray-900">Телефон</label>
+                <label for="phone" class="block text-sm font-medium leading-6 @(IsPhoneValid == false ? "text-label" : "text-gray-900")">Телефон@(IsPhoneValid == false ? " (в формате '79031234567')" : "")</label>
                 <div class="relative mt-2 rounded-md shadow-sm">
                     <input type="text" name="phone" id="phone" 
-                           class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" 
-                           placeholder="+79031111111"
-                           @bind="AppState.Order.PhoneNumber">
+                           class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset @(IsPhoneValid == false ? "ring-label" : "ring-gray-300") placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-text1 sm:text-sm sm:leading-6" 
+                           placeholder="79031234567"
+                           @bind="PhoneNumber">
                 </div>
             </div>
             <div class="w-full">
-                <label for="address" class="block text-sm font-medium leading-6 text-gray-900">Адрес</label>
+                <label for="address" class="block text-sm font-medium leading-6 @(IsAddressValid == false ? "text-label" : "text-gray-900")">Адрес</label>
                 <div class="relative mt-2 rounded-md shadow-sm">
                     <input type="text" name="address" id="address" 
-                           class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" 
+                           class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset @(IsAddressValid == false ? "ring-label" : "ring-gray-300") placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-text1 sm:text-sm sm:leading-6" 
                            placeholder="Ходынский бульвар, 17, Москва, 125252"
-                           @bind="AppState.Order.Address">
+                           @bind="Address">
                 </div>
             </div>
             <div class="w-full">
-                <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email</label>
+                <label for="email" class="block text-sm font-medium leading-6 @(IsEmailValid == false ? "text-label" : "text-gray-900")">Email</label>
                 <div class="relative mt-2 rounded-md shadow-sm">
                     <input type="email" name="email" id="email" autocomplete="email"
-                           class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" 
+                           class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset @(IsEmailValid == false ? "ring-label" : "ring-gray-300") placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-text1 sm:text-sm sm:leading-6" 
                            placeholder="mail@email.com"
-                           @bind="AppState.Order.Email">
+                           @bind="Email">
                 </div>
             </div>
             <div class="w-full grid grid-cols-1 gap-4 p-1 border-dashed border border-text1 rounded">
@@ -89,7 +91,7 @@
     @if (AppState.Order != null)
     {
         <nav class="w-full font-montserrat text-menutext text-lg flex items-center justify-between">
-            <button class="uppercase p-3 cursor-pointer hover:border border-menutext" @onclick="ClearShoppingCart">
+            <button class="uppercase p-3 cursor-pointer hover:border border-menutext" @onclick="ClearShoppingCart" title="Отменить заказ">
                 Отменить
             </button>
             @{
@@ -99,7 +101,7 @@
             @if (IsOrderButtonEnable)
             {
                 orderBtnStyle += " hover:bg-text1 cursor-pointer";
-                <button class="@orderBtnStyle" @onclick="CreateOrder">
+                <button class="@orderBtnStyle" @onclick="() => CreateOrder(Name, PhoneNumber, Address, Email)" title="Сделать заказ">
                     Заказать
                 </button>    
             }
@@ -121,8 +123,94 @@
 {
     [CascadingParameter] public CascadingAppState AppState { get; set; }
 
-    private bool IsOrderButtonEnable => 
-        !string.IsNullOrWhiteSpace(AppState.Order.PhoneNumber) && !string.IsNullOrWhiteSpace(AppState.Order.Address);
+    private string Name { get; set; }
+    private string PhoneNumber { get; set; }
+    private string Address { get; set; }
+    private string Email { get; set; }
+
+    private bool IsNameValid
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(Name))
+            {
+                return false;
+            }
+
+            if (Name.Length > 50)
+            {
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    private bool IsPhoneValid
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(PhoneNumber))
+            {
+                return false;
+            }
+
+            if (PhoneNumber.Length > 11)
+            {
+                return false;
+            }
+
+            const string pattern = @"^7\d{10}$";
+        
+            return Regex.IsMatch(PhoneNumber, pattern);
+        }
+    }
+
+    private bool IsAddressValid
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(Address))
+            {
+                return false;
+            }
+
+            if (Address.Length > 500)
+            {
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    private bool IsEmailValid
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(Email))
+            {
+                return false;
+            }
+
+            if (Email.Length > 100)
+            {
+                return false;
+            }
+
+            try
+            {
+                _ = new MailAddress(Email);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+    }
+    
+    private bool IsOrderButtonEnable => IsNameValid && IsPhoneValid && IsAddressValid && IsEmailValid;
 
     private void ClearShoppingCart()
     {
@@ -130,9 +218,9 @@
         NavigationManager.NavigateTo("/");
     }
 
-    private async Task CreateOrder()
+    private async Task CreateOrder(string name, string phone, string address, string email)
     {
-        await AppState.CreateOrder();
+        await AppState.CreateOrder(name, phone, address, email);
         NavigationManager.NavigateTo("/");
     }
 }

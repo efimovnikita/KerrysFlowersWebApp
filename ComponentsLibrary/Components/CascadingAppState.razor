@@ -292,12 +292,17 @@
         Order = new Order(orderedViolets);
     }
     
-    public async Task CreateOrder()
+    public async Task CreateOrder(string name, string phone, string address, string email)
     {
         if (Order.Violets.All(violet => violet.HasSomeOrderedParts) == false)
         {
             return;
         }
+
+        Order.Name = name;
+        Order.PhoneNumber = phone;
+        Order.Address = address;
+        Order.Email = email;
 
         VioletRepository.InsertOrder(Order);
 
