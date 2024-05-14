@@ -1,11 +1,12 @@
 @inject NavigationManager NavigationManager
 @using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
 
 <article class="w-[330px] flex flex-col items-center text-text1 sm:w-[500px] md:w-[700px]">
     <div @ref="_photoContainer" class="scrollbar scrollbar-h-2 scrollbar-thumb-gray-400 scrollbar-track-white overflow-x-auto flex snap-x snap-always snap-mandatory first:rounded-t-xl last:rounded-t-xr">
         @foreach (var image in Violet.Images)
         {
-            <div class="snap-center shrink-0">
+            <div class="snap-center shrink-0" @onclick="() => OpenImageInNewTab(Base64W700(image))">
                 <picture>
                     <source
                         media="(min-width: 768px)"
@@ -179,4 +180,8 @@
     }
 
     private void GoToCart() => NavigationManager.NavigateTo("/cart");
+    
+    private async Task OpenImageInNewTab(string imageData) => await JSRuntime.InvokeVoidAsync("openImageInNewTab", imageData);
+
+    private string Base64W700(Image image) => $"data:image/jpeg;base64,{image.W700}";
 }
