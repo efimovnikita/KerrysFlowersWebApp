@@ -91,7 +91,7 @@
     @if (AppState.Order != null)
     {
         <nav class="w-full font-montserrat text-menutext text-lg flex items-center justify-between">
-            <button class="uppercase p-3 cursor-pointer hover:border border-menutext" @onclick="ClearShoppingCart" title="Отменить заказ">
+            <button class="uppercase p-3 cursor-pointer hover:border border-menutext" @onclick="ClearOrder" title="Отменить заказ">
                 Отменить
             </button>
             @{
@@ -212,10 +212,10 @@
     
     private bool IsOrderButtonEnable => IsNameValid && IsPhoneValid && IsAddressValid && IsEmailValid;
 
-    private void ClearShoppingCart()
+    private void ClearOrder()
     {
         AppState.ClearOrder();
-        NavigationManager.NavigateTo("/");
+        NavigationManager.NavigateTo("/cart");
     }
 
     private async Task CreateOrder(string name, string phone, string address, string email)
