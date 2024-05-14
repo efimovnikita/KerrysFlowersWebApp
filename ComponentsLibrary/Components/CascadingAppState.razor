@@ -305,6 +305,12 @@
         {
             return;
         }
+        
+        // add a leaf by default
+        if (violet.LeafCount > 0)
+        {
+            violet.SelectedLeafs = 1;
+        }
 
         ShoppingCart.Add(violet); 
         StateHasChanged();
