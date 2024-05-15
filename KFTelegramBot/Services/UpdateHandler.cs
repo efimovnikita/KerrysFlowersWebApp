@@ -177,12 +177,6 @@ public class UpdateHandler : IUpdateHandler
             row.CreateCell(7).SetCellValue(0);   
         }
 
-        // Auto-size columns
-        for (var columnIndex = 0; columnIndex < 6; columnIndex++)
-        {
-            sheet.AutoSizeColumn(columnIndex);
-        }
-
         // Create a new file name with a .xls extension
         var tempXlsFilePath = Path.Combine(Path.GetTempPath(), 
             "Складские остатки и цены.xls");
