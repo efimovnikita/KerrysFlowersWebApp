@@ -161,7 +161,7 @@ public class VioletRepository : IVioletRepository
             // Check whether any documents were deleted.
             return deleteResult.DeletedCount > 0;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             // Log or handle the exception as needed.
             return false; // Indicates failure.
