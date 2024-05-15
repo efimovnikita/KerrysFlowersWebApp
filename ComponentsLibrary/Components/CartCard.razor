@@ -30,6 +30,7 @@
             <CartVioletPart 
                 PurchaseOption="VioletPurchaseOption.Leaf" 
                 Amount="Violet.SelectedLeafs" 
+                AvailableParts="Violet.LeafCount"
                 PartPrice="Violet.CalculatedLeafsPrice"
                 DecreaseQuantity="() => AppState.DecreaseNumberOfSelectedLeafs(Violet)"
                 IncreaseQuantity="() => AppState.IncreaseNumberOfSelectedLeafs(Violet) "/>
@@ -40,6 +41,7 @@
             <CartVioletPart 
                 PurchaseOption="VioletPurchaseOption.Offshoot" 
                 Amount="Violet.SelectedChildren"
+                AvailableParts="Violet.ChildCount"
                 PartPrice="Violet.CalculatedChildrenPrice"
                 DecreaseQuantity="() => AppState.DecreaseNumberOfSelectedChildren(Violet)"
                 IncreaseQuantity="() => AppState.IncreaseNumberOfSelectedChildren(Violet)" />
@@ -50,6 +52,7 @@
             <CartVioletPart 
                 PurchaseOption="VioletPurchaseOption.WholePlant" 
                 Amount="Violet.SelectedWholePlants" 
+                AvailableParts="Violet.WholePlantCount"
                 PartPrice="Violet.CalculatedWholePlantsPrice"
                 DecreaseQuantity="() => AppState.DecreaseNumberOfSelectedWholePlants(Violet)"
                 IncreaseQuantity="() => AppState.IncreaseNumberOfSelectedWholePlants(Violet)" />

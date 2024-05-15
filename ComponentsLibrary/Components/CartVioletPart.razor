@@ -28,23 +28,27 @@
     </div>
     
     <div class="flex items-center justify-center gap-3">
+        
         <button @onclick="DecreaseQuantity">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 32 32">
-                <path fill="#44403C" d="m19.031 4.281l-11 11l-.687.719l.687.719l11 11l1.438-1.438L10.187 16L20.47 5.719z"/>
+            <svg class="@(Amount == 0 ? "fill-gray-400" : "fill-text1")" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 32 32">
+                <path d="m19.031 4.281l-11 11l-.687.719l.687.719l11 11l1.438-1.438L10.187 16L20.47 5.719z"/>
             </svg>
         </button>
-        <p class="flex items-center justify-center w-[15px]">@Amount</p>
+        
+        <p class="flex items-center justify-center w-[15px] @(Amount == 0 ? "text-gray-400" : "text-text1")">@Amount</p>
+        
         <button @onclick="IncreaseQuantity">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 32 32">
-                <path fill="#44403C" d="M12.969 4.281L11.53 5.72L21.812 16l-10.28 10.281l1.437 1.438l11-11l.687-.719l-.687-.719z"/>
+            <svg class="@(Amount == AvailableParts ? "fill-gray-400" : "fill-text1")" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 32 32">
+                <path d="M12.969 4.281L11.53 5.72L21.812 16l-10.28 10.281l1.437 1.438l11-11l.687-.719l-.687-.719z"/>
             </svg>
         </button>
+        
     </div>
     
     <div class="flex items-center justify-end">
-        <p class="font-bold">@PartPrice</p>
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256">
-            <path fill="#44403C" d="M148 152a60 60 0 0 0 0-120H88a8 8 0 0 0-8 8v96H56a8 8 0 0 0 0 16h24v16H56a8 8 0 0 0 0 16h24v32a8 8 0 0 0 16 0v-32h48a8 8 0 0 0 0-16H96v-16ZM96 48h52a44 44 0 0 1 0 88H96Z"/>
+        <p class="font-bold @(Amount > 0 ? "text-text1" : "text-gray-400")">@PartPrice</p>
+        <svg class="@(Amount > 0 ? "fill-text1" : "fill-gray-400")" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256">
+            <path d="M148 152a60 60 0 0 0 0-120H88a8 8 0 0 0-8 8v96H56a8 8 0 0 0 0 16h24v16H56a8 8 0 0 0 0 16h24v32a8 8 0 0 0 16 0v-32h48a8 8 0 0 0 0-16H96v-16ZM96 48h52a44 44 0 0 1 0 88H96Z"/>
         </svg>
     </div>
     
@@ -56,6 +60,7 @@
     [Parameter] public double PartPrice { get; set; }
     [Parameter] public EventCallback IncreaseQuantity { get; set; }
     [Parameter] public EventCallback DecreaseQuantity { get; set; }
+    [Parameter] public int AvailableParts { get; set; }
 
     private static string GetVioletPurchaseOptionName(VioletPurchaseOption option)
     {

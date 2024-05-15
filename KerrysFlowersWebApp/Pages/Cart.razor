@@ -33,7 +33,7 @@
     @if (AppState.ShoppingCart.Count > 0)
     {
         <nav class="w-full font-montserrat text-menutext text-lg flex items-center justify-between">
-            <button class="uppercase p-3 cursor-pointer hover:border border-menutext" @onclick="AppState.ClearShoppingCart">
+            <button class="uppercase p-3 cursor-pointer hover:border border-menutext" @onclick="ClearShoppingCart">
                 Очистить
             </button>
 
@@ -69,5 +69,11 @@
     {
         AppState.PrepareOrder();
         NavigationManager.NavigateTo("/order#order-container");
+    }
+
+    private async Task ClearShoppingCart()
+    {
+        await AppState.ClearShoppingCart();
+        NavigationManager.NavigateTo("/catalog");
     }
 }
