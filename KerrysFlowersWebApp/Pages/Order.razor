@@ -26,7 +26,8 @@
                     <input type="text" name="name" id="name" 
                            class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset @(IsNameValid == false ? "ring-label" : "ring-gray-300") placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-text1 sm:text-sm sm:leading-6" 
                            placeholder="Имя"
-                           @bind="Name">
+                           @bind="Name"
+                           tabindex="1">
                 </div>
             </div>
             <div class="w-full">
@@ -35,7 +36,8 @@
                     <input type="text" name="phone" id="phone" 
                            class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset @(IsPhoneValid == false ? "ring-label" : "ring-gray-300") placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-text1 sm:text-sm sm:leading-6" 
                            placeholder="79031234567"
-                           @bind="PhoneNumber">
+                           @bind="PhoneNumber"
+                           tabindex="2">
                 </div>
             </div>
             <div class="w-full">
@@ -44,7 +46,8 @@
                     <input type="email" name="email" id="email" autocomplete="email"
                            class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset @(IsEmailValid == false ? "ring-label" : "ring-gray-300") placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-text1 sm:text-sm sm:leading-6" 
                            placeholder="mail@email.com"
-                           @bind="Email">
+                           @bind="Email"
+                           tabindex="3">
                 </div>
             </div>
             
@@ -55,23 +58,21 @@
                            class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset @(IsAddressValid == false ? "ring-label" : "ring-gray-300") placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-text1 sm:text-sm sm:leading-6" 
                            placeholder="Ходынский бульвар, 17, Москва, 125252"
                            @bind="Address"
-                           @oninput="GetAddressSuggestion">
+                           @oninput="GetAddressSuggestion"
+                           tabindex="4">
                 </div>
-                <div class="mt-2 h-10">
-                    @if (string.IsNullOrWhiteSpace(SuggestedAddress) == false)
-                    {
-                        <div @onclick="SetSuggestedAddressToAddress" class="flex cursor-pointer block w-full rounded-md py-1.5 px-2 text-gray-900 text-sm">
-                            <svg class="fill-gray-500" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
-                                <path d="m15 19l-1.4-1.425L17.175 14H7.5q-1.875 0-3.187-1.312T3 9.5t1.313-3.187T7.5 5H8v2h-.5q-1.05 0-1.775.725T5 9.5t.725 1.775T7.5 12h9.675L13.6 8.4L15 7l6 6z" />
-                            </svg>
-                            <p>@SuggestedAddress</p>
-                        </div>   
-                    }
+                <div id="suggestion-container" class="mt-2 h-10 @(string.IsNullOrWhiteSpace(SuggestedAddress) ? "invisible" : "") ">
+                    <div @onclick="SetSuggestedAddressToAddress" @onkeydown="HandleKeyDown" tabindex="5" class="flex cursor-pointer block w-full rounded-md py-1.5 px-2 text-gray-900 text-sm">
+                        <svg class="fill-gray-500" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                            <path d="m15 19l-1.4-1.425L17.175 14H7.5q-1.875 0-3.187-1.312T3 9.5t1.313-3.187T7.5 5H8v2h-.5q-1.05 0-1.775.725T5 9.5t.725 1.775T7.5 12h9.675L13.6 8.4L15 7l6 6z" />
+                        </svg>
+                        <p>@SuggestedAddress</p>
+                    </div> 
                 </div>
             </div>
             
             <div class="relative w-full grid grid-cols-1 gap-4 p-1  border border-text1 rounded">
-                <div class="flex items-center justify-center absolute px-1 bg-text2  -top-[9px] right-2">
+                <div class="flex items-center justify-center absolute px-1 bg-text2 -top-[9px] right-2">
                     <p class="text-xs lowercase">Состав заказа</p>
                 </div>
                 @foreach (var violet in AppState.Order.Violets)
@@ -109,7 +110,7 @@
     @if (AppState.Order != null)
     {
         <nav class="w-full font-montserrat text-menutext text-lg flex items-center justify-between">
-            <button class="uppercase p-3 cursor-pointer hover:border border-menutext" @onclick="ClearOrder" title="Отменить заказ">
+            <button class="uppercase p-3 cursor-pointer hover:border border-menutext" @onclick="ClearOrder" title="Отменить заказ" tabindex="7">
                 Отменить
             </button>
             @{
@@ -119,7 +120,7 @@
             @if (IsOrderButtonEnable)
             {
                 orderBtnStyle += " hover:bg-text1 cursor-pointer";
-                <button class="@orderBtnStyle" @onclick="() => CreateOrder(Name, PhoneNumber, Address, Email)" title="Сделать заказ">
+                <button class="@orderBtnStyle" @onclick="() => CreateOrder(Name, PhoneNumber, Address, Email)" title="Сделать заказ" tabindex="6">
                     Заказать
                 </button>    
             }
@@ -130,7 +131,6 @@
                     Заказать
                 </button>    
             }
-            
         </nav>
     }
     
@@ -256,6 +256,14 @@
     {
         Address = SuggestedAddress;
         SuggestedAddress = "";
+    }
+    
+    private void HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            SetSuggestedAddressToAddress();
+        }
     }
 
     private async Task GetAddressSuggestion(ChangeEventArgs obj)
