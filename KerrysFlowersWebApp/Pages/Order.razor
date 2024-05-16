@@ -2,6 +2,7 @@
 @page "/order"
 @using System.Net.Mail
 @using System.Text.RegularExpressions
+@using Dadata
 
 <PageTitle>Заказ</PageTitle>
 <HeadContent>
@@ -38,15 +39,6 @@
                 </div>
             </div>
             <div class="w-full">
-                <label for="address" class="block text-sm font-medium leading-6 @(IsAddressValid == false ? "text-label" : "text-gray-900")">Адрес</label>
-                <div class="relative mt-2 rounded-md shadow-sm">
-                    <input type="text" name="address" id="address" 
-                           class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset @(IsAddressValid == false ? "ring-label" : "ring-gray-300") placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-text1 sm:text-sm sm:leading-6" 
-                           placeholder="Ходынский бульвар, 17, Москва, 125252"
-                           @bind="Address">
-                </div>
-            </div>
-            <div class="w-full">
                 <label for="email" class="block text-sm font-medium leading-6 @(IsEmailValid == false ? "text-label" : "text-gray-900")">Email</label>
                 <div class="relative mt-2 rounded-md shadow-sm">
                     <input type="email" name="email" id="email" autocomplete="email"
@@ -55,6 +47,29 @@
                            @bind="Email">
                 </div>
             </div>
+            
+            <div class="w-full">
+                <label for="address" class="block text-sm font-medium leading-6 @(IsAddressValid == false ? "text-label" : "text-gray-900")">Адрес</label>
+                <div class="relative mt-2 rounded-md shadow-sm">
+                    <input type="text" name="address" id="address" 
+                           class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset @(IsAddressValid == false ? "ring-label" : "ring-gray-300") placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-text1 sm:text-sm sm:leading-6" 
+                           placeholder="Ходынский бульвар, 17, Москва, 125252"
+                           @bind="Address"
+                           @oninput="GetAddressSuggestion">
+                </div>
+                <div class="mt-2 h-10">
+                    @if (string.IsNullOrWhiteSpace(SuggestedAddress) == false)
+                    {
+                        <div @onclick="SetSuggestedAddressToAddress" class="flex cursor-pointer block w-full rounded-md py-1.5 px-2 text-gray-900 text-sm">
+                            <svg class="fill-gray-500" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                                <path d="m15 19l-1.4-1.425L17.175 14H7.5q-1.875 0-3.187-1.312T3 9.5t1.313-3.187T7.5 5H8v2h-.5q-1.05 0-1.775.725T5 9.5t.725 1.775T7.5 12h9.675L13.6 8.4L15 7l6 6z" />
+                            </svg>
+                            <p>@SuggestedAddress</p>
+                        </div>   
+                    }
+                </div>
+            </div>
+            
             <div class="relative w-full grid grid-cols-1 gap-4 p-1  border border-text1 rounded">
                 <div class="flex items-center justify-center absolute px-1 bg-text2  -top-[9px] right-2">
                     <p class="text-xs lowercase">Состав заказа</p>
@@ -130,6 +145,7 @@
     private string PhoneNumber { get; set; }
     private string Address { get; set; }
     private string Email { get; set; }
+    private string SuggestedAddress { get; set; }
 
     private bool IsNameValid
     {
@@ -234,5 +250,42 @@
         StateHasChanged();
         
         NavigationManager.NavigateTo("/");
+    }
+
+    private void SetSuggestedAddressToAddress()
+    {
+        Address = SuggestedAddress;
+        SuggestedAddress = "";
+    }
+
+    private async Task GetAddressSuggestion(ChangeEventArgs obj)
+    {
+        try
+        {
+            if (obj.Value != null)
+            {
+                var inputStr = obj.Value.ToString();
+            
+                var token = Environment.GetEnvironmentVariable("DADATAKEY");
+                var api = new SuggestClientAsync(token);
+                var result = await api.SuggestAddress(inputStr);
+                if (result != null)
+                {
+                    if (result.suggestions != null && result.suggestions.Count > 0)
+                    {
+                        var suggestion = result.suggestions.FirstOrDefault();
+                    
+                        if (suggestion != null && string.IsNullOrWhiteSpace(suggestion.value) == false)
+                        {
+                            SuggestedAddress = suggestion.value;
+                        }
+                    }
+                }
+            }
+        }
+        catch
+        {
+            // ignored
+        }
     }
 }

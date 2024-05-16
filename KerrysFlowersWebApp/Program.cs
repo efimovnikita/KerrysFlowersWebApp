@@ -34,6 +34,12 @@ if (string.IsNullOrEmpty(dbDatabase))
     throw new ArgumentNullException(nameof(dbDatabase), "Environment variable DBDATABASE is not set.");
 }
 
+var daDataApiKey = Environment.GetEnvironmentVariable("DADATAKEY");
+if (string.IsNullOrEmpty(daDataApiKey))
+{
+    throw new ArgumentNullException(nameof(daDataApiKey), "Environment variable DADATAKEY is not set.");
+}
+
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
