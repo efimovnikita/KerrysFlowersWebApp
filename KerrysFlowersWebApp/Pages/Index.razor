@@ -191,6 +191,20 @@
                 AppState.ChangeTagActivationState(tag);
                 return;
             }
+            case "ByChimera":
+            {
+                var criteriaValue = "нет";
+                if (Criteria.Equals("True", StringComparison.OrdinalIgnoreCase))
+                {
+                    criteriaValue = "да";
+                }
+                
+                var tag = AppState.Filter.ChimeraTags.FirstOrDefault(tag => tag.Name.Equals(criteriaValue, StringComparison.OrdinalIgnoreCase));
+                if (tag == null) return;
+                AppState.ResetAllFilters();
+                AppState.ChangeTagActivationState(tag);
+                return;
+            }
         }
     }
 

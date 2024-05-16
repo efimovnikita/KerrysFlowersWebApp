@@ -2,6 +2,10 @@ namespace SharedLibrary;
 
 public enum FilterType
 {
-    ByBreeder, ByTag, ByTags, ByColor,
-    BySize
+    ByBreeder, 
+    ByTag, 
+    ByTags, 
+    ByColor,
+    BySize, 
+    ByChimera
 }
