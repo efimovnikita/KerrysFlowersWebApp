@@ -91,9 +91,9 @@ public class CheckNewOrdersBackgroundTask(
             }
 
             var delay = TimeSpan.FromSeconds(30);
-
+            
 #if RELEASE
-            delay = TimeSpan.FromHours(2);
+            delay = TimeSpan.FromMinutes(5);
 #endif
             await Task.Delay(delay, stoppingToken);
         }
