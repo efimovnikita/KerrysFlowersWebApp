@@ -44,7 +44,7 @@ public class VioletChimeraPipelineItem : IPipelineItem
                 botClient.SendTextMessageAsync(message.Chat.Id, "Редактируемый объект неверного типа. Повторите ввод."));
         }
 
-        var text = message.Text!;
+        var text = message.Text!.Trim().ToLower();
 
         if (PositiveAnswers.Contains(text) == false)
         {
