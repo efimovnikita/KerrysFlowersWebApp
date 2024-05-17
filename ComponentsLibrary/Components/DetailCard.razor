@@ -6,7 +6,7 @@
     <div @ref="_photoContainer" class="scrollbar scrollbar-h-2 scrollbar-thumb-gray-400 scrollbar-track-white overflow-x-auto flex snap-x snap-always snap-mandatory first:rounded-t-xl last:rounded-t-xr">
         @foreach (var image in Violet.Images)
         {
-            <div class="snap-center shrink-0" @onclick="() => OpenImageInNewTab(Base64W700(image))">
+            <div class="snap-center shrink-0 cursor-pointer" @onclick="() => OpenImageInNewTab(Base64W700(image))">
                 <picture>
                     <source
                         media="(min-width: 768px)"
