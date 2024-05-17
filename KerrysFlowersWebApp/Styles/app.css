@@ -1,3 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+    .hidden-opacity {
+        @apply opacity-0 max-h-0;
+    }
+    .block-opacity {
+        @apply opacity-100 max-h-full;
+    }
+}

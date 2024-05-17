@@ -1,6 +1,5 @@
 <header class="bg-menu">
     <div class="max-w-7xl flex flex-col px-2 py-1 items-center lg:p-4 lg:m-auto lg:flex-row lg:space-y-0 lg:justify-between">
-        
         <div class="flex items-center gap-10">
             <div class="flex items-center space-x-2 md:space-x-5">
                 <svg class="w-[40px] h-[40px] md:w-[50px] md:h-[50px]"
@@ -17,14 +16,14 @@
                     </NavLink>
                 </h1>
             </div>
-            <button class="lg:hidden" @onclick="() => IsMenuShown = !IsMenuShown">
+            <button class="lg:hidden" @onclick="ToggleMenu">
                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
                     <path fill="#FAFAF9" fill-rule="evenodd" d="M3.5 5a1 1 0 0 0 0 2h17a1 1 0 1 0 0-2zm-1 7a1 1 0 0 1 1-1h17a1 1 0 1 1 0 2h-17a1 1 0 0 1-1-1m0 6.001a1 1 0 0 1 1-1h17a1 1 0 1 1 0 2h-17a1 1 0 0 1-1-1" clip-rule="evenodd"/>
                 </svg>
             </button>
         </div>
-        
-        <nav class="font-montserrat text-menutext text-xl self-center lg:block @(IsMenuShown == false ? " hidden" : "")">
+
+        <nav class="font-montserrat text-menutext text-xl self-center lg:block lg:opacity-100 lg:max-h-full transition-opacity duration-300 ease-in-out overflow-hidden @(IsMenuShown ? "block-opacity" : "hidden-opacity")">
             <ul class="flex flex-col items-center space-y-[2px] lg:flex-row lg:space-x-5 lg:space-y-0 lg:space-x-10">
                 <NavLink href="catalog" Match="NavLinkMatch.All">
                     <li class="p-3 hover:bg-text1 hover:rounded-md">
@@ -56,7 +55,6 @@
                 </NavLink>
             </ul>
         </nav>
-        
     </div>
 </header>
 
@@ -64,4 +62,5 @@
 {
     [CascadingParameter] public CascadingAppState AppState { get; set; }
     private bool IsMenuShown { get; set; } = false;
+    private void ToggleMenu() => IsMenuShown = !IsMenuShown;
 }
