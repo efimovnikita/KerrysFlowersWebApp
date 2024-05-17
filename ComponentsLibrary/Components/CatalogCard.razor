@@ -8,7 +8,7 @@
         {
             var base64ImageSrc = $"data:image/jpeg;base64,{image.W500}";
 
-            <div class="snap-center shrink-0" @onclick="GoToDetails">
+            <div class="snap-center shrink-0 cursor-pointer" @onclick="GoToDetails">
                 <img
                     class="w-[300px] h-[300px] object-cover"
                     src="@base64ImageSrc"
