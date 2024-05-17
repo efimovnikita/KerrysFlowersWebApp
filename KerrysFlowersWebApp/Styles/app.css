@@ -9,4 +9,7 @@
     .block-opacity {
         @apply opacity-100 max-h-full;
     }
+    .active-link {
+        @apply bg-text1 rounded-md;
+    }
 }

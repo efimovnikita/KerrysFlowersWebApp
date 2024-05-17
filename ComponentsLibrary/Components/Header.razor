@@ -25,17 +25,17 @@
 
         <nav class="font-montserrat text-menutext text-xl self-center lg:block lg:opacity-100 lg:max-h-full transition-opacity duration-300 ease-in-out overflow-hidden @(IsMenuShown ? "block-opacity" : "hidden-opacity")">
             <ul class="flex flex-col items-center space-y-[2px] lg:flex-row lg:space-x-5 lg:space-y-0 lg:space-x-10">
-                <NavLink href="catalog" Match="NavLinkMatch.All">
+                <NavLink href="catalog" Match="NavLinkMatch.All" ActiveClass="active-link">
                     <li class="p-3 hover:bg-text1 hover:rounded-md">
                         Каталог
                     </li>
                 </NavLink>
-                <NavLink href="favourites">
+                <NavLink href="favourites" ActiveClass="active-link">
                     <li class="p-3 hover:bg-text1 hover:rounded-md">
                         Избранное
                     </li>
                 </NavLink>
-                <NavLink href="cart#cart-container">
+                <NavLink href="cart" ActiveClass="active-link">
                     <li class="p-3 hover:bg-text1 hover:rounded-md relative">
                         <div>
                             Корзина
@@ -48,7 +48,7 @@
                         }
                     </li>
                 </NavLink>
-                <NavLink href="contacts">
+                <NavLink href="contacts" ActiveClass="active-link">
                     <li class="p-3 hover:bg-text1 hover:rounded-md">
                         Контакты
                     </li>
