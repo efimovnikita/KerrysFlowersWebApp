@@ -11,11 +11,19 @@ public class PrerenderImagesBackgroundService(
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         logger.LogInformation("PrerenderImagesBackgroundService is starting.");
-        logger.LogInformation("PrerenderImagesBackgroundService is running.");
-        
-        await PrerenderImageAsync();
-        
-        logger.LogInformation("PrerenderImagesBackgroundService has stopped.");
+            
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            logger.LogInformation("PrerenderImagesBackgroundService is running.");
+                
+            await PrerenderImageAsync();
+
+            logger.LogInformation("PrerenderImagesBackgroundService has completed an iteration.");
+
+            await Task.Delay(TimeSpan.FromMinutes(10), stoppingToken);
+        }
+            
+        logger.LogInformation("PrerenderImagesBackgroundService is stopping.");
     }
 
     private async Task PrerenderImageAsync()

@@ -14,7 +14,11 @@ public class ImageResizer
         var newHeight = (int)(image.Height / ((float)image.Width / newWidth));
 
         // Create the font
+#if DEBUG
+        var fontFamily = SystemFonts.Collection.Get("Arial");
+#else
         var fontFamily = SystemFonts.Collection.Get("Liberation Sans");
+#endif
         var font = new Font(fontFamily, fontSize, FontStyle.Regular); // Adjust the size as needed
 
         // Define the options for the watermark text
