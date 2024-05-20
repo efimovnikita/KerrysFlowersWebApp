@@ -50,6 +50,7 @@ builder.Services.AddScoped<ClipboardService>();
 builder.Services.AddSingleton<IVioletRepository>(_ => new VioletRepository($"mongodb://{dbAdmin}:{dbPassword}@{dbHost}:{dbPort}", dbDatabase));
 builder.Services.AddSingleton<IFileService, FileService>();
 builder.Services.AddHostedService<PrerenderImagesBackgroundService>();
+builder.Services.AddResponseCompression(options => { options.EnableForHttps = true; });
 builder.WebHost.UseUrls(urls: ["http://*:5000", "https://*:5001"]);
 
 WebApplication app = builder.Build();
@@ -63,7 +64,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseResponseCompression();
 app.UseStaticFiles();
 
 app.UseRouting();

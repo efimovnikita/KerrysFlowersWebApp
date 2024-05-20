@@ -16,7 +16,7 @@
                     </NavLink>
                 </h1>
             </div>
-            <button class="lg:hidden" @onclick="ToggleMenu">
+            <button class="lg:hidden" @onclick="ToggleMenu" title="Меню">
                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
                     <path fill="#FAFAF9" fill-rule="evenodd" d="M3.5 5a1 1 0 0 0 0 2h17a1 1 0 1 0 0-2zm-1 7a1 1 0 0 1 1-1h17a1 1 0 1 1 0 2h-17a1 1 0 0 1-1-1m0 6.001a1 1 0 0 1 1-1h17a1 1 0 1 1 0 2h-17a1 1 0 0 1-1-1" clip-rule="evenodd"/>
                 </svg>
@@ -24,19 +24,19 @@
         </div>
 
         <nav class="font-montserrat text-menutext text-xl self-center lg:block lg:opacity-100 lg:max-h-full transition-opacity duration-300 ease-in-out overflow-hidden @(IsMenuShown ? "block-opacity" : "hidden-opacity")">
-            <ul class="flex flex-col items-center space-y-[2px] lg:flex-row lg:space-x-5 lg:space-y-0 lg:space-x-10">
+            <div class="flex flex-col items-center space-y-[2px] lg:flex-row lg:space-x-5 lg:space-y-0 lg:space-x-10">
                 <NavLink href="catalog" Match="NavLinkMatch.All" ActiveClass="active-link">
-                    <li class="p-3 hover:bg-text1 hover:rounded-md">
+                    <p class="p-3 hover:bg-text1 hover:rounded-md">
                         Каталог
-                    </li>
+                    </p>
                 </NavLink>
                 <NavLink href="favourites" ActiveClass="active-link">
-                    <li class="p-3 hover:bg-text1 hover:rounded-md">
+                    <p class="p-3 hover:bg-text1 hover:rounded-md">
                         Избранное
-                    </li>
+                    </p>
                 </NavLink>
                 <NavLink href="cart" ActiveClass="active-link">
-                    <li class="p-3 hover:bg-text1 hover:rounded-md relative">
+                    <p class="p-3 hover:bg-text1 hover:rounded-md relative">
                         <div>
                             Корзина
                         </div>
@@ -46,14 +46,14 @@
                                 @AppState.ShoppingCart.Count
                             </div>
                         }
-                    </li>
+                    </p>
                 </NavLink>
                 <NavLink href="contacts" ActiveClass="active-link">
-                    <li class="p-3 hover:bg-text1 hover:rounded-md">
+                    <p class="p-3 hover:bg-text1 hover:rounded-md">
                         Контакты
-                    </li>
+                    </p>
                 </NavLink>
-            </ul>
+            </div>
         </nav>
     </div>
 </header>
