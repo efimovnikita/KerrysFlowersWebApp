@@ -1,4 +1,6 @@
+@using SharedLibrary.Services
 @inject NavigationManager NavigationManager
+@inject IFileService FileService
 
 <article class="hidden w-[300px] 2xl:flex flex-col items-center text-text1 relative cursor-pointer" @onclick="Navigate">
     <div class="@(IsLeft ? 
@@ -6,11 +8,19 @@
                     "absolute w-full h-full bg-gradient-to-l from-background hover:hidden")">
     </div>
     @{
-        var base64ImageSrc = $"data:image/jpeg;base64,{Violet.Images.FirstOrDefault(image => image.Active)!.W300}";
+        var image = Violet.Images.FirstOrDefault(image => image.Active)!;
+        
+        var base64ImageSrc = $"data:image/jpeg;base64,{image.W300}";
+        
+        var imgName = $"{Violet.Id}_{nameof(image.W500)}_1.jpg";
+        var relativeImagePath = Path.Combine("images", imgName);
+        var fullPath = FileService.MapPathToWebRoot(relativeImagePath);
+
+        var imageSrc = FileService.FileExists(fullPath) ? relativeImagePath : base64ImageSrc;
     }
     <img
         class="w-[300px] h-[300px] object-cover rounded-t-xl"
-         src="@base64ImageSrc"
+         src="@imageSrc"
         alt=""/>
     <div
         class="w-[300px] flex justify-center items-center bg-white p-5 text-lg font-bold rounded-b-xl">

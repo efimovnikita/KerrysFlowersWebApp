@@ -1,6 +1,8 @@
 using Blazored.LocalStorage;
 using ComponentsLibrary.Services;
+using KerrysFlowersWebApp.Services;
 using SharedLibrary.Providers;
+using SharedLibrary.Services;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -46,7 +48,9 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped<ClipboardService>();
 builder.Services.AddSingleton<IVioletRepository>(_ => new VioletRepository($"mongodb://{dbAdmin}:{dbPassword}@{dbHost}:{dbPort}", dbDatabase));
-builder.WebHost.UseUrls(urls: new[] { "http://*:5000", "https://*:5001" });
+builder.Services.AddSingleton<IFileService, FileService>();
+builder.Services.AddHostedService<PrerenderImagesBackgroundService>();
+builder.WebHost.UseUrls(urls: ["http://*:5000", "https://*:5001"]);
 
 WebApplication app = builder.Build();
 

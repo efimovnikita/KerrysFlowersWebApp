@@ -1,22 +1,38 @@
 @inject NavigationManager NavigationManager
 @using Microsoft.JSInterop
+@using SharedLibrary.Services
 @inject IJSRuntime JSRuntime
+@inject IFileService FileService
 
 <article class="w-[330px] flex flex-col items-center text-text1 sm:w-[500px] md:w-[700px]">
     <div @ref="_photoContainer" class="scrollbar scrollbar-h-2 scrollbar-thumb-gray-400 scrollbar-track-white overflow-x-auto flex snap-x snap-always snap-mandatory first:rounded-t-xl last:rounded-t-xr">
-        @foreach (var image in Violet.Images)
+        @for (var i = 0; i < Violet.Images.Count; i++)
         {
+            var image = Violet.Images[i];
+            
+            var base500ImageSrc = $"data:image/jpeg;base64,{image.W500}";
+            var img500Name = $"{Violet.Id}_{nameof(image.W500)}_{i}.jpg";
+            var relative500ImagePath = Path.Combine("images", img500Name);
+            var full500Path = FileService.MapPathToWebRoot(relative500ImagePath);
+            var image500Src = FileService.FileExists(full500Path) ? relative500ImagePath : base500ImageSrc;
+            
+            var base700ImageSrc = $"data:image/jpeg;base64,{image.W700}";
+            var img700Name = $"{Violet.Id}_{nameof(image.W700)}_{i}.jpg";
+            var relative700ImagePath = Path.Combine("images", img700Name);
+            var full700Path = FileService.MapPathToWebRoot(relative700ImagePath);
+            var image700Src = FileService.FileExists(full700Path) ? relative700ImagePath : base700ImageSrc;
+            
             <div class="snap-center shrink-0 cursor-pointer" @onclick="() => OpenImageInNewTab(Base64W700(image))">
                 <picture>
                     <source
                         media="(min-width: 768px)"
-                        srcset="@($"data:image/jpeg;base64,{image.W700}")"/>
+                        srcset="@image700Src"/>
                     <source
                         media="(min-width: 640px)"
-                        srcset="@($"data:image/jpeg;base64,{image.W500}")"/>
+                        srcset="@image500Src"/>
                     <img
                         class="w-[330px] h-[330px] object-cover sm:w-[500px] sm:h-[500px] md:w-[700px] md:h-[700px]"
-                        src="@($"data:image/jpeg;base64,{image.W500}")"
+                        src="@image500Src"
                         alt="Фотография фиалки @Violet.Name"/>
                 </picture>
             </div>

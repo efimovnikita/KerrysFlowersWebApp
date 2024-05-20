@@ -1,17 +1,26 @@
 @inject NavigationManager NavigationManager
 @using Humanizer
 @using Microsoft.JSInterop
+@using SharedLibrary.Services
+@inject IFileService FileService
 
 <article class="w-[300px] flex flex-col items-center text-text1 relative">
     <div @ref="_photoContainer" class="scrollbar scrollbar-h-2 scrollbar-thumb-gray-400 scrollbar-track-white overflow-x-auto flex snap-x snap-always snap-mandatory first:rounded-t-xl last:rounded-t-xr" id="photo-container">
-        @foreach (Image image in Violet.Images)
+        @for (var i = 0; i < Violet.Images.Count; i++)
         {
+            var image = Violet.Images[i];
             var base64ImageSrc = $"data:image/jpeg;base64,{image.W500}";
+
+            var imgName = $"{Violet.Id}_{nameof(image.W500)}_{i}.jpg";
+            var relativeImagePath = Path.Combine("images", imgName);
+            var fullPath = FileService.MapPathToWebRoot(relativeImagePath);
+
+            var imageSrc = FileService.FileExists(fullPath) ? relativeImagePath : base64ImageSrc;
 
             <div class="snap-center shrink-0 cursor-pointer" @onclick="GoToDetails">
                 <img
                     class="w-[300px] h-[300px] object-cover"
-                    src="@base64ImageSrc"
+                    src="@imageSrc"
                     alt="Фотография фиалки @Violet.Name"/>
             </div>
         }
