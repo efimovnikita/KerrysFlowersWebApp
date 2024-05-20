@@ -26,17 +26,19 @@
                     <input type="text" name="name" id="name" 
                            class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset @(IsNameValid == false ? "ring-label" : "ring-gray-300") placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-text1 sm:text-sm sm:leading-6" 
                            placeholder="Имя"
-                           @bind="Name"
+                           @bind-value="Name"
+                           @bind-value:event="oninput"
                            tabindex="1">
                 </div>
             </div>
             <div class="w-full">
                 <label for="phone" class="block text-sm font-medium leading-6 @(IsPhoneValid == false ? "text-label" : "text-gray-900")">Телефон@(IsPhoneValid == false ? " (в формате '79031234567')" : "")</label>
                 <div class="relative mt-2 rounded-md shadow-sm">
-                    <input type="text" name="phone" id="phone" 
+                    <input type="tel" name="phone" id="phone"
                            class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset @(IsPhoneValid == false ? "ring-label" : "ring-gray-300") placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-text1 sm:text-sm sm:leading-6" 
                            placeholder="79031234567"
-                           @bind="PhoneNumber"
+                           @bind-value="PhoneNumber"
+                           @bind-value:event="oninput"
                            tabindex="2">
                 </div>
             </div>
@@ -46,7 +48,8 @@
                     <input type="email" name="email" id="email" autocomplete="email"
                            class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset @(IsEmailValid == false ? "ring-label" : "ring-gray-300") placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-text1 sm:text-sm sm:leading-6" 
                            placeholder="mail@email.com"
-                           @bind="Email"
+                           @bind-value="Email"
+                           @bind-value:event="oninput"
                            tabindex="3">
                 </div>
             </div>
@@ -57,7 +60,7 @@
                     <input type="text" name="address" id="address" 
                            class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset @(IsAddressValid == false ? "ring-label" : "ring-gray-300") placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-text1 sm:text-sm sm:leading-6" 
                            placeholder="Ходынский бульвар, 17, Москва, 125252"
-                           @bind="Address"
+                           @bind-value="Address"
                            @oninput="GetAddressSuggestion"
                            tabindex="4">
                 </div>
@@ -179,8 +182,8 @@
                 return false;
             }
 
-            const string pattern = @"^7\d{10}$";
-        
+            const string pattern = @"^[87]\d{10}$";
+            
             return Regex.IsMatch(PhoneNumber, pattern);
         }
     }
@@ -194,7 +197,7 @@
                 return false;
             }
 
-            if (Address.Length > 500)
+            if (Address.Length is > 500 or < 2)
             {
                 return false;
             }
@@ -273,6 +276,8 @@
             if (obj.Value != null)
             {
                 var inputStr = obj.Value.ToString();
+
+                Address = inputStr;
             
                 var token = Environment.GetEnvironmentVariable("DADATAKEY");
                 var api = new SuggestClientAsync(token);
