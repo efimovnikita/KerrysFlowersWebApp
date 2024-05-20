@@ -22,19 +22,21 @@
             var full700Path = FileService.MapPathToWebRoot(relative700ImagePath);
             var image700Src = FileService.FileExists(full700Path) ? relative700ImagePath : base700ImageSrc;
             
-            <div class="snap-center shrink-0 cursor-pointer" @onclick="() => OpenImageInNewTab(Base64W700(image))">
-                <picture>
-                    <source
-                        media="(min-width: 768px)"
-                        srcset="@image700Src"/>
-                    <source
-                        media="(min-width: 640px)"
-                        srcset="@image500Src"/>
-                    <img
-                        class="w-[330px] h-[330px] object-cover sm:w-[500px] sm:h-[500px] md:w-[700px] md:h-[700px]"
-                        src="@image500Src"
-                        alt="Фотография фиалки @Violet.Name"/>
-                </picture>
+            <div class="snap-center shrink-0 cursor-pointer">
+                <a href="@image700Src" target="_blank">
+                    <picture>
+                        <source
+                            media="(min-width: 768px)"
+                            srcset="@image700Src"/>
+                        <source
+                            media="(min-width: 640px)"
+                            srcset="@image500Src"/>
+                        <img
+                            class="w-[330px] h-[330px] object-cover sm:w-[500px] sm:h-[500px] md:w-[700px] md:h-[700px]"
+                            src="@image500Src"
+                            alt="Фотография фиалки @Violet.Name"/>
+                    </picture>
+                </a>
             </div>
         }
     </div>
@@ -202,8 +204,4 @@
     }
 
     private void GoToCart() => NavigationManager.NavigateTo("/cart");
-    
-    private async Task OpenImageInNewTab(string imageData) => await JSRuntime.InvokeVoidAsync("openImageInNewTab", imageData);
-
-    private string Base64W700(Image image) => $"data:image/jpeg;base64,{image.W700}";
 }
