@@ -10,6 +10,7 @@
 @code {
     private const string FavouritesLocalStorageKey = "FavouriteViolets";
     private const string CartLocalStorageKey = "ShoppingCart";
+    private const string CompactModeStorageKey = "CompactMode";
 
     [Parameter] public RenderFragment ChildContent { get; set; }
     protected override void OnInitialized()
@@ -42,7 +43,16 @@
     {
         if (firstRender)
         {
-            // Favs
+            // Compact mode
+            var compactModeValue = await LocalStorage.GetItemAsync<string>(CompactModeStorageKey);
+            var compactModeParseResult = Boolean.TryParse(compactModeValue, out var isCompactModeEnable);
+            if (compactModeParseResult)
+            {
+                IsCompactCardModeEnable = isCompactModeEnable;
+                StateHasChanged();
+            }
+
+            // Favorites
             var itemsString = await LocalStorage.GetItemAsync<string>(FavouritesLocalStorageKey);
             if (string.IsNullOrEmpty(itemsString))
             {
@@ -196,7 +206,15 @@
 
     public Order Order { get; set; }
 
-    public bool IsCompactCardModeEnable { get; set; } = false;
+    public bool IsCompactCardModeEnable { get; set; }
+
+    public async Task ToggleCompactMode()
+    {
+        IsCompactCardModeEnable = !IsCompactCardModeEnable;
+        StateHasChanged();
+        
+        await LocalStorage.SetItemAsync(CompactModeStorageKey, IsCompactCardModeEnable);
+    }
     
     public bool ShowSuccessModal { get; set; }
 
