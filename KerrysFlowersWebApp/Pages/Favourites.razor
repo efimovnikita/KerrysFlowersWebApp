@@ -25,11 +25,22 @@
 
         @foreach (var violet in favouriteViolets)
         {
-            <CatalogCard Violet="violet" 
-                         AddToFavourites="()=>AppState.AddToFavouritesCallback(violet)" 
-                         RemoveFromFavourites="()=>AppState.RemoveFromFavouritesCallback(violet)"
-                         IsInFavourites="AppState.FavouriteViolets.Contains(violet)"
-                         AddToShoppingCart="() => AppState.AddToShoppingCartCallback(violet)" />
+            if (AppState.IsCompactCardModeEnable == false)
+            {
+                <CatalogCard Violet="violet"
+                             AddToFavourites="() => AppState.AddToFavouritesCallback(violet)"
+                             RemoveFromFavourites="() => AppState.RemoveFromFavouritesCallback(violet)"
+                             IsInFavourites="AppState.FavouriteViolets.Contains(violet)"
+                             AddToShoppingCart="() => AppState.AddToShoppingCartCallback(violet)"/>
+            }
+            else
+            {
+                <CompactCatalogCard Violet="violet"
+                                    AddToFavourites="() => AppState.AddToFavouritesCallback(violet)"
+                                    RemoveFromFavourites="() => AppState.RemoveFromFavouritesCallback(violet)"
+                                    IsInFavourites="AppState.FavouriteViolets.Contains(violet)"
+                                    AddToShoppingCart="() => AppState.AddToShoppingCartCallback(violet)"/>
+            }
         }
     </CatalogContainer>
 
