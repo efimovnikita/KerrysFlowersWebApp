@@ -1,0 +1,80 @@
+﻿@inject NavigationManager NavigationManager
+@using Microsoft.JSInterop
+@using SharedLibrary.Services
+@inject IFileService FileService
+
+<article class="w-[300px] flex text-text1 bg-text2 justify-between rounded-xl">
+    <a class="flex" href="@GetDetailsPath()" title="@Violet.Name">
+        @{
+            var image = Violet.Images[0];
+            var base64ImageSrc = $"data:image/jpeg;base64,{image.W300}";
+
+            var imgName = $"{Violet.Id}_{nameof(image.W300)}_0.jpg";
+            var relativeImagePath = Path.Combine("images", imgName);
+            var fullPath = FileService.MapPathToWebRoot(relativeImagePath);
+
+            var imageSrc = FileService.FileExists(fullPath) ? relativeImagePath : base64ImageSrc;
+        }
+        <img
+            class="w-[150px] h-[90px] object-cover shrink-0 rounded-l-xl border-r-4 border-background"
+            src="@imageSrc"
+            alt="Фотография фиалки @Violet.Name"/>
+        <p class="flex items-center w-[150px] h-[90px] px-2 items-center text-sm font-bold hover:underline decoration-2 underline-offset-2">
+            @Violet.Name
+        </p>
+    </a>
+    @if (Violet.IsWarehouseInfoValid())
+    {
+        @if (AppState.ShoppingCart.Contains(Violet) == false)
+        {
+            <button class="flex justify-center items-center pr-1" @onclick="AddToCartAsync" title="Добавить в корзину">
+                <svg class="fill-text1 hover:fill-label" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+                    <path fill-rule="evenodd" d="M9.5 19.5a1 1 0 1 0 0-2a1 1 0 0 0 0 2m0 1a2 2 0 1 0 0-4a2 2 0 0 0 0 4m7-1a1 1 0 1 0 0-2a1 1 0 0 0 0 2m0 1a2 2 0 1 0 0-4a2 2 0 0 0 0 4M3 4a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .476.348L9.37 14.5H17a.5.5 0 0 1 0 1H9.004a.5.5 0 0 1-.476-.348L5.135 4.5H3.5A.5.5 0 0 1 3 4" clip-rule="evenodd"/>
+                    <path d="M8.5 13L6 6h13.337a.5.5 0 0 1 .48.637l-1.713 6a.5.5 0 0 1-.481.363z"/>
+                </svg>
+            </button>
+        }
+        else
+        {
+            <button class="flex justify-center items-center pr-1" @onclick="GoToCart" title="Перейти в корзину">
+                <svg class="fill-lime-600" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+                    <g>
+                        <path d="M10.243 16.314L6 12.07l1.414-1.414l2.829 2.828l5.656-5.657l1.415 1.415z"/>
+                        <path fill-rule="evenodd" d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12m11 9a9 9 0 1 1 0-18a9 9 0 0 1 0 18" clip-rule="evenodd"/>
+                    </g>
+                </svg>
+            </button>
+        }
+    }
+</article>
+
+@code
+{
+    [CascadingParameter] public CascadingAppState AppState { get; set; }
+
+    [Inject] private IJSRuntime JsRuntime { get; set; }
+
+    [Parameter] public StoredViolet Violet { get; set; }
+    
+    [Parameter] public EventCallback AddToFavourites { get; set; }
+
+    [Parameter] public EventCallback RemoveFromFavourites { get; set; }
+    
+    [Parameter] public EventCallback AddToShoppingCart { get; set; }
+    
+    [Parameter] public bool IsInFavourites { get; set; }
+    
+    private async Task AddToCartAsync()
+    {
+        if (AddToShoppingCart.HasDelegate)
+        {
+            await AddToShoppingCart.InvokeAsync(this);
+        }
+    }
+    
+    private void GoToCart() => NavigationManager.NavigateTo("/cart");
+
+    private string GetDetailsPath() => $"/details/{Violet.TransliteratedName}";
+
+    private void GoToDetails() => NavigationManager.NavigateTo(GetDetailsPath());
+}

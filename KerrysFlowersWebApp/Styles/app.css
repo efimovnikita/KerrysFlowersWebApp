@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+    html {
+        -webkit-tap-highlight-color: transparent;
+    }
+}
+
 @layer utilities {
     .hidden-opacity {
         @apply opacity-0 max-h-0;
