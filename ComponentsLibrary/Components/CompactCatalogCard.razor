@@ -3,8 +3,8 @@
 @using SharedLibrary.Services
 @inject IFileService FileService
 
-<article class="w-[300px] flex text-text1 bg-text2 justify-between rounded-xl relative">
-    <a class="flex" href="@GetDetailsPath()" title="@Violet.Name">
+<article class="flex text-text1 bg-text2 justify-between relative">
+    <a class="flex flex-col" href="@GetDetailsPath()" title="@Violet.Name">
         @{
             var image = Violet.Images[0];
             var base64ImageSrc = $"data:image/jpeg;base64,{image.W300}";
@@ -16,14 +16,33 @@
             var imageSrc = FileService.FileExists(fullPath) ? relativeImagePath : base64ImageSrc;
         }
         <img
-            class="w-[150px] h-[90px] object-cover shrink-0 rounded-l-xl border-r-4 border-background"
+            class="w-[170px] h-[95px] object-cover shrink-0 border-b-2 border-background"
             src="@imageSrc"
             alt="Фотография фиалки @Violet.Name"/>
-        <p class="flex items-center w-[150px] h-[90px] px-2 items-center text-sm font-bold hover:underline decoration-2 underline-offset-2">
+        <p class="w-[170px] h-[60px] @(Violet.IsWarehouseInfoValid() ? "px-[20px]" : "") flex items-center justify-center text-center text-sm font-bold hover:underline decoration-2 underline-offset-2">
             @Violet.Name
         </p>
     </a>
-    <button title="@(IsInFavourites ? "Удалить из избранного" : "Добавить в избранное")" class="flex justify-center items-center absolute top-1 left-1 cursor-pointer"
+    @if (Violet.IsWarehouseInfoValid())
+    {
+        @if (AppState.ShoppingCart.Contains(Violet) == false)
+        {
+            <button class="absolute bg-text2 bottom-0 right-0 flex justify-center items-center" @onclick="AddToCartAsync" title="Добавить в корзину">
+                <svg class="w-[20px] h-[20px] fill-text1 hover:fill-label" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M17 18c-1.11 0-2 .89-2 2a2 2 0 0 0 2 2a2 2 0 0 0 2-2a2 2 0 0 0-2-2M1 2v2h2l3.6 7.59l-1.36 2.45c-.15.28-.24.61-.24.96a2 2 0 0 0 2 2h12v-2H7.42a.25.25 0 0 1-.25-.25q0-.075.03-.12L8.1 13h7.45c.75 0 1.41-.42 1.75-1.03l3.58-6.47c.07-.16.12-.33.12-.5a1 1 0 0 0-1-1H5.21l-.94-2M7 18c-1.11 0-2 .89-2 2a2 2 0 0 0 2 2a2 2 0 0 0 2-2a2 2 0 0 0-2-2" />
+                </svg>
+            </button>
+        }
+        else
+        {
+            <button class="absolute bg-text2 bottom-0 right-0 flex justify-center items-center" @onclick="GoToCart" title="Перейти в корзину">
+                <svg class="w-[20px] h-[20px] fill-lime-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M9 20a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2a2 2 0 0 1 2 2m8-2a2 2 0 0 0-2 2a2 2 0 0 0 2 2a2 2 0 0 0 2-2a2 2 0 0 0-2-2m-9.8-3.37q-.015.06 0 .12a.25.25 0 0 0 .25.25H19v2H7a2 2 0 0 1-2-2c0-.35.07-.69.24-1l1.36-2.41L3 4H1V2h3.27l.94 2H20a1 1 0 0 1 1 1c0 .17-.05.34-.12.5L17.3 12c-.36.62-1.03 1-1.75 1H8.1zM9 9.5h4v2l3-3l-3-3v2H9z" />
+                </svg>
+            </button>
+        }
+    }
+    <button title="@(IsInFavourites ? "Удалить из избранного" : "Добавить в избранное")" class="flex justify-center items-center absolute top-1 right-1 cursor-pointer"
          @onclick="IsInFavourites ? RemoveFromFavourites : AddToFavourites">
         @{
         var svgStyle = IsInFavourites == false ? "fill-transparent" : "fill-orange-400";
@@ -32,29 +51,6 @@
             <path stroke-width="1.5" d="M9.153 5.408C10.42 3.136 11.053 2 12 2c.947 0 1.58 1.136 2.847 3.408l.328.588c.36.646.54.969.82 1.182c.28.213.63.292 1.33.45l.636.144c2.46.557 3.689.835 3.982 1.776c.292.94-.546 1.921-2.223 3.882l-.434.507c-.476.557-.715.836-.822 1.18c-.107.345-.071.717.001 1.46l.066.677c.253 2.617.38 3.925-.386 4.506c-.766.582-1.918.051-4.22-1.009l-.597-.274c-.654-.302-.981-.452-1.328-.452c-.347 0-.674.15-1.328.452l-.596.274c-2.303 1.06-3.455 1.59-4.22 1.01c-.767-.582-.64-1.89-.387-4.507l.066-.676c.072-.744.108-1.116 0-1.46c-.106-.345-.345-.624-.821-1.18l-.434-.508c-1.677-1.96-2.515-2.941-2.223-3.882c.293-.941 1.523-1.22 3.983-1.776l.636-.144c.699-.158 1.048-.237 1.329-.45c.28-.213.46-.536.82-1.182z"/>
         </svg>
     </button>
-    @if (Violet.IsWarehouseInfoValid())
-    {
-        @if (AppState.ShoppingCart.Contains(Violet) == false)
-        {
-            <button class="flex justify-center items-center pr-1" @onclick="AddToCartAsync" title="Добавить в корзину">
-                <svg class="fill-text1 hover:fill-label" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
-                    <path fill-rule="evenodd" d="M9.5 19.5a1 1 0 1 0 0-2a1 1 0 0 0 0 2m0 1a2 2 0 1 0 0-4a2 2 0 0 0 0 4m7-1a1 1 0 1 0 0-2a1 1 0 0 0 0 2m0 1a2 2 0 1 0 0-4a2 2 0 0 0 0 4M3 4a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .476.348L9.37 14.5H17a.5.5 0 0 1 0 1H9.004a.5.5 0 0 1-.476-.348L5.135 4.5H3.5A.5.5 0 0 1 3 4" clip-rule="evenodd"/>
-                    <path d="M8.5 13L6 6h13.337a.5.5 0 0 1 .48.637l-1.713 6a.5.5 0 0 1-.481.363z"/>
-                </svg>
-            </button>
-        }
-        else
-        {
-            <button class="flex justify-center items-center pr-1" @onclick="GoToCart" title="Перейти в корзину">
-                <svg class="fill-lime-600" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
-                    <g>
-                        <path d="M10.243 16.314L6 12.07l1.414-1.414l2.829 2.828l5.656-5.657l1.415 1.415z"/>
-                        <path fill-rule="evenodd" d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12m11 9a9 9 0 1 1 0-18a9 9 0 0 1 0 18" clip-rule="evenodd"/>
-                    </g>
-                </svg>
-            </button>
-        }
-    }
 </article>
 
 @code
