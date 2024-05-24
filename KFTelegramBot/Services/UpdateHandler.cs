@@ -105,6 +105,8 @@ public class UpdateHandler : IUpdateHandler
     private async Task<Message> GetWarehouseCommand(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
         var allViolets = _violetRepository.GetAllViolets();
+        var warehouseVioletItems = _violetRepository.GetAllWarehouseVioletItems();
+
         if (allViolets.Count == 0)
         {
             return await botClient.SendTextMessageAsync(message.Chat.Id,
@@ -169,12 +171,15 @@ public class UpdateHandler : IUpdateHandler
             var row = sheet.CreateRow(i + 1);
             row.CreateCell(0).SetCellValue(violet.Id.ToString());
             row.CreateCell(1).SetCellValue(violet.Name);
-            row.CreateCell(2).SetCellValue(0);
-            row.CreateCell(3).SetCellValue(0);
-            row.CreateCell(4).SetCellValue(0);
-            row.CreateCell(5).SetCellValue(0);
-            row.CreateCell(6).SetCellValue(0);   
-            row.CreateCell(7).SetCellValue(0);   
+            
+            var warehouseVioletItem = warehouseVioletItems.FirstOrDefault(item => item.VioletId.Equals(violet.Id));
+
+            row.CreateCell(2).SetCellValue(warehouseVioletItem?.LeafCount ?? 0);
+            row.CreateCell(3).SetCellValue(warehouseVioletItem?.LeafPrice ?? 0);
+            row.CreateCell(4).SetCellValue(warehouseVioletItem?.ChildCount ?? 0);
+            row.CreateCell(5).SetCellValue(warehouseVioletItem?.ChildPrice ?? 0);
+            row.CreateCell(6).SetCellValue(warehouseVioletItem?.WholePlantCount ?? 0);   
+            row.CreateCell(7).SetCellValue(warehouseVioletItem?.WholePlantPrice ?? 0);   
         }
 
         // Create a new file name with a .xls extension
