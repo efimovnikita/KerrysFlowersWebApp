@@ -8,7 +8,7 @@ namespace KFTelegramBot.Model;
 public class DigestWarehouseXlsPipelineItem : IPipelineItem
 {
     public Task<Message> AskAQuestion(Message message, ITelegramBotClient botClient, object? violetObject = null) =>
-        botClient.SendTextMessageAsync(message.Chat.Id, "Отправьте XLS файл с информацией о складских остатках и ценах.");
+        botClient.SendTextMessageAsync(message.Chat.Id, "Отправьте Excel (.xlsx) файл с информацией о складских остатках и ценах.");
 
     public (bool, Task<Message>?) ValidateInput(Message message, ITelegramBotClient botClient)
     {
@@ -16,7 +16,7 @@ public class DigestWarehouseXlsPipelineItem : IPipelineItem
         {
             return (false,
                 botClient.SendTextMessageAsync(message.Chat.Id,
-                    "Ожидалось сообщение в формате документа. Повторите ввод."));
+                    "Ожидалось сообщение в формате документа Excel (.xlsx). Повторите ввод."));
         }
 
         var document = message.Document;
